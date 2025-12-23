@@ -24,10 +24,38 @@
             </div>
           </div>
           <div class="button-group">
-            <button id="reset-btn" class="reset-button">New Game</button>
+            <button id="reset-btn" class="reset-button">🎮 New Game</button>
+            <button id="settings-toggle" class="settings-toggle-btn">⚙️</button>
             <button id="fullscreen-btn" class="fullscreen-button">
               📺 Fullscreen
             </button>
+            <div id="settings-content" class="settings-content">
+              <div class="setting-group">
+                <label for="piece-style">Piece Style:</label>
+                <select id="piece-style" class="setting-select">
+                  <option value="classic">Classic</option>
+                </select>
+              </div>
+              <div class="setting-group">
+                <label for="color-theme">Color Theme:</label>
+                <select id="color-theme" class="setting-select">
+                  <option value="traditional">Traditional</option>
+                  <option value="blue">Blue & Gold</option>
+                  <option value="green">Green & Cream</option>
+                  <option value="purple">Purple & Silver</option>
+                  <option value="red">Red & White</option>
+                </select>
+              </div>
+              <div class="setting-group">
+                <label for="board-style">Board Style:</label>
+                <select id="board-style" class="setting-select">
+                  <option value="wood">Wood</option>
+                  <option value="marble">Marble</option>
+                  <option value="neon">Neon</option>
+                  <option value="classic">Classic</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,6 +89,14 @@
               <div class="player-option" data-player="liana" data-color="white">
                 <img src="assets/images/liana.jpeg" alt="Liana" />
                 <span>Liana</span>
+              </div>
+              <div class="player-option" data-player="peppa" data-color="white">
+                <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                <span>Peppa Pig</span>
+              </div>
+              <div class="player-option" data-player="booba" data-color="white">
+                <img src="assets/images/booba.jpeg" alt="Booba" />
+                <span>Booba</span>
               </div>
             </div>
             <div class="selected-player" id="white-player">
@@ -98,6 +134,14 @@
                 <img src="assets/images/liana.jpeg" alt="Liana" />
                 <span>Liana</span>
               </div>
+              <div class="player-option" data-player="peppa" data-color="black">
+                <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                <span>Peppa Pig</span>
+              </div>
+              <div class="player-option" data-player="booba" data-color="black">
+                <img src="assets/images/booba.jpeg" alt="Booba" />
+                <span>Booba</span>
+              </div>
             </div>
             <div class="selected-player" id="black-player">
               <img id="black-player-img" src="" alt="" style="display: none" />
@@ -112,39 +156,6 @@
         >
           Start Game
         </button>
-      </div>
-
-      <div class="settings-panel">
-        <button id="settings-toggle" class="settings-toggle">
-          ⚙️ Settings
-        </button>
-        <div id="settings-content" class="settings-content">
-          <div class="setting-group">
-            <label for="piece-style">Piece Style:</label>
-            <select id="piece-style" class="setting-select">
-              <option value="classic">Classic</option>
-            </select>
-          </div>
-          <div class="setting-group">
-            <label for="color-theme">Color Theme:</label>
-            <select id="color-theme" class="setting-select">
-              <option value="traditional">Traditional</option>
-              <option value="blue">Blue & Gold</option>
-              <option value="green">Green & Cream</option>
-              <option value="purple">Purple & Silver</option>
-              <option value="red">Red & White</option>
-            </select>
-          </div>
-          <div class="setting-group">
-            <label for="board-style">Board Style:</label>
-            <select id="board-style" class="setting-select">
-              <option value="wood">Wood</option>
-              <option value="marble">Marble</option>
-              <option value="neon">Neon</option>
-              <option value="classic">Classic</option>
-            </select>
-          </div>
-        </div>
       </div>
 
       <div class="chess-container">
@@ -190,6 +201,13 @@
 
     <div class="modal" id="game-over-modal">
       <div class="modal-content">
+        <img
+          id="game-over-winner-img"
+          class="winner-image"
+          src=""
+          alt=""
+          style="display: none"
+        />
         <h2 id="game-over-title">Game Over</h2>
         <p id="game-over-message"></p>
         <button id="new-game-btn" class="modal-button">Start New Game</button>

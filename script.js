@@ -159,6 +159,11 @@ class ChessGame {
   }
 
   selectSquare(row, col) {
+    // Clear any previous highlights first
+    document.querySelectorAll(".square").forEach((sq) => {
+      sq.classList.remove("possible-move", "possible-capture");
+    });
+
     this.selectedSquare = { row, col };
     const square = document.querySelector(
       `[data-row="${row}"][data-col="${col}"]`
@@ -185,16 +190,22 @@ class ChessGame {
   }
 
   highlightPossibleMoves(row, col) {
+    const piece = this.board[row][col];
+    if (!piece) return;
+
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
         if (this.isValidMove(row, col, r, c)) {
           const square = document.querySelector(
             `[data-row="${r}"][data-col="${c}"]`
           );
-          if (this.board[r][c]) {
-            square.classList.add("possible-capture");
-          } else {
-            square.classList.add("possible-move");
+          if (square) {
+            const targetPiece = this.board[r][c];
+            if (targetPiece && targetPiece.color !== piece.color) {
+              square.classList.add("possible-capture");
+            } else if (!targetPiece) {
+              square.classList.add("possible-move");
+            }
           }
         }
       }
@@ -259,7 +270,11 @@ class ChessGame {
     if (colDiff === 0) {
       if (this.board[toRow][toCol]) return false; // Can't capture forward
       if (rowDiff === direction) return true; // One step forward
-      if (fromRow === startRow && rowDiff === 2 * direction) return true; // Two steps from start
+      // Two steps from start - check if path is clear
+      if (fromRow === startRow && rowDiff === 2 * direction) {
+        const middleRow = fromRow + direction;
+        return !this.board[middleRow][toCol] && !this.board[toRow][toCol];
+      }
     }
 
     // Diagonal capture
@@ -335,9 +350,9 @@ class ChessGame {
   checkGameState() {
     const kingPosition = this.findKing(this.currentPlayer);
     if (!kingPosition) {
-      this.endGame(
-        `${this.currentPlayer === "white" ? "Black" : "White"} wins!`
-      );
+      const winnerColor = this.currentPlayer === "white" ? "black" : "white";
+      const winnerName = this.players[winnerColor].name;
+      this.endGame(`${winnerName} captured the king!`);
       return;
     }
 
@@ -363,11 +378,9 @@ class ChessGame {
     }
 
     if (!canMove) {
-      this.endGame(
-        `${
-          this.currentPlayer === "white" ? "Black" : "White"
-        } wins by checkmate!`
-      );
+      const winnerColor = this.currentPlayer === "white" ? "black" : "white";
+      const winnerName = this.players[winnerColor].name;
+      this.endGame(`Checkmate!`);
     }
   }
 
@@ -406,8 +419,21 @@ class ChessGame {
 
   endGame(message) {
     this.gameOver = true;
-    document.getElementById("game-status").textContent = "Game Over";
-    document.getElementById("game-over-title").textContent = "Game Over!";
+
+    // Determine the winner
+    const winnerColor = this.currentPlayer === "white" ? "black" : "white";
+    const winnerName = this.players[winnerColor].name;
+    const winnerImage = this.players[winnerColor].image;
+
+    document.getElementById(
+      "game-over-title"
+    ).textContent = `${winnerName} Wins! 🎉`;
+
+    const winnerImg = document.getElementById("game-over-winner-img");
+    winnerImg.src = winnerImage;
+    winnerImg.alt = winnerName;
+    winnerImg.style.display = "block";
+
     document.getElementById("game-over-message").textContent = message;
     document.getElementById("game-over-modal").style.display = "block";
   }
@@ -421,10 +447,8 @@ class ChessGame {
     this.capturedPieces = { white: [], black: [] };
     this.gameStarted = false;
 
-    document.getElementById("game-status").textContent = "Game in progress";
     document.getElementById("game-over-modal").style.display = "none";
     document.querySelector(".player-selection").style.display = "block";
-    document.getElementById("start-game-btn").style.display = "none";
 
     // Reset player selections
     document.querySelectorAll(".player-option").forEach((option) => {
@@ -443,6 +467,9 @@ class ChessGame {
       white: { name: "", image: "" },
       black: { name: "", image: "" },
     };
+
+    this.updateStartButtonState();
+    this.updatePlayerOptionStates();
 
     this.createBoard();
     this.updateDisplay();
@@ -595,56 +622,125 @@ class ChessGame {
 
     playerOptions.forEach((option) => {
       option.addEventListener("click", () => {
-        const playerName = option.dataset.player;
-        const playerColor = option.dataset.color;
-        const playerImage = option.querySelector("img").src;
-
-        // Remove selected class from other options of the same color
-        document
-          .querySelectorAll(`[data-color="${playerColor}"]`)
-          .forEach((opt) => {
-            opt.classList.remove("selected");
-          });
-
-        // Add selected class to clicked option
-        option.classList.add("selected");
-
-        // Update player info
-        this.players[playerColor] = {
-          name: playerName.charAt(0).toUpperCase() + playerName.slice(1),
-          image: playerImage,
-        };
-
-        // Update selected player display
-        const selectedPlayerEl = document.getElementById(
-          `${playerColor}-player`
-        );
-        const selectedPlayerImg = document.getElementById(
-          `${playerColor}-player-img`
-        );
-        const selectedPlayerName = document.getElementById(
-          `${playerColor}-player-name`
-        );
-
-        selectedPlayerEl.classList.add("has-player");
-        selectedPlayerImg.src = playerImage;
-        selectedPlayerImg.alt = this.players[playerColor].name;
-        selectedPlayerImg.style.display = "block";
-        selectedPlayerName.textContent = this.players[playerColor].name;
-
-        // Show start button if both players selected
-        if (this.players.white.name && this.players.black.name) {
-          startGameBtn.style.display = "block";
-        }
+        this.handlePlayerSelection(option);
       });
     });
 
     startGameBtn.addEventListener("click", () => {
       this.startGame();
     });
+
+    this.updatePlayerOptionStates();
+    this.updateStartButtonState();
+  }
+
+  handlePlayerSelection(option) {
+    if (option.classList.contains("disabled")) return;
+
+    const playerName = option.dataset.player;
+    const playerColor = option.dataset.color;
+    const otherColor = playerColor === "white" ? "black" : "white";
+    const formattedName =
+      playerName.charAt(0).toUpperCase() + playerName.slice(1);
+    const playerImage = option.querySelector("img").src;
+
+    // If clicking on already selected option, deselect it
+    if (option.classList.contains("selected")) {
+      this.clearPlayerSelection(playerColor);
+      this.updateStartButtonState();
+      this.updatePlayerOptionStates();
+      return;
+    }
+
+    // Clear existing selections for this color
+    this.clearPlayerSelection(playerColor);
+
+    // If the other color had this player, clear it as well
+    if (
+      this.players[otherColor].name &&
+      this.players[otherColor].name.toLowerCase() === playerName
+    ) {
+      this.clearPlayerSelection(otherColor);
+    }
+
+    option.classList.add("selected");
+
+    // Update player info
+    this.players[playerColor] = {
+      name: formattedName,
+      image: playerImage,
+    };
+
+    // Update selected player display
+    const selectedPlayerEl = document.getElementById(`${playerColor}-player`);
+    const selectedPlayerImg = document.getElementById(
+      `${playerColor}-player-img`
+    );
+    const selectedPlayerName = document.getElementById(
+      `${playerColor}-player-name`
+    );
+
+    selectedPlayerEl.classList.add("has-player");
+    selectedPlayerImg.src = playerImage;
+    selectedPlayerImg.alt = formattedName;
+    selectedPlayerImg.style.display = "block";
+    selectedPlayerName.textContent = formattedName;
+
+    this.updateStartButtonState();
+    this.updatePlayerOptionStates();
+  }
+
+  clearPlayerSelection(color) {
+    const labelText =
+      color === "white" ? "Select White Player" : "Select Black Player";
+
+    this.players[color] = { name: "", image: "" };
+
+    const selectedPlayerEl = document.getElementById(`${color}-player`);
+    const selectedPlayerImg = document.getElementById(`${color}-player-img`);
+    const selectedPlayerName = document.getElementById(`${color}-player-name`);
+
+    selectedPlayerEl.classList.remove("has-player");
+    selectedPlayerImg.src = "";
+    selectedPlayerImg.alt = "";
+    selectedPlayerImg.style.display = "none";
+    selectedPlayerName.textContent = labelText;
+
+    document
+      .querySelectorAll(`.player-option[data-color="${color}"]`)
+      .forEach((opt) => opt.classList.remove("selected"));
+  }
+
+  updatePlayerOptionStates() {
+    document.querySelectorAll(".player-option").forEach((option) => {
+      const optionColor = option.dataset.color;
+      const otherColor = optionColor === "white" ? "black" : "white";
+      const playerName = option.dataset.player;
+      const otherPlayerName = this.players[otherColor].name
+        ? this.players[otherColor].name.toLowerCase()
+        : "";
+
+      if (otherPlayerName && otherPlayerName === playerName) {
+        option.classList.add("disabled");
+      } else {
+        option.classList.remove("disabled");
+      }
+    });
+  }
+
+  updateStartButtonState() {
+    const startGameBtn = document.getElementById("start-game-btn");
+    if (this.players.white.name && this.players.black.name) {
+      startGameBtn.style.display = "block";
+    } else {
+      startGameBtn.style.display = "none";
+    }
   }
 
   startGame() {
+    if (!(this.players.white.name && this.players.black.name)) {
+      return;
+    }
     this.gameStarted = true;
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
