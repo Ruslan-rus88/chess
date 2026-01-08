@@ -40,7 +40,18 @@ class ChessGame {
 
     this.gameStarted = false;
 
+    // Lessons mode
+    this.lessonsBoard = this.createEmptyBoard();
+    this.selectedPieceForLesson = null;
+    this.lessonsSelectedSquare = null;
+
     this.initializeGame();
+  }
+
+  createEmptyBoard() {
+    return Array(8)
+      .fill()
+      .map(() => Array(8).fill(null));
   }
 
   createInitialBoard() {
@@ -83,9 +94,12 @@ class ChessGame {
 
   initializeGame() {
     this.createBoard();
+    this.createLessonsBoard();
     this.updateDisplay();
     this.setupEventListeners();
     this.setupPlayerSelection();
+    this.setupTabs();
+    this.setupLessons();
   }
 
   createBoard() {
@@ -550,6 +564,7 @@ class ChessGame {
   changePieceStyle(style) {
     this.currentPieceStyle = style;
     this.createBoard();
+    this.createLessonsBoard();
     this.updateCapturedPieces();
   }
 
@@ -761,6 +776,284 @@ class ChessGame {
         this.currentPlayer.slice(1);
       currentPlayerImg.style.display = "none";
     }
+  }
+
+  setupTabs() {
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetTab = button.dataset.tab;
+
+        // Update active tab button
+        tabButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        // Show/hide tab contents
+        tabContents.forEach((content) => {
+          if (content.id === `${targetTab}-tab`) {
+            content.style.display = "block";
+          } else {
+            content.style.display = "none";
+          }
+        });
+      });
+    });
+  }
+
+  createLessonsBoard() {
+    const boardElement = document.getElementById("lessons-board");
+    if (!boardElement) return;
+
+    boardElement.innerHTML = "";
+
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const square = document.createElement("div");
+        square.className = `square ${(row + col) % 2 === 0 ? "light" : "dark"}`;
+        square.dataset.row = row;
+        square.dataset.col = col;
+
+        const piece = this.lessonsBoard[row][col];
+        if (piece) {
+          const pieceElement = document.createElement("div");
+          pieceElement.className = `piece ${piece.color}-piece`;
+          pieceElement.textContent =
+            this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
+          square.appendChild(pieceElement);
+        }
+
+        square.addEventListener("click", (e) =>
+          this.handleLessonsSquareClick(e)
+        );
+        boardElement.appendChild(square);
+      }
+    }
+  }
+
+  setupLessons() {
+    // Piece selection
+    const pieceOptions = document.querySelectorAll(".lesson-piece-option");
+    pieceOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        // Remove previous selection
+        pieceOptions.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+
+        const pieceType = option.dataset.piece;
+        const pieceColor = option.dataset.color;
+        this.selectedPieceForLesson = { type: pieceType, color: pieceColor };
+      });
+    });
+
+    // Clear board button
+    const clearButton = document.getElementById("clear-lesson-board");
+    if (clearButton) {
+      clearButton.addEventListener("click", () => {
+        this.lessonsBoard = this.createEmptyBoard();
+        this.selectedPieceForLesson = null;
+        this.lessonsSelectedSquare = null;
+        this.createLessonsBoard();
+        pieceOptions.forEach((opt) => opt.classList.remove("selected"));
+      });
+    }
+  }
+
+  handleLessonsSquareClick(event) {
+    const square = event.currentTarget;
+    const row = parseInt(square.dataset.row);
+    const col = parseInt(square.dataset.col);
+    const piece = this.lessonsBoard[row][col];
+
+    // If clicking on an existing piece, show its moves
+    if (piece) {
+      if (
+        this.lessonsSelectedSquare &&
+        this.lessonsSelectedSquare.row === row &&
+        this.lessonsSelectedSquare.col === col
+      ) {
+        // Deselect if clicking the same piece
+        this.deselectLessonsSquare();
+      } else {
+        // Select this piece and show moves
+        this.selectLessonsSquare(row, col);
+      }
+    } else if (this.selectedPieceForLesson) {
+      // Place the selected piece on the board
+      this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
+      this.createLessonsBoard();
+      this.selectedPieceForLesson = null;
+      document
+        .querySelectorAll(".lesson-piece-option")
+        .forEach((opt) => opt.classList.remove("selected"));
+    }
+  }
+
+  selectLessonsSquare(row, col) {
+    // Clear previous selection
+    this.deselectLessonsSquare();
+
+    this.lessonsSelectedSquare = { row, col };
+    const square = document.querySelector(
+      `#lessons-board [data-row="${row}"][data-col="${col}"]`
+    );
+    if (square) {
+      square.classList.add("selected");
+    }
+
+    // Highlight possible moves
+    this.highlightLessonsMoves(row, col);
+  }
+
+  deselectLessonsSquare() {
+    if (this.lessonsSelectedSquare) {
+      const square = document.querySelector(
+        `#lessons-board [data-row="${this.lessonsSelectedSquare.row}"][data-col="${this.lessonsSelectedSquare.col}"]`
+      );
+      if (square) {
+        square.classList.remove("selected");
+      }
+      this.lessonsSelectedSquare = null;
+    }
+
+    // Remove all move highlights
+    document.querySelectorAll("#lessons-board .square").forEach((sq) => {
+      sq.classList.remove("possible-move", "possible-capture");
+    });
+  }
+
+  highlightLessonsMoves(row, col) {
+    const piece = this.lessonsBoard[row][col];
+    if (!piece) return;
+
+    // Highlight all valid moves for this piece
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (this.isValidLessonsMove(row, col, r, c)) {
+          const square = document.querySelector(
+            `#lessons-board [data-row="${r}"][data-col="${c}"]`
+          );
+          if (square) {
+            const targetPiece = this.lessonsBoard[r][c];
+            if (targetPiece && targetPiece.color !== piece.color) {
+              square.classList.add("possible-capture");
+            } else if (!targetPiece) {
+              square.classList.add("possible-move");
+            }
+            // Also highlight the starting square as a possible move
+            if (r === row && c === col) {
+              square.classList.add("possible-move");
+            }
+          }
+        }
+      }
+    }
+  }
+
+  isValidLessonsMove(fromRow, fromCol, toRow, toCol) {
+    const piece = this.lessonsBoard[fromRow][fromCol];
+    const targetPiece = this.lessonsBoard[toRow][toCol];
+
+    if (!piece) return false;
+    if (targetPiece && targetPiece.color === piece.color) return false;
+    if (fromRow === toRow && fromCol === toCol) return false;
+
+    // Use lessons board for validation
+    return this.isValidPieceMoveForBoard(
+      piece,
+      fromRow,
+      fromCol,
+      toRow,
+      toCol,
+      this.lessonsBoard
+    );
+  }
+
+  isValidPieceMoveForBoard(piece, fromRow, fromCol, toRow, toCol, board) {
+    const rowDiff = toRow - fromRow;
+    const colDiff = toCol - fromCol;
+    const absRowDiff = Math.abs(rowDiff);
+    const absColDiff = Math.abs(colDiff);
+
+    switch (piece.type) {
+      case "pawn":
+        return this.isValidPawnMoveForBoard(
+          piece,
+          fromRow,
+          fromCol,
+          toRow,
+          toCol,
+          board
+        );
+      case "rook":
+        return (
+          (rowDiff === 0 || colDiff === 0) &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+      case "bishop":
+        return (
+          absRowDiff === absColDiff &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+      case "queen":
+        return (
+          (rowDiff === 0 || colDiff === 0 || absRowDiff === absColDiff) &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+      case "king":
+        return absRowDiff <= 1 && absColDiff <= 1;
+      case "knight":
+        return (
+          (absRowDiff === 2 && absColDiff === 1) ||
+          (absRowDiff === 1 && absColDiff === 2)
+        );
+      default:
+        return false;
+    }
+  }
+
+  isValidPawnMoveForBoard(piece, fromRow, fromCol, toRow, toCol, board) {
+    const direction = piece.color === "white" ? -1 : 1;
+    const startRow = piece.color === "white" ? 6 : 1;
+    const rowDiff = toRow - fromRow;
+    const colDiff = Math.abs(toCol - fromCol);
+
+    // Forward move
+    if (colDiff === 0) {
+      if (board[toRow][toCol]) return false; // Can't capture forward
+      if (rowDiff === direction) return true; // One step forward
+      // Two steps from start - check if path is clear
+      if (fromRow === startRow && rowDiff === 2 * direction) {
+        const middleRow = fromRow + direction;
+        return !board[middleRow][toCol] && !board[toRow][toCol];
+      }
+    }
+
+    // Diagonal capture
+    if (colDiff === 1 && rowDiff === direction) {
+      return board[toRow][toCol] !== null; // Can only capture diagonally
+    }
+
+    return false;
+  }
+
+  isPathClearForBoard(fromRow, fromCol, toRow, toCol, board) {
+    const rowStep = toRow === fromRow ? 0 : toRow > fromRow ? 1 : -1;
+    const colStep = toCol === fromCol ? 0 : toCol > fromCol ? 1 : -1;
+
+    let currentRow = fromRow + rowStep;
+    let currentCol = fromCol + colStep;
+
+    while (currentRow !== toRow || currentCol !== toCol) {
+      if (board[currentRow][currentCol] !== null) {
+        return false;
+      }
+      currentRow += rowStep;
+      currentCol += colStep;
+    }
+
+    return true;
   }
 }
 

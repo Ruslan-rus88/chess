@@ -32,6 +32,37 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 12px 30px;
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+  background: #d0d0d0;
+}
+
+.tab-button.active {
+  background: #fff;
+  color: #667eea;
+  border-bottom-color: #667eea;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
 .game-info {
   display: flex;
   justify-content: space-between;
@@ -193,15 +224,19 @@ body {
 .chess-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 20px;
+  align-items: flex-start;
+  gap: 10px;
   margin: 30px 0;
+  /* Ensure proper alignment of board and labels */
 }
 
 .board-labels {
   display: flex;
   flex-direction: column;
   gap: 0;
+  /* Ensure labels align perfectly with board squares */
+  align-items: center;
+  justify-content: center;
 }
 
 .rank-label,
@@ -214,10 +249,18 @@ body {
   font-weight: bold;
   font-size: 1.1em;
   color: #666;
+  /* Ensure perfect alignment with board squares */
+  box-sizing: border-box;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .chess-board-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .chess-board {
@@ -228,6 +271,9 @@ body {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  /* Add perspective for 3D pieces */
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .square {
@@ -239,6 +285,8 @@ body {
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
+  /* Enable 3D transforms for pieces */
+  transform-style: preserve-3d;
 }
 
 .square.light {
@@ -262,11 +310,11 @@ body {
 }
 
 .square.possible-move {
-  background-color: rgba(76, 175, 80, 0.7) !important;
+  background-color: rgba(76, 175, 80, 0.5) !important;
 }
 
 .square.possible-capture {
-  background-color: rgba(244, 67, 54, 0.7) !important;
+  background-color: rgba(244, 67, 54, 0.5) !important;
 }
 
 .square.last-move {
@@ -278,14 +326,29 @@ body {
   cursor: pointer;
   user-select: none;
   transition: all 0.3s ease;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
   position: relative;
   z-index: 1;
+  display: inline-block;
+  transform-style: preserve-3d;
+  /* Enhanced 3D effect using multiple shadows and transforms */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+    0 0 12px rgba(0, 0, 0, 0.15);
+  transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
+    drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+  will-change: transform;
 }
 
 .piece:hover {
-  transform: scale(1.2);
-  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5));
+  transform: translateZ(15px) rotateX(8deg) rotateY(-2deg) scale(1.15);
+  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5))
+    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+    6px 6px 11px rgba(0, 0, 0, 0.15), 0 0 18px rgba(0, 0, 0, 0.2);
 }
 
 .piece.dragging {
@@ -299,6 +362,9 @@ body {
   display: flex;
   gap: 0;
   margin-top: 5px;
+  /* Ensure labels align perfectly with board columns */
+  justify-content: center;
+  align-items: center;
 }
 
 .captured-pieces {
@@ -334,6 +400,13 @@ body {
 .captured-piece {
   font-size: 1.8em;
   opacity: 0.7;
+  /* Apply 3D effect to captured pieces too */
+  transform-style: preserve-3d;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4);
+  transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
+  display: inline-block;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .modal {
@@ -802,12 +875,16 @@ body {
   transition: all 0.3s ease;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Prevent layout shift by maintaining consistent dimensions */
+  box-sizing: border-box;
 }
 
 .player-option:hover {
   border-color: #007bff;
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  /* Ensure border doesn't cause shift - use box-shadow inset for visual effect */
+  border-width: 3px;
 }
 
 .player-option.selected {
@@ -830,15 +907,21 @@ body {
   margin-bottom: 8px;
   border: 2px solid #ddd;
   transition: all 0.3s ease;
+  /* Prevent layout shift by maintaining consistent border width */
+  box-sizing: border-box;
+  display: block;
 }
 
 .player-option:hover img,
 .player-option.selected img {
   border-color: #007bff;
+  /* Keep border width consistent to prevent shift */
+  border-width: 2px;
 }
 
 .player-option.selected img {
   border-color: #28a745;
+  border-width: 2px;
 }
 
 .player-option span {
@@ -970,6 +1053,8 @@ body {
     order: 2;
     flex-direction: row;
     justify-content: center;
+    /* Ensure proper alignment in mobile view */
+    align-items: center;
   }
 
   .chess-board {
@@ -1041,5 +1126,196 @@ body {
 
   .current-player-info {
     justify-content: center;
+  }
+}
+
+/* Lessons Tab Styles */
+.lessons-container {
+  padding: 20px;
+}
+
+.lessons-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.lessons-content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.piece-selector {
+  flex: 0 0 300px;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid #e0e0e0;
+}
+
+.piece-selector h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.piece-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.lesson-piece-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Prevent layout shift by maintaining consistent dimensions */
+  box-sizing: border-box;
+}
+
+.lesson-piece-option:hover {
+  border-color: #007bff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  /* Ensure border doesn't cause shift - use box-shadow inset for visual effect */
+  border-width: 3px;
+}
+
+.lesson-piece-option:hover .lesson-piece {
+  transform: translateZ(15px) rotateX(8deg) rotateY(-2deg) scale(1.15);
+  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5))
+    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+    6px 6px 11px rgba(0, 0, 0, 0.15), 0 0 18px rgba(0, 0, 0, 0.2);
+}
+
+.lesson-piece-option.selected {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  transform: translateY(-3px);
+  border-width: 3px;
+}
+
+.lesson-piece {
+  font-size: 3em;
+  margin-bottom: 8px;
+  user-select: none;
+  display: inline-block;
+  transform-style: preserve-3d;
+  /* Enhanced 3D effect using multiple shadows and transforms - same as regular pieces */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+    0 0 12px rgba(0, 0, 0, 0.15);
+  transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
+    drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+  will-change: transform;
+  transition: all 0.3s ease;
+}
+
+.lesson-piece-option span {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.clear-board-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.clear-board-button:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lessons-board-container {
+  flex: 1;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lesson-instructions {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
+  max-width: 500px;
+}
+
+.lesson-instructions p {
+  margin: 10px 0;
+  color: #555;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.lesson-instructions p:first-child {
+  margin-top: 0;
+}
+
+.lesson-instructions p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .tab-button {
+    border-radius: 8px;
+    border-bottom: 3px solid transparent;
+  }
+
+  .tab-button.active {
+    border-bottom-color: #667eea;
+  }
+
+  .lessons-content {
+    flex-direction: column;
+  }
+
+  .piece-selector {
+    flex: 1;
+    width: 100%;
+  }
+
+  .piece-options {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lessons-board-container {
+    width: 100%;
+    min-width: auto;
   }
 }
