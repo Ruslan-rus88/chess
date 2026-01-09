@@ -261,6 +261,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: visible;
 }
 
 .chess-board {
@@ -285,6 +286,7 @@ body {
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
+  overflow: visible;
   /* Enable 3D transforms for pieces */
   transform-style: preserve-3d;
 }
@@ -325,7 +327,6 @@ body {
   font-size: 2.2em;
   cursor: pointer;
   user-select: none;
-  transition: all 0.3s ease;
   position: relative;
   z-index: 1;
   display: inline-block;
@@ -338,17 +339,6 @@ body {
   transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
     drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
-  will-change: transform;
-}
-
-.piece:hover {
-  transform: translateZ(15px) rotateX(8deg) rotateY(-2deg) scale(1.15);
-  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5))
-    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
-    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
-    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
-    6px 6px 11px rgba(0, 0, 0, 0.15), 0 0 18px rgba(0, 0, 0, 0.2);
 }
 
 .piece.dragging {
@@ -799,14 +789,21 @@ body {
   align-items: center;
 }
 
+.game-container.fullscreen .chess-board-container {
+  padding: 15px;
+  overflow: visible;
+}
+
 .game-container.fullscreen .chess-board {
   grid-template-columns: repeat(8, 80px);
   grid-template-rows: repeat(8, 80px);
+  overflow: visible;
 }
 
 .game-container.fullscreen .square {
   width: 80px;
   height: 80px;
+  overflow: visible;
 }
 
 .game-container.fullscreen .rank-label,
@@ -1165,8 +1162,8 @@ body {
 
 .piece-options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
   margin-bottom: 20px;
 }
 
@@ -1174,7 +1171,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
+  padding: 10px;
   border: 3px solid transparent;
   border-radius: 12px;
   cursor: pointer;
@@ -1193,15 +1190,6 @@ body {
   border-width: 3px;
 }
 
-.lesson-piece-option:hover .lesson-piece {
-  transform: translateZ(15px) rotateX(8deg) rotateY(-2deg) scale(1.15);
-  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.5))
-    drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.3));
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
-    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
-    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
-    6px 6px 11px rgba(0, 0, 0, 0.15), 0 0 18px rgba(0, 0, 0, 0.2);
-}
 
 .lesson-piece-option.selected {
   border-color: #28a745;
@@ -1211,8 +1199,8 @@ body {
 }
 
 .lesson-piece {
-  font-size: 3em;
-  margin-bottom: 8px;
+  font-size: 2em;
+  margin-bottom: 6px;
   user-select: none;
   display: inline-block;
   transform-style: preserve-3d;
@@ -1224,15 +1212,14 @@ body {
   transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
     drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
-  will-change: transform;
-  transition: all 0.3s ease;
 }
 
 .lesson-piece-option span {
   font-weight: bold;
   color: #333;
-  font-size: 0.9em;
+  font-size: 0.8em;
   text-align: center;
+  line-height: 1.2;
 }
 
 .clear-board-button {
@@ -1246,12 +1233,365 @@ body {
   font-size: 1.1em;
   font-weight: bold;
   transition: all 0.3s ease;
+  margin-bottom: 10px;
 }
 
 .clear-board-button:hover {
   background: #c82333;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.remove-piece-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.remove-piece-button:hover {
+  background: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.remove-piece-button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.remove-piece-button:disabled:hover {
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+}
+
+.random-board-button {
+  width: 100%;
+  padding: 12px 24px;
+  background: #9c27b0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.random-board-button:hover {
+  background: #7b1fa2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mission Mode Styles */
+.mission-selection {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 15px;
+  border: 2px solid #e0e0e0;
+}
+
+.mission-selection h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+  font-size: 1.8em;
+}
+
+.mission-setup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.mission-player-section,
+.mission-piece-section {
+  text-align: center;
+}
+
+.mission-player-section h4,
+.mission-piece-section h4 {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+}
+
+.mission-player-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mission-player-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.mission-player-option:hover {
+  border-color: #007bff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-width: 3px;
+}
+
+.mission-player-option.selected {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  transform: translateY(-3px);
+  border-width: 3px;
+}
+
+.mission-player-option img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  border: 2px solid #ddd;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  display: block;
+}
+
+.mission-player-option.selected img {
+  border-color: #28a745;
+  border-width: 2px;
+}
+
+.mission-player-option span {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.9em;
+}
+
+.mission-piece-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mission-piece-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.mission-piece-option:hover {
+  border-color: #007bff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-width: 3px;
+}
+
+.mission-piece-option.selected {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  transform: translateY(-3px);
+  border-width: 3px;
+}
+
+.mission-piece {
+  font-size: 2em;
+  margin-bottom: 6px;
+  user-select: none;
+  display: inline-block;
+}
+
+.mission-piece-option span {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.selected-mission-player,
+.selected-mission-piece {
+  padding: 15px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  transition: border-color 0.3s ease, border-style 0.3s ease, background 0.3s ease;
+}
+
+.selected-mission-player.has-player,
+.selected-mission-piece.has-piece {
+  border-color: #28a745;
+  border-style: solid;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.selected-mission-player img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  border: 2px solid #28a745;
+}
+
+.selected-mission-player span,
+.selected-mission-piece span {
+  font-weight: bold;
+  color: #333;
+}
+
+.start-mission-button {
+  display: block;
+  margin: 25px auto 0;
+  padding: 15px 40px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.start-mission-button:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mission-game-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mission-info {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 15px;
+  border: 2px solid #e0e0e0;
+}
+
+.mission-info h3 {
+  color: #333;
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.mission-info p {
+  color: #555;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+}
+
+.mission-stats {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.mission-stats strong {
+  color: #dc3545;
+  font-size: 1.3em;
+}
+
+.mission-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.hint-button {
+  padding: 12px 24px;
+  background: #ffc107;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint-button:hover {
+  background: #ffb300;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reset-mission-button {
+  padding: 12px 24px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reset-mission-button:hover {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.square.hint-capture {
+  background-color: #ffeb3b !important;
+  box-shadow: 0 0 20px rgba(255, 235, 59, 0.8) !important;
+  animation: hint-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hint-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 235, 59, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 235, 59, 1);
+  }
 }
 
 .lessons-board-container {
@@ -1317,5 +1657,25 @@ body {
   .lessons-board-container {
     width: 100%;
     min-width: auto;
+  }
+
+  .mission-setup {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .mission-player-options,
+  .mission-piece-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mission-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hint-button,
+  .reset-mission-button {
+    width: 100%;
   }
 }

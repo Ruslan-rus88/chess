@@ -13,6 +13,7 @@
         <div class="tabs">
           <button class="tab-button active" data-tab="game">Game</button>
           <button class="tab-button" data-tab="lessons">Lessons</button>
+          <button class="tab-button" data-tab="mission">Mission</button>
         </div>
         <div class="game-info">
           <div class="current-player-info">
@@ -65,202 +66,300 @@
       </div>
 
       <div class="tab-content" id="game-tab">
-      <div class="player-selection">
-        <h3>Select Players</h3>
-        <div class="players-container">
-          <div class="player-setup">
-            <h4>White Player</h4>
-            <div class="player-options">
-              <div
-                class="player-option"
-                data-player="ruslan"
-                data-color="white"
-              >
-                <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                <span>Ruslan</span>
+        <div class="player-selection">
+          <h3>Select Players</h3>
+          <div class="players-container">
+            <div class="player-setup">
+              <h4>White Player</h4>
+              <div class="player-options">
+                <div
+                  class="player-option"
+                  data-player="ruslan"
+                  data-color="white"
+                >
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="roman"
+                  data-color="white"
+                >
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="katrine"
+                  data-color="white"
+                >
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="liana"
+                  data-color="white"
+                >
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="peppa"
+                  data-color="white"
+                >
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="booba"
+                  data-color="white"
+                >
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
               </div>
-              <div class="player-option" data-player="roman" data-color="white">
-                <img src="assets/images/roman.jpg" alt="Roman" />
-                <span>Roman</span>
-              </div>
-              <div
-                class="player-option"
-                data-player="katrine"
-                data-color="white"
-              >
-                <img src="assets/images/katrine.jpg" alt="Katrine" />
-                <span>Katrine</span>
-              </div>
-              <div class="player-option" data-player="liana" data-color="white">
-                <img src="assets/images/liana.jpeg" alt="Liana" />
-                <span>Liana</span>
-              </div>
-              <div class="player-option" data-player="peppa" data-color="white">
-                <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                <span>Peppa Pig</span>
-              </div>
-              <div class="player-option" data-player="booba" data-color="white">
-                <img src="assets/images/booba.jpeg" alt="Booba" />
-                <span>Booba</span>
-              </div>
-            </div>
-            <div class="selected-player" id="white-player">
-              <img id="white-player-img" src="" alt="" style="display: none" />
-              <span id="white-player-name">Select White Player</span>
-            </div>
-          </div>
-
-          <div class="vs-divider">VS</div>
-
-          <div class="player-setup">
-            <h4>Black Player</h4>
-            <div class="player-options">
-              <div
-                class="player-option"
-                data-player="ruslan"
-                data-color="black"
-              >
-                <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                <span>Ruslan</span>
-              </div>
-              <div class="player-option" data-player="roman" data-color="black">
-                <img src="assets/images/roman.jpg" alt="Roman" />
-                <span>Roman</span>
-              </div>
-              <div
-                class="player-option"
-                data-player="katrine"
-                data-color="black"
-              >
-                <img src="assets/images/katrine.jpg" alt="Katrine" />
-                <span>Katrine</span>
-              </div>
-              <div class="player-option" data-player="liana" data-color="black">
-                <img src="assets/images/liana.jpeg" alt="Liana" />
-                <span>Liana</span>
-              </div>
-              <div class="player-option" data-player="peppa" data-color="black">
-                <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                <span>Peppa Pig</span>
-              </div>
-              <div class="player-option" data-player="booba" data-color="black">
-                <img src="assets/images/booba.jpeg" alt="Booba" />
-                <span>Booba</span>
+              <div class="selected-player" id="white-player">
+                <img
+                  id="white-player-img"
+                  src=""
+                  alt=""
+                  style="display: none"
+                />
+                <span id="white-player-name">Select White Player</span>
               </div>
             </div>
-            <div class="selected-player" id="black-player">
-              <img id="black-player-img" src="" alt="" style="display: none" />
-              <span id="black-player-name">Select Black Player</span>
+
+            <div class="vs-divider">VS</div>
+
+            <div class="player-setup">
+              <h4>Black Player</h4>
+              <div class="player-options">
+                <div
+                  class="player-option"
+                  data-player="ruslan"
+                  data-color="black"
+                >
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="roman"
+                  data-color="black"
+                >
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="katrine"
+                  data-color="black"
+                >
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="liana"
+                  data-color="black"
+                >
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="peppa"
+                  data-color="black"
+                >
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="booba"
+                  data-color="black"
+                >
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
+              </div>
+              <div class="selected-player" id="black-player">
+                <img
+                  id="black-player-img"
+                  src=""
+                  alt=""
+                  style="display: none"
+                />
+                <span id="black-player-name">Select Black Player</span>
+              </div>
+            </div>
+          </div>
+          <button
+            id="start-game-btn"
+            class="start-game-button"
+            style="display: none"
+          >
+            Start Game
+          </button>
+        </div>
+
+        <div class="chess-container" style="display: none">
+          <div class="board-labels left-labels">
+            <div class="rank-label">8</div>
+            <div class="rank-label">7</div>
+            <div class="rank-label">6</div>
+            <div class="rank-label">5</div>
+            <div class="rank-label">4</div>
+            <div class="rank-label">3</div>
+            <div class="rank-label">2</div>
+            <div class="rank-label">1</div>
+          </div>
+
+          <div class="chess-board-container">
+            <div class="chess-board" id="chess-board">
+              <!-- Chess squares will be generated by JavaScript -->
+            </div>
+            <div class="file-labels">
+              <div class="file-label">a</div>
+              <div class="file-label">b</div>
+              <div class="file-label">c</div>
+              <div class="file-label">d</div>
+              <div class="file-label">e</div>
+              <div class="file-label">f</div>
+              <div class="file-label">g</div>
+              <div class="file-label">h</div>
             </div>
           </div>
         </div>
-        <button
-          id="start-game-btn"
-          class="start-game-button"
-          style="display: none"
-        >
-          Start Game
-        </button>
-      </div>
 
-      <div class="chess-container">
-        <div class="board-labels left-labels">
-          <div class="rank-label">8</div>
-          <div class="rank-label">7</div>
-          <div class="rank-label">6</div>
-          <div class="rank-label">5</div>
-          <div class="rank-label">4</div>
-          <div class="rank-label">3</div>
-          <div class="rank-label">2</div>
-          <div class="rank-label">1</div>
-        </div>
-
-        <div class="chess-board-container">
-          <div class="chess-board" id="chess-board">
-            <!-- Chess squares will be generated by JavaScript -->
+        <div class="captured-pieces" style="display: none">
+          <div class="captured-white">
+            <h3>Captured White Pieces</h3>
+            <div id="captured-white" class="pieces-container"></div>
           </div>
-          <div class="file-labels">
-            <div class="file-label">a</div>
-            <div class="file-label">b</div>
-            <div class="file-label">c</div>
-            <div class="file-label">d</div>
-            <div class="file-label">e</div>
-            <div class="file-label">f</div>
-            <div class="file-label">g</div>
-            <div class="file-label">h</div>
+          <div class="captured-black">
+            <h3>Captured Black Pieces</h3>
+            <div id="captured-black" class="pieces-container"></div>
           </div>
         </div>
       </div>
 
-      <div class="captured-pieces">
-        <div class="captured-white">
-          <h3>Captured White Pieces</h3>
-          <div id="captured-white" class="pieces-container"></div>
-        </div>
-        <div class="captured-black">
-          <h3>Captured Black Pieces</h3>
-          <div id="captured-black" class="pieces-container"></div>
-        </div>
-      </div>
-      </div>
-
-      <div class="tab-content" id="lessons-tab" style="display: none;">
+      <div class="tab-content" id="lessons-tab" style="display: none">
         <div class="lessons-container">
           <h2>Chess Lessons - Learn Piece Movements</h2>
           <div class="lessons-content">
             <div class="piece-selector">
               <h3>Select a Piece</h3>
               <div class="piece-options">
-                <div class="lesson-piece-option" data-piece="king" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="king"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♔</div>
                   <span>King (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="queen" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="queen"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♕</div>
                   <span>Queen (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="rook" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="rook"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♖</div>
                   <span>Rook (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="bishop" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="bishop"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♗</div>
                   <span>Bishop (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="knight" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="knight"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♘</div>
                   <span>Knight (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="pawn" data-color="white">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="pawn"
+                  data-color="white"
+                >
                   <div class="lesson-piece white-piece">♙</div>
                   <span>Pawn (White)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="king" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="king"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♚</div>
                   <span>King (Black)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="queen" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="queen"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♛</div>
                   <span>Queen (Black)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="rook" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="rook"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♜</div>
                   <span>Rook (Black)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="bishop" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="bishop"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♝</div>
                   <span>Bishop (Black)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="knight" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="knight"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♞</div>
                   <span>Knight (Black)</span>
                 </div>
-                <div class="lesson-piece-option" data-piece="pawn" data-color="black">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="pawn"
+                  data-color="black"
+                >
                   <div class="lesson-piece black-piece">♟</div>
                   <span>Pawn (Black)</span>
                 </div>
               </div>
-              <button id="clear-lesson-board" class="clear-board-button">Clear Board</button>
+              <button id="clear-lesson-board" class="clear-board-button">
+                Clear Board
+              </button>
+              <button id="remove-selected-piece" class="remove-piece-button">
+                Remove Selected Piece
+              </button>
+              <button id="random-board-fill" class="random-board-button">
+                Random Board Fill
+              </button>
             </div>
             <div class="lessons-board-container">
               <div class="chess-container">
@@ -299,6 +398,211 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Mission Tab -->
+      <div class="tab-content" id="mission-tab" style="display: none">
+        <div class="mission-selection" id="mission-selection">
+          <h3>Select Player and Piece for Mission Mode</h3>
+          <div class="mission-setup">
+            <div class="mission-player-section">
+              <h4>Select Player</h4>
+              <div class="mission-player-options">
+                <div class="mission-player-option" data-player="ruslan">
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div class="mission-player-option" data-player="roman">
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div class="mission-player-option" data-player="katrine">
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div class="mission-player-option" data-player="liana">
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div class="mission-player-option" data-player="peppa">
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div class="mission-player-option" data-player="booba">
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
+              </div>
+              <div class="selected-mission-player" id="selected-mission-player">
+                <img
+                  id="selected-mission-player-img"
+                  src=""
+                  alt=""
+                  style="display: none"
+                />
+                <span id="selected-mission-player-name">Select Player</span>
+              </div>
+            </div>
+
+            <div class="mission-piece-section">
+              <h4>Select Your Piece</h4>
+              <div class="mission-piece-options">
+                <div
+                  class="mission-piece-option"
+                  data-piece="king"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♔</div>
+                  <span>King</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="queen"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♕</div>
+                  <span>Queen</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="rook"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♖</div>
+                  <span>Rook</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="bishop"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♗</div>
+                  <span>Bishop</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="knight"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♘</div>
+                  <span>Knight</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="pawn"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♙</div>
+                  <span>Pawn</span>
+                </div>
+              </div>
+              <div class="selected-mission-piece" id="selected-mission-piece">
+                <span>Select Piece</span>
+              </div>
+            </div>
+          </div>
+          <button
+            id="start-mission-btn"
+            class="start-mission-button"
+            style="display: none"
+          >
+            Start Mission
+          </button>
+        </div>
+
+        <div
+          class="mission-game-area"
+          id="mission-game-area"
+          style="display: none"
+        >
+          <div class="mission-info">
+            <h3 id="mission-title">Mission 1</h3>
+            <p id="mission-description">
+              Capture all opponent pieces to complete the mission!
+            </p>
+            <div class="mission-stats">
+              <span
+                >Opponent pieces remaining:
+                <strong id="opponent-pieces-count">1</strong></span
+              >
+            </div>
+            <div class="mission-controls">
+              <button id="hint-btn" class="hint-button">💡 Hint</button>
+              <button id="reset-mission-btn" class="reset-mission-button">
+                🔄 Reset Mission
+              </button>
+            </div>
+          </div>
+          <div class="chess-container">
+            <div class="board-labels left-labels">
+              <div class="rank-label">8</div>
+              <div class="rank-label">7</div>
+              <div class="rank-label">6</div>
+              <div class="rank-label">5</div>
+              <div class="rank-label">4</div>
+              <div class="rank-label">3</div>
+              <div class="rank-label">2</div>
+              <div class="rank-label">1</div>
+            </div>
+
+            <div class="chess-board-container">
+              <div class="chess-board" id="mission-board">
+                <!-- Chess squares will be generated by JavaScript -->
+              </div>
+              <div class="file-labels">
+                <div class="file-label">a</div>
+                <div class="file-label">b</div>
+                <div class="file-label">c</div>
+                <div class="file-label">d</div>
+                <div class="file-label">e</div>
+                <div class="file-label">f</div>
+                <div class="file-label">g</div>
+                <div class="file-label">h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission Completion Modal -->
+    <div class="modal" id="mission-completion-modal" style="display: none">
+      <div class="modal-content">
+        <img
+          id="mission-winner-img"
+          class="winner-image"
+          src=""
+          alt=""
+          style="display: none"
+        />
+        <h2 id="mission-completion-title">Mission Completed!</h2>
+        <p id="mission-completion-message"></p>
+        <button id="next-mission-btn" class="modal-button">Next Mission</button>
+        <button
+          id="mission-menu-btn"
+          class="modal-button"
+          style="background: #6c757d; margin-top: 10px"
+        >
+          Back to Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- All Missions Completed Modal -->
+    <div class="modal" id="all-missions-completed-modal" style="display: none">
+      <div class="modal-content">
+        <img
+          id="all-missions-winner-img"
+          class="winner-image"
+          src=""
+          alt=""
+          style="display: none"
+        />
+        <h2>🎉 Congratulations! 🎉</h2>
+        <p>You have completed all 10 missions!</p>
+        <button id="back-to-mission-menu-btn" class="modal-button">
+          Back to Menu
+        </button>
       </div>
     </div>
 

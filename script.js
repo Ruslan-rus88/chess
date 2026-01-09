@@ -45,6 +45,16 @@ class ChessGame {
     this.selectedPieceForLesson = null;
     this.lessonsSelectedSquare = null;
 
+    // Mission mode
+    this.missionBoard = this.createEmptyBoard();
+    this.missionSelectedSquare = null;
+    this.currentMission = 1;
+    this.maxMissions = 10;
+    this.missionPlayer = null;
+    this.missionUserPiece = null;
+    this.missionUserPiecePosition = null;
+    this.missionOpponentPieces = [];
+
     this.initializeGame();
   }
 
@@ -100,6 +110,8 @@ class ChessGame {
     this.setupPlayerSelection();
     this.setupTabs();
     this.setupLessons();
+    this.setupMission();
+    this.updatePlaygroundVisibility();
   }
 
   createBoard() {
@@ -488,6 +500,7 @@ class ChessGame {
     this.createBoard();
     this.updateDisplay();
     this.updateCapturedPieces();
+    this.updatePlaygroundVisibility();
   }
 
   setupEventListeners() {
@@ -759,6 +772,7 @@ class ChessGame {
     this.gameStarted = true;
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
+    this.updatePlaygroundVisibility();
   }
 
   updateCurrentPlayerDisplay() {
@@ -775,6 +789,19 @@ class ChessGame {
         this.currentPlayer.charAt(0).toUpperCase() +
         this.currentPlayer.slice(1);
       currentPlayerImg.style.display = "none";
+    }
+  }
+
+  updatePlaygroundVisibility() {
+    const chessContainer = document.querySelector(".chess-container");
+    const capturedPieces = document.querySelector(".captured-pieces");
+    
+    if (this.gameStarted) {
+      if (chessContainer) chessContainer.style.display = "flex";
+      if (capturedPieces) capturedPieces.style.display = "flex";
+    } else {
+      if (chessContainer) chessContainer.style.display = "none";
+      if (capturedPieces) capturedPieces.style.display = "none";
     }
   }
 
@@ -856,6 +883,31 @@ class ChessGame {
         this.lessonsSelectedSquare = null;
         this.createLessonsBoard();
         pieceOptions.forEach((opt) => opt.classList.remove("selected"));
+        this.updateRemovePieceButton();
+      });
+    }
+
+    // Remove selected piece button
+    const removePieceButton = document.getElementById("remove-selected-piece");
+    if (removePieceButton) {
+      removePieceButton.addEventListener("click", () => {
+        if (this.lessonsSelectedSquare) {
+          const row = this.lessonsSelectedSquare.row;
+          const col = this.lessonsSelectedSquare.col;
+          this.lessonsBoard[row][col] = null;
+          this.deselectLessonsSquare();
+          this.createLessonsBoard();
+        }
+      });
+      // Initialize button state
+      this.updateRemovePieceButton();
+    }
+
+    // Random board fill button
+    const randomBoardButton = document.getElementById("random-board-fill");
+    if (randomBoardButton) {
+      randomBoardButton.addEventListener("click", () => {
+        this.fillRandomPieces();
       });
     }
   }
@@ -866,21 +918,46 @@ class ChessGame {
     const col = parseInt(square.dataset.col);
     const piece = this.lessonsBoard[row][col];
 
+    // If a piece is already selected and we're clicking on a valid move square
+    if (this.lessonsSelectedSquare) {
+      const fromRow = this.lessonsSelectedSquare.row;
+      const fromCol = this.lessonsSelectedSquare.col;
+      
+      // If clicking the same square, deselect
+      if (fromRow === row && fromCol === col) {
+        this.deselectLessonsSquare();
+        return;
+      }
+      
+      // Check if clicking on a highlighted valid move
+      if (square.classList.contains("possible-move") || square.classList.contains("possible-capture")) {
+        // Move the piece
+        const movingPiece = this.lessonsBoard[fromRow][fromCol];
+        this.lessonsBoard[fromRow][fromCol] = null;
+        this.lessonsBoard[row][col] = movingPiece;
+        this.createLessonsBoard();
+        this.deselectLessonsSquare();
+        return;
+      }
+      
+      // If clicking on a different piece, deselect current and select new one
+      if (piece) {
+        this.selectLessonsSquare(row, col);
+        return;
+      }
+      
+      // If clicking on empty non-highlighted square, deselect
+      this.deselectLessonsSquare();
+      return;
+    }
+
+    // No piece selected - normal behavior
     // If clicking on an existing piece, show its moves
     if (piece) {
-      if (
-        this.lessonsSelectedSquare &&
-        this.lessonsSelectedSquare.row === row &&
-        this.lessonsSelectedSquare.col === col
-      ) {
-        // Deselect if clicking the same piece
-        this.deselectLessonsSquare();
-      } else {
-        // Select this piece and show moves
-        this.selectLessonsSquare(row, col);
-      }
+      // Select this piece and show moves
+      this.selectLessonsSquare(row, col);
     } else if (this.selectedPieceForLesson) {
-      // Place the selected piece on the board
+      // Place the selected piece from the selector on the board
       this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
       this.createLessonsBoard();
       this.selectedPieceForLesson = null;
@@ -904,6 +981,9 @@ class ChessGame {
 
     // Highlight possible moves
     this.highlightLessonsMoves(row, col);
+    
+    // Enable remove button
+    this.updateRemovePieceButton();
   }
 
   deselectLessonsSquare() {
@@ -921,6 +1001,52 @@ class ChessGame {
     document.querySelectorAll("#lessons-board .square").forEach((sq) => {
       sq.classList.remove("possible-move", "possible-capture");
     });
+    
+    // Disable remove button
+    this.updateRemovePieceButton();
+  }
+
+  updateRemovePieceButton() {
+    const removePieceButton = document.getElementById("remove-selected-piece");
+    if (removePieceButton) {
+      removePieceButton.disabled = !this.lessonsSelectedSquare;
+    }
+  }
+
+  fillRandomPieces() {
+    // Get all empty squares
+    const emptySquares = [];
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        if (!this.lessonsBoard[row][col]) {
+          emptySquares.push({ row, col });
+        }
+      }
+    }
+
+    // Randomly shuffle empty squares
+    for (let i = emptySquares.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [emptySquares[i], emptySquares[j]] = [emptySquares[j], emptySquares[i]];
+    }
+
+    // Get up to 10 random empty squares
+    const squaresToFill = emptySquares.slice(0, Math.min(10, emptySquares.length));
+
+    // Piece types and colors
+    const pieceTypes = ["king", "queen", "rook", "bishop", "knight", "pawn"];
+    const colors = ["white", "black"];
+
+    // Fill selected squares with random pieces
+    squaresToFill.forEach(({ row, col }) => {
+      const randomType = pieceTypes[Math.floor(Math.random() * pieceTypes.length)];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      this.lessonsBoard[row][col] = { type: randomType, color: randomColor };
+    });
+
+    // Update board display and deselect any selected piece
+    this.deselectLessonsSquare();
+    this.createLessonsBoard();
   }
 
   highlightLessonsMoves(row, col) {
@@ -1054,6 +1180,484 @@ class ChessGame {
     }
 
     return true;
+  }
+
+  setupMission() {
+    // Mission player selection
+    const missionPlayerOptions = document.querySelectorAll(".mission-player-option");
+    missionPlayerOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        missionPlayerOptions.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+
+        const playerName = option.dataset.player;
+        const formattedName = playerName.charAt(0).toUpperCase() + playerName.slice(1);
+        const playerImage = option.querySelector("img").src;
+
+        this.missionPlayer = { name: formattedName, image: playerImage };
+
+        const selectedPlayerEl = document.getElementById("selected-mission-player");
+        const selectedPlayerImg = document.getElementById("selected-mission-player-img");
+        const selectedPlayerName = document.getElementById("selected-mission-player-name");
+
+        selectedPlayerEl.classList.add("has-player");
+        selectedPlayerImg.src = playerImage;
+        selectedPlayerImg.alt = formattedName;
+        selectedPlayerImg.style.display = "block";
+        selectedPlayerName.textContent = formattedName;
+
+        this.updateStartMissionButton();
+      });
+    });
+
+    // Mission piece selection
+    const missionPieceOptions = document.querySelectorAll(".mission-piece-option");
+    missionPieceOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        missionPieceOptions.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+
+        const pieceType = option.dataset.piece;
+        const pieceColor = option.dataset.color;
+
+        this.missionUserPiece = { type: pieceType, color: pieceColor };
+
+        const selectedPieceEl = document.getElementById("selected-mission-piece");
+        const pieceName = pieceType.charAt(0).toUpperCase() + pieceType.slice(1);
+        selectedPieceEl.classList.add("has-piece");
+        selectedPieceEl.innerHTML = `<span>${pieceName}</span>`;
+
+        this.updateStartMissionButton();
+      });
+    });
+
+    // Start mission button
+    const startMissionBtn = document.getElementById("start-mission-btn");
+    if (startMissionBtn) {
+      startMissionBtn.addEventListener("click", () => {
+        this.startMission();
+      });
+    }
+
+    // Mission completion modals
+    const nextMissionBtn = document.getElementById("next-mission-btn");
+    if (nextMissionBtn) {
+      nextMissionBtn.addEventListener("click", () => {
+        this.nextMission();
+      });
+    }
+
+    const missionMenuBtn = document.getElementById("mission-menu-btn");
+    if (missionMenuBtn) {
+      missionMenuBtn.addEventListener("click", () => {
+        this.resetMission();
+      });
+    }
+
+    const backToMissionMenuBtn = document.getElementById("back-to-mission-menu-btn");
+    if (backToMissionMenuBtn) {
+      backToMissionMenuBtn.addEventListener("click", () => {
+        this.resetMission();
+      });
+    }
+
+    // Hint button
+    const hintBtn = document.getElementById("hint-btn");
+    if (hintBtn) {
+      hintBtn.addEventListener("click", () => {
+        this.showMissionHint();
+      });
+    }
+
+    // Reset mission button
+    const resetMissionBtn = document.getElementById("reset-mission-btn");
+    if (resetMissionBtn) {
+      resetMissionBtn.addEventListener("click", () => {
+        this.resetCurrentMission();
+      });
+    }
+
+    this.updateStartMissionButton();
+  }
+
+  updateStartMissionButton() {
+    const startMissionBtn = document.getElementById("start-mission-btn");
+    if (startMissionBtn) {
+      if (this.missionPlayer && this.missionUserPiece) {
+        startMissionBtn.style.display = "block";
+      } else {
+        startMissionBtn.style.display = "none";
+      }
+    }
+  }
+
+  startMission() {
+    if (!this.missionPlayer || !this.missionUserPiece) return;
+
+    this.currentMission = 1;
+    document.getElementById("mission-selection").style.display = "none";
+    document.getElementById("mission-game-area").style.display = "block";
+    this.initializeMissionBoard();
+  }
+
+  initializeMissionBoard() {
+    // Clear board
+    this.missionBoard = this.createEmptyBoard();
+    this.missionSelectedSquare = null;
+    this.missionOpponentPieces = [];
+    this.clearMissionHints();
+
+    // Get number of opponent pieces for current mission
+    const opponentPiecesCount = this.currentMission;
+
+    // Get all possible squares
+    const allSquares = [];
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        allSquares.push({ row, col });
+      }
+    }
+
+    // Randomly shuffle squares
+    for (let i = allSquares.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allSquares[i], allSquares[j]] = [allSquares[j], allSquares[i]];
+    }
+
+    // Place user piece first
+    const userSquare = allSquares.pop();
+    this.missionBoard[userSquare.row][userSquare.col] = {
+      type: this.missionUserPiece.type,
+      color: this.missionUserPiece.color,
+    };
+    this.missionUserPiecePosition = { row: userSquare.row, col: userSquare.col };
+
+    // Handle bishop color restriction
+    let availableSquares = allSquares;
+    if (this.missionUserPiece.type === "bishop") {
+      const userSquareColor = (userSquare.row + userSquare.col) % 2 === 0 ? "light" : "dark";
+      availableSquares = allSquares.filter((sq) => {
+        const squareColor = (sq.row + sq.col) % 2 === 0 ? "light" : "dark";
+        return squareColor === userSquareColor;
+      });
+    }
+
+    // Place opponent pieces (opposite color of user piece)
+    const opponentColor = this.missionUserPiece.color === "white" ? "black" : "white";
+    const opponentTypes = ["king", "queen", "rook", "bishop", "knight", "pawn"];
+
+    for (let i = 0; i < opponentPiecesCount && availableSquares.length > 0; i++) {
+      const square = availableSquares.pop();
+      const randomType = opponentTypes[Math.floor(Math.random() * opponentTypes.length)];
+      const opponentPiece = { type: randomType, color: opponentColor };
+
+      this.missionBoard[square.row][square.col] = opponentPiece;
+      this.missionOpponentPieces.push({ row: square.row, col: square.col, piece: opponentPiece });
+    }
+
+    // Update mission info
+    document.getElementById("mission-title").textContent = `Mission ${this.currentMission}`;
+    document.getElementById("mission-description").textContent =
+      "Capture all opponent pieces to complete the mission!";
+    this.updateOpponentPiecesCount();
+
+    // Create mission board
+    this.createMissionBoard();
+  }
+
+  createMissionBoard() {
+    const boardElement = document.getElementById("mission-board");
+    if (!boardElement) return;
+
+    boardElement.innerHTML = "";
+    this.clearMissionHints();
+
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const square = document.createElement("div");
+        square.className = `square ${(row + col) % 2 === 0 ? "light" : "dark"}`;
+        square.dataset.row = row;
+        square.dataset.col = col;
+
+        const piece = this.missionBoard[row][col];
+        if (piece) {
+          const pieceElement = document.createElement("div");
+          pieceElement.className = `piece ${piece.color}-piece`;
+          pieceElement.textContent =
+            this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
+          square.appendChild(pieceElement);
+        }
+
+        square.addEventListener("click", (e) => this.handleMissionSquareClick(e));
+        boardElement.appendChild(square);
+      }
+    }
+  }
+
+  handleMissionSquareClick(event) {
+    const square = event.currentTarget;
+    const row = parseInt(square.dataset.row);
+    const col = parseInt(square.dataset.col);
+    const piece = this.missionBoard[row][col];
+
+    // Check if clicking on user's piece
+    const isUserPiece =
+      this.missionUserPiecePosition &&
+      this.missionUserPiecePosition.row === row &&
+      this.missionUserPiecePosition.col === col;
+
+    if (isUserPiece) {
+      // Select/deselect user piece
+      if (
+        this.missionSelectedSquare &&
+        this.missionSelectedSquare.row === row &&
+        this.missionSelectedSquare.col === col
+      ) {
+        this.deselectMissionSquare();
+      } else {
+        this.selectMissionSquare(row, col);
+      }
+      return;
+    }
+
+    // If user piece is selected, try to move or capture
+    if (this.missionSelectedSquare) {
+      const fromRow = this.missionSelectedSquare.row;
+      const fromCol = this.missionSelectedSquare.col;
+
+      // Check if valid move
+      if (this.isValidMissionMove(fromRow, fromCol, row, col)) {
+        const capturedPiece = this.missionBoard[row][col];
+
+        // Move user piece
+        const movingPiece = this.missionBoard[fromRow][fromCol];
+        this.missionBoard[fromRow][fromCol] = null;
+        this.missionBoard[row][col] = movingPiece;
+        this.missionUserPiecePosition = { row, col };
+
+        // Remove captured piece from opponent pieces list if it was one
+        if (capturedPiece) {
+          this.missionOpponentPieces = this.missionOpponentPieces.filter(
+            (op) => !(op.row === row && op.col === col)
+          );
+        }
+
+        this.deselectMissionSquare();
+        this.clearMissionHints();
+        this.createMissionBoard();
+        this.updateOpponentPiecesCount();
+        this.checkMissionCompletion();
+      } else {
+        // Invalid move, deselect
+        this.deselectMissionSquare();
+        this.clearMissionHints();
+      }
+    }
+  }
+
+  selectMissionSquare(row, col) {
+    this.deselectMissionSquare();
+    this.clearMissionHints();
+
+    this.missionSelectedSquare = { row, col };
+    const square = document.querySelector(
+      `#mission-board [data-row="${row}"][data-col="${col}"]`
+    );
+    if (square) {
+      square.classList.add("selected");
+    }
+
+    // Highlight possible moves
+    this.highlightMissionMoves(row, col);
+  }
+
+  deselectMissionSquare() {
+    if (this.missionSelectedSquare) {
+      const square = document.querySelector(
+        `#mission-board [data-row="${this.missionSelectedSquare.row}"][data-col="${this.missionSelectedSquare.col}"]`
+      );
+      if (square) {
+        square.classList.remove("selected");
+      }
+      this.missionSelectedSquare = null;
+    }
+
+    // Remove all move highlights
+    document.querySelectorAll("#mission-board .square").forEach((sq) => {
+      sq.classList.remove("possible-move", "possible-capture");
+    });
+  }
+
+  highlightMissionMoves(row, col) {
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (this.isValidMissionMove(row, col, r, c)) {
+          const square = document.querySelector(
+            `#mission-board [data-row="${r}"][data-col="${c}"]`
+          );
+          if (square) {
+            const targetPiece = this.missionBoard[r][c];
+            if (targetPiece) {
+              square.classList.add("possible-capture");
+            } else {
+              square.classList.add("possible-move");
+            }
+          }
+        }
+      }
+    }
+  }
+
+  isValidMissionMove(fromRow, fromCol, toRow, toCol) {
+    const piece = this.missionBoard[fromRow][fromCol];
+    if (!piece) return false;
+
+    // Only user's piece can move
+    if (
+      !this.missionUserPiecePosition ||
+      this.missionUserPiecePosition.row !== fromRow ||
+      this.missionUserPiecePosition.col !== fromCol
+    ) {
+      return false;
+    }
+
+    // Can't move to same square
+    if (fromRow === toRow && fromCol === toCol) return false;
+
+    // Can't capture own piece (shouldn't happen, but check anyway)
+    const targetPiece = this.missionBoard[toRow][toCol];
+    if (targetPiece && targetPiece.color === piece.color) return false;
+
+    // Use the same move validation logic
+    return this.isValidPieceMoveForBoard(piece, fromRow, fromCol, toRow, toCol, this.missionBoard);
+  }
+
+  updateOpponentPiecesCount() {
+    const count = this.missionOpponentPieces.length;
+    document.getElementById("opponent-pieces-count").textContent = count;
+  }
+
+  checkMissionCompletion() {
+    if (this.missionOpponentPieces.length === 0) {
+      // Mission completed
+      if (this.currentMission >= this.maxMissions) {
+        // All missions completed
+        this.showAllMissionsCompleted();
+      } else {
+        // Show mission completion dialog
+        this.showMissionCompletion();
+      }
+    }
+  }
+
+  showMissionCompletion() {
+    const modal = document.getElementById("mission-completion-modal");
+    const title = document.getElementById("mission-completion-title");
+    const message = document.getElementById("mission-completion-message");
+    const winnerImg = document.getElementById("mission-winner-img");
+
+    title.textContent = "Mission Completed!";
+    message.textContent = `Congratulations, mission ${this.currentMission} is completed!`;
+    winnerImg.src = this.missionPlayer.image;
+    winnerImg.alt = this.missionPlayer.name;
+    winnerImg.style.display = "block";
+
+    modal.style.display = "block";
+  }
+
+  showAllMissionsCompleted() {
+    const modal = document.getElementById("all-missions-completed-modal");
+    const winnerImg = document.getElementById("all-missions-winner-img");
+
+    winnerImg.src = this.missionPlayer.image;
+    winnerImg.alt = this.missionPlayer.name;
+    winnerImg.style.display = "block";
+
+    modal.style.display = "block";
+  }
+
+  nextMission() {
+    document.getElementById("mission-completion-modal").style.display = "none";
+    this.currentMission++;
+    this.initializeMissionBoard();
+  }
+
+  resetMission() {
+    document.getElementById("mission-completion-modal").style.display = "none";
+    document.getElementById("all-missions-completed-modal").style.display = "none";
+    document.getElementById("mission-selection").style.display = "block";
+    document.getElementById("mission-game-area").style.display = "none";
+
+    this.currentMission = 1;
+    this.missionBoard = this.createEmptyBoard();
+    this.missionSelectedSquare = null;
+    this.missionOpponentPieces = [];
+    this.missionUserPiecePosition = null;
+
+    // Reset selections
+    document.querySelectorAll(".mission-player-option").forEach((opt) => opt.classList.remove("selected"));
+    document.querySelectorAll(".mission-piece-option").forEach((opt) => opt.classList.remove("selected"));
+    document.getElementById("selected-mission-player").classList.remove("has-player");
+    document.getElementById("selected-mission-player-img").style.display = "none";
+    document.getElementById("selected-mission-player-name").textContent = "Select Player";
+    document.getElementById("selected-mission-piece").classList.remove("has-piece");
+    document.getElementById("selected-mission-piece").innerHTML = "<span>Select Piece</span>";
+
+    this.missionPlayer = null;
+    this.missionUserPiece = null;
+    this.updateStartMissionButton();
+  }
+
+  resetCurrentMission() {
+    // Reset just the current mission without going back to selection
+    this.deselectMissionSquare();
+    this.clearMissionHints();
+    this.initializeMissionBoard();
+  }
+
+  showMissionHint() {
+    // Clear any existing hints
+    this.clearMissionHints();
+
+    if (!this.missionUserPiecePosition) return;
+
+    const userRow = this.missionUserPiecePosition.row;
+    const userCol = this.missionUserPiecePosition.col;
+    const userPiece = this.missionBoard[userRow][userCol];
+
+    if (!userPiece) return;
+
+    // Find all opponent pieces that can be captured
+    const capturablePieces = [];
+
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = this.missionBoard[row][col];
+        // Check if this is an opponent piece
+        if (piece && piece.color !== userPiece.color) {
+          // Check if user can capture this piece
+          if (this.isValidMissionMove(userRow, userCol, row, col)) {
+            capturablePieces.push({ row, col });
+          }
+        }
+      }
+    }
+
+    // Highlight capturable pieces in yellow
+    capturablePieces.forEach(({ row, col }) => {
+      const square = document.querySelector(
+        `#mission-board [data-row="${row}"][data-col="${col}"]`
+      );
+      if (square) {
+        square.classList.add("hint-capture");
+      }
+    });
+  }
+
+  clearMissionHints() {
+    document.querySelectorAll("#mission-board .square").forEach((sq) => {
+      sq.classList.remove("hint-capture");
+    });
   }
 }
 
