@@ -68,7 +68,106 @@
       <div class="tab-content" id="game-tab">
         <div class="player-selection">
           <h3>Select Players</h3>
-          <div class="players-container">
+          <div class="game-mode-selection">
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="game-mode" value="one-player" id="mode-one-player" checked>
+                <span>One Player vs PC</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="game-mode" value="two-players" id="mode-two-players">
+                <span>2 Players</span>
+              </label>
+            </div>
+          </div>
+          <div class="one-player-setup" id="one-player-setup">
+            <div class="player-side-selection">
+              <h4>Select Your Side</h4>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="player-side" value="white" id="player-side-white" checked>
+                  <span>White</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="player-side" value="black" id="player-side-black">
+                  <span>Black</span>
+                </label>
+              </div>
+            </div>
+            <div class="single-player-container">
+              <div class="player-setup">
+                <h4 id="one-player-title">Your Player (White)</h4>
+                <div class="player-options" id="one-player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="one-player-selected">
+                  <img
+                    id="one-player-img"
+                    src=""
+                    alt=""
+                    style="display: none"
+                  />
+                  <span id="one-player-name">Select Your Player</span>
+                </div>
+              </div>
+              <div class="vs-divider">VS</div>
+              <div class="player-setup">
+                <h4>PC (Computer)</h4>
+                <div class="selected-player pc-player">
+                  <span id="pc-player-name">Computer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="two-players-setup" id="two-players-setup" style="display: none">
+            <div class="players-container">
             <div class="player-setup">
               <h4>White Player</h4>
               <div class="player-options">
@@ -196,6 +295,7 @@
                 <span id="black-player-name">Select Black Player</span>
               </div>
             </div>
+          </div>
           </div>
           <button
             id="start-game-btn"

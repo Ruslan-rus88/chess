@@ -39,6 +39,8 @@ class ChessGame {
     };
 
     this.gameStarted = false;
+    this.gameMode = "one-player"; // "one-player" or "two-players"
+    this.playerSide = "white"; // "white" or "black" for one-player mode
 
     // Lessons mode
     this.lessonsBoard = this.createEmptyBoard();
@@ -118,6 +120,12 @@ class ChessGame {
     const boardElement = document.getElementById("chess-board");
     boardElement.innerHTML = "";
 
+    // Check if current player's king is in check
+    const kingInCheck = this.isKingInCheck(this.currentPlayer);
+
+    // Get last move for highlighting
+    const lastMove = this.moveHistory.length > 0 ? this.moveHistory[this.moveHistory.length - 1] : null;
+
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const square = document.createElement("div");
@@ -134,6 +142,19 @@ class ChessGame {
           square.appendChild(pieceElement);
         }
 
+        // Highlight king in check with red background
+        if (kingInCheck && piece && piece.type === "king" && piece.color === this.currentPlayer) {
+          square.classList.add("king-in-check");
+        }
+
+        // Highlight last move
+        if (lastMove) {
+          if ((lastMove.from.row === row && lastMove.from.col === col) ||
+              (lastMove.to.row === row && lastMove.to.col === col)) {
+            square.classList.add("last-move");
+          }
+        }
+
         square.addEventListener("click", (e) => this.handleSquareClick(e));
         boardElement.appendChild(square);
       }
@@ -142,6 +163,11 @@ class ChessGame {
 
   handleSquareClick(event) {
     if (this.gameOver || !this.gameStarted) return;
+
+    // In one-player mode, don't allow moves when it's PC's turn
+    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+      return;
+    }
 
     const square = event.currentTarget;
     const row = parseInt(square.dataset.row);
@@ -209,7 +235,7 @@ class ChessGame {
       this.selectedSquare = null;
     }
 
-    // Remove all move highlights
+    // Remove all move highlights (but keep check highlight)
     document.querySelectorAll(".square").forEach((sq) => {
       sq.classList.remove("possible-move", "possible-capture");
     });
@@ -221,6 +247,7 @@ class ChessGame {
 
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
+        // Only highlight moves that are valid and don't leave king in check
         if (this.isValidMove(row, col, r, c)) {
           const square = document.querySelector(
             `[data-row="${r}"][data-col="${c}"]`
@@ -247,7 +274,17 @@ class ChessGame {
     if (targetPiece && targetPiece.color === piece.color) return false;
     if (fromRow === toRow && fromCol === toCol) return false;
 
-    return this.isValidPieceMove(piece, fromRow, fromCol, toRow, toCol);
+    // Check if the move is valid according to piece movement rules
+    if (!this.isValidPieceMove(piece, fromRow, fromCol, toRow, toCol)) {
+      return false;
+    }
+
+    // Prevent moves that would leave the king in check
+    if (this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol)) {
+      return false;
+    }
+
+    return true;
   }
 
   isValidPieceMove(piece, fromRow, fromCol, toRow, toCol) {
@@ -329,6 +366,124 @@ class ChessGame {
     return true;
   }
 
+  // Find the king's position for a given color
+  findKing(color, board = this.board) {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && piece.type === "king" && piece.color === color) {
+          return { row, col };
+        }
+      }
+    }
+    return null;
+  }
+
+  // Check if a square is under attack by opponent pieces
+  isSquareUnderAttack(row, col, defendingColor, board = this.board) {
+    const opponentColor = defendingColor === "white" ? "black" : "white";
+
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const piece = board[r][c];
+        if (piece && piece.color === opponentColor) {
+          // Check if this opponent piece can attack the target square
+          if (this.canPieceAttackSquare(piece, r, c, row, col, board)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  // Check if a piece can attack a specific square
+  canPieceAttackSquare(piece, fromRow, fromCol, toRow, toCol, board) {
+    // Can't attack own square
+    if (fromRow === toRow && fromCol === toCol) return false;
+
+    // Can't capture own color piece
+    const targetPiece = board[toRow][toCol];
+    if (targetPiece && targetPiece.color === piece.color) return false;
+
+    const rowDiff = toRow - fromRow;
+    const colDiff = toCol - fromCol;
+    const absRowDiff = Math.abs(rowDiff);
+    const absColDiff = Math.abs(colDiff);
+
+    switch (piece.type) {
+      case "pawn":
+        const direction = piece.color === "white" ? -1 : 1;
+        // Pawns can only attack diagonally
+        return absColDiff === 1 && rowDiff === direction;
+      
+      case "rook":
+        return (rowDiff === 0 || colDiff === 0) && 
+               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
+      
+      case "bishop":
+        return absRowDiff === absColDiff && 
+               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
+      
+      case "queen":
+        return (rowDiff === 0 || colDiff === 0 || absRowDiff === absColDiff) && 
+               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
+      
+      case "king":
+        return absRowDiff <= 1 && absColDiff <= 1;
+      
+      case "knight":
+        return (absRowDiff === 2 && absColDiff === 1) || 
+               (absRowDiff === 1 && absColDiff === 2);
+      
+      default:
+        return false;
+    }
+  }
+
+  // Check if path is clear on a specific board (for check detection)
+  isPathClearForBoard(fromRow, fromCol, toRow, toCol, board) {
+    const rowStep = toRow === fromRow ? 0 : toRow > fromRow ? 1 : -1;
+    const colStep = toCol === fromCol ? 0 : toCol > fromCol ? 1 : -1;
+
+    let currentRow = fromRow + rowStep;
+    let currentCol = fromCol + colStep;
+
+    while (currentRow !== toRow || currentCol !== toCol) {
+      if (board[currentRow][currentCol] !== null) {
+        return false;
+      }
+      currentRow += rowStep;
+      currentCol += colStep;
+    }
+
+    return true;
+  }
+
+  // Check if the king is in check
+  isKingInCheck(color, board = this.board) {
+    const kingPos = this.findKing(color, board);
+    if (!kingPos) return false;
+
+    return this.isSquareUnderAttack(kingPos.row, kingPos.col, color, board);
+  }
+
+  // Check if a move would leave the king in check
+  wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol) {
+    const piece = this.board[fromRow][fromCol];
+    if (!piece) return false;
+
+    // Create a copy of the board to simulate the move
+    const boardCopy = this.board.map(row => row.map(col => col ? {...col} : null));
+
+    // Simulate the move
+    boardCopy[toRow][toCol] = boardCopy[fromRow][fromCol];
+    boardCopy[fromRow][fromCol] = null;
+
+    // Check if the king is in check after the move
+    return this.isKingInCheck(piece.color, boardCopy);
+  }
+
   makeMove(fromRow, fromCol, toRow, toCol) {
     const piece = this.board[fromRow][fromCol];
     const capturedPiece = this.board[toRow][toCol];
@@ -351,26 +506,61 @@ class ChessGame {
       capturedPiece: capturedPiece,
     });
 
-    // Update the display
-    this.createBoard();
-    this.highlightLastMove(fromRow, fromCol, toRow, toCol);
-  }
-
-  highlightLastMove(fromRow, fromCol, toRow, toCol) {
-    const fromSquare = document.querySelector(
-      `[data-row="${fromRow}"][data-col="${fromCol}"]`
-    );
-    const toSquare = document.querySelector(
-      `[data-row="${toRow}"][data-col="${toCol}"]`
-    );
-
-    fromSquare.classList.add("last-move");
-    toSquare.classList.add("last-move");
+    // Board will be recreated in switchPlayer to show check status for new player
   }
 
   switchPlayer() {
     this.currentPlayer = this.currentPlayer === "white" ? "black" : "white";
     this.updateDisplay();
+    
+    // Recreate board to update check highlight for new current player
+    this.createBoard();
+    
+    // If PC's turn, make a move automatically
+    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+      setTimeout(() => {
+        this.makePCMove();
+      }, 500);
+    }
+  }
+
+  makePCMove() {
+    if (this.gameOver || !this.gameStarted) return;
+    if (this.players[this.currentPlayer].name !== "PC") return;
+
+    // Find all possible moves for PC
+    const possibleMoves = [];
+    
+    for (let fromRow = 0; fromRow < 8; fromRow++) {
+      for (let fromCol = 0; fromCol < 8; fromCol++) {
+        const piece = this.board[fromRow][fromCol];
+        if (piece && piece.color === this.currentPlayer) {
+          for (let toRow = 0; toRow < 8; toRow++) {
+            for (let toCol = 0; toCol < 8; toCol++) {
+              if (this.isValidMove(fromRow, fromCol, toRow, toCol)) {
+                possibleMoves.push({
+                  from: { row: fromRow, col: fromCol },
+                  to: { row: toRow, col: toCol },
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // If there are possible moves, pick a random one
+    if (possibleMoves.length > 0) {
+      const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+      this.makeMove(
+        randomMove.from.row,
+        randomMove.from.col,
+        randomMove.to.row,
+        randomMove.to.col
+      );
+      this.switchPlayer();
+      this.checkGameState();
+    }
   }
 
   checkGameState() {
@@ -456,9 +646,13 @@ class ChessGame {
     ).textContent = `${winnerName} Wins! 🎉`;
 
     const winnerImg = document.getElementById("game-over-winner-img");
-    winnerImg.src = winnerImage;
-    winnerImg.alt = winnerName;
-    winnerImg.style.display = "block";
+    if (winnerImage) {
+      winnerImg.src = winnerImage;
+      winnerImg.alt = winnerName;
+      winnerImg.style.display = "block";
+    } else {
+      winnerImg.style.display = "none";
+    }
 
     document.getElementById("game-over-message").textContent = message;
     document.getElementById("game-over-modal").style.display = "block";
@@ -476,23 +670,31 @@ class ChessGame {
     document.getElementById("game-over-modal").style.display = "none";
     document.querySelector(".player-selection").style.display = "block";
 
-    // Reset player selections
-    document.querySelectorAll(".player-option").forEach((option) => {
-      option.classList.remove("selected");
-    });
-    document.querySelectorAll(".selected-player").forEach((player) => {
-      player.classList.remove("has-player");
-      player.querySelector("img").style.display = "none";
-    });
-    document.getElementById("white-player-name").textContent =
-      "Select White Player";
-    document.getElementById("black-player-name").textContent =
-      "Select Black Player";
+    // Reset player selections based on game mode
+    if (this.gameMode === "one-player") {
+      this.clearOnePlayerSelection();
+      const oppositeSide = this.playerSide === "white" ? "black" : "white";
+      this.players[oppositeSide] = { name: "PC", image: "" };
+    } else {
+      // Reset two-player selections
+      document.querySelectorAll('.player-option[data-color="white"], .player-option[data-color="black"]').forEach((option) => {
+        option.classList.remove("selected");
+      });
+      document.querySelectorAll("#white-player, #black-player").forEach((player) => {
+        player.classList.remove("has-player");
+        const img = player.querySelector("img");
+        if (img) img.style.display = "none";
+      });
+      document.getElementById("white-player-name").textContent =
+        "Select White Player";
+      document.getElementById("black-player-name").textContent =
+        "Select Black Player";
 
-    this.players = {
-      white: { name: "", image: "" },
-      black: { name: "", image: "" },
-    };
+      this.players = {
+        white: { name: "", image: "" },
+        black: { name: "", image: "" },
+      };
+    }
 
     this.updateStartButtonState();
     this.updatePlayerOptionStates();
@@ -644,6 +846,30 @@ class ChessGame {
     }
   }
 
+  updateRadioLabelClass(radio) {
+    const label = radio.closest(".radio-label");
+    if (label) {
+      // Update checked state
+      if (radio.checked) {
+        label.classList.add("checked");
+      } else {
+        label.classList.remove("checked");
+      }
+      
+      // Add value-based classes for player-side-selection buttons
+      if (radio.name === "player-side") {
+        // Remove existing side classes
+        label.classList.remove("side-white", "side-black");
+        // Add appropriate side class
+        if (radio.value === "white") {
+          label.classList.add("side-white");
+        } else if (radio.value === "black") {
+          label.classList.add("side-black");
+        }
+      }
+    }
+  }
+
   setupPlayerSelection() {
     const playerOptions = document.querySelectorAll(".player-option");
     const startGameBtn = document.getElementById("start-game-btn");
@@ -658,19 +884,155 @@ class ChessGame {
       this.startGame();
     });
 
+    // Game mode radio buttons
+    const gameModeRadios = document.querySelectorAll('input[name="game-mode"]');
+    gameModeRadios.forEach((radio) => {
+      // Update checked class on load
+      this.updateRadioLabelClass(radio);
+      
+      radio.addEventListener("change", (e) => {
+        this.gameMode = e.target.value;
+        // Update all radio label classes
+        gameModeRadios.forEach((r) => this.updateRadioLabelClass(r));
+        this.handleGameModeChange();
+      });
+    });
+
+    // Player side radio buttons (for one-player mode)
+    const playerSideRadios = document.querySelectorAll('input[name="player-side"]');
+    playerSideRadios.forEach((radio) => {
+      // Update checked class on load
+      this.updateRadioLabelClass(radio);
+      
+      radio.addEventListener("change", (e) => {
+        this.playerSide = e.target.value;
+        // Update all radio label classes
+        playerSideRadios.forEach((r) => this.updateRadioLabelClass(r));
+        this.handlePlayerSideChange();
+      });
+    });
+
+    // Initialize game mode and radio button classes
+    this.handleGameModeChange();
+    
+    // Initialize radio button label classes
+    document.querySelectorAll('input[type="radio"]').forEach((radio) => {
+      this.updateRadioLabelClass(radio);
+    });
+    
     this.updatePlayerOptionStates();
     this.updateStartButtonState();
+  }
+
+  handleGameModeChange() {
+    const onePlayerSetup = document.getElementById("one-player-setup");
+    const twoPlayersSetup = document.getElementById("two-players-setup");
+
+    if (this.gameMode === "one-player") {
+      onePlayerSetup.style.display = "block";
+      twoPlayersSetup.style.display = "none";
+      // Clear two-player selections
+      this.clearPlayerSelection("white");
+      this.clearPlayerSelection("black");
+      // Set PC as opponent
+      const oppositeSide = this.playerSide === "white" ? "black" : "white";
+      this.players[oppositeSide] = { name: "PC", image: "" };
+    } else {
+      onePlayerSetup.style.display = "none";
+      twoPlayersSetup.style.display = "block";
+      // Clear one-player selection
+      this.clearOnePlayerSelection();
+      // Clear PC assignment
+      this.players.white = { name: "", image: "" };
+      this.players.black = { name: "", image: "" };
+    }
+    this.updateStartButtonState();
+    this.updatePlayerOptionStates();
+  }
+
+  handlePlayerSideChange() {
+    const onePlayerTitle = document.getElementById("one-player-title");
+    onePlayerTitle.textContent = `Your Player (${this.playerSide.charAt(0).toUpperCase() + this.playerSide.slice(1)})`;
+    
+    // Clear current selection
+    this.clearOnePlayerSelection();
+    
+    // Set PC as opponent
+    const oppositeSide = this.playerSide === "white" ? "black" : "white";
+    this.players[oppositeSide] = { name: "PC", image: "" };
+    
+    // Clear the side we're switching from
+    this.players[this.playerSide] = { name: "", image: "" };
+    
+    this.updateStartButtonState();
+  }
+
+  clearOnePlayerSelection() {
+    const onePlayerSelected = document.getElementById("one-player-selected");
+    const onePlayerImg = document.getElementById("one-player-img");
+    const onePlayerName = document.getElementById("one-player-name");
+
+    onePlayerSelected.classList.remove("has-player");
+    onePlayerImg.src = "";
+    onePlayerImg.alt = "";
+    onePlayerImg.style.display = "none";
+    onePlayerName.textContent = "Select Your Player";
+
+    document
+      .querySelectorAll('.player-option[data-color="one-player"]')
+      .forEach((opt) => opt.classList.remove("selected"));
+
+    this.players[this.playerSide] = { name: "", image: "" };
   }
 
   handlePlayerSelection(option) {
     if (option.classList.contains("disabled")) return;
 
     const playerName = option.dataset.player;
-    const playerColor = option.dataset.color;
-    const otherColor = playerColor === "white" ? "black" : "white";
+    const optionColor = option.dataset.color;
     const formattedName =
       playerName.charAt(0).toUpperCase() + playerName.slice(1);
     const playerImage = option.querySelector("img").src;
+
+    // Handle one-player mode
+    if (optionColor === "one-player") {
+      // If clicking on already selected option, deselect it
+      if (option.classList.contains("selected")) {
+        this.clearOnePlayerSelection();
+        this.updateStartButtonState();
+        return;
+      }
+
+      // Clear existing selection
+      this.clearOnePlayerSelection();
+
+      // Select this option
+      option.classList.add("selected");
+
+      // Update player info for the selected side
+      this.players[this.playerSide] = {
+        name: formattedName,
+        image: playerImage,
+      };
+
+      // Update selected player display
+      const onePlayerSelected = document.getElementById("one-player-selected");
+      const onePlayerImg = document.getElementById("one-player-img");
+      const onePlayerName = document.getElementById("one-player-name");
+
+      onePlayerSelected.classList.add("has-player");
+      onePlayerImg.src = playerImage;
+      onePlayerImg.alt = formattedName;
+      onePlayerImg.style.display = "block";
+      onePlayerName.textContent = formattedName;
+
+      this.updateStartButtonState();
+      return;
+    }
+
+    // Handle two-players mode (original logic)
+    const playerColor = optionColor;
+    const otherColor = playerColor === "white" ? "black" : "white";
 
     // If clicking on already selected option, deselect it
     if (option.classList.contains("selected")) {
@@ -742,6 +1104,14 @@ class ChessGame {
   updatePlayerOptionStates() {
     document.querySelectorAll(".player-option").forEach((option) => {
       const optionColor = option.dataset.color;
+      
+      // One-player mode options don't need disabling logic
+      if (optionColor === "one-player") {
+        option.classList.remove("disabled");
+        return;
+      }
+      
+      // Two-players mode - disable if same player is selected for other color
       const otherColor = optionColor === "white" ? "black" : "white";
       const playerName = option.dataset.player;
       const otherPlayerName = this.players[otherColor].name
@@ -758,21 +1128,50 @@ class ChessGame {
 
   updateStartButtonState() {
     const startGameBtn = document.getElementById("start-game-btn");
-    if (this.players.white.name && this.players.black.name) {
-      startGameBtn.style.display = "block";
+    
+    if (this.gameMode === "one-player") {
+      // In one-player mode, only need the player's side to be selected
+      if (this.players[this.playerSide].name) {
+        startGameBtn.style.display = "block";
+      } else {
+        startGameBtn.style.display = "none";
+      }
     } else {
-      startGameBtn.style.display = "none";
+      // In two-players mode, need both players
+      if (this.players.white.name && this.players.black.name) {
+        startGameBtn.style.display = "block";
+      } else {
+        startGameBtn.style.display = "none";
+      }
     }
   }
 
   startGame() {
-    if (!(this.players.white.name && this.players.black.name)) {
-      return;
+    // Validate based on game mode
+    if (this.gameMode === "one-player") {
+      if (!this.players[this.playerSide].name) {
+        return;
+      }
+      // Ensure PC is set as opponent
+      const oppositeSide = this.playerSide === "white" ? "black" : "white";
+      this.players[oppositeSide] = { name: "PC", image: "" };
+    } else {
+      if (!(this.players.white.name && this.players.black.name)) {
+        return;
+      }
     }
+    
     this.gameStarted = true;
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
     this.updatePlaygroundVisibility();
+    
+    // If PC starts, make first move
+    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+      setTimeout(() => {
+        this.makePCMove();
+      }, 500);
+    }
   }
 
   updateCurrentPlayerDisplay() {
@@ -780,10 +1179,17 @@ class ChessGame {
     const currentPlayerImg = document.getElementById("current-player-img");
 
     if (this.gameStarted && this.players[this.currentPlayer].name) {
-      currentPlayerEl.textContent = this.players[this.currentPlayer].name;
-      currentPlayerImg.src = this.players[this.currentPlayer].image;
-      currentPlayerImg.alt = this.players[this.currentPlayer].name;
-      currentPlayerImg.style.display = "block";
+      const playerName = this.players[this.currentPlayer].name;
+      currentPlayerEl.textContent = playerName;
+      
+      // Only show image if player has an image (not PC)
+      if (this.players[this.currentPlayer].image) {
+        currentPlayerImg.src = this.players[this.currentPlayer].image;
+        currentPlayerImg.alt = playerName;
+        currentPlayerImg.style.display = "block";
+      } else {
+        currentPlayerImg.style.display = "none";
+      }
     } else {
       currentPlayerEl.textContent =
         this.currentPlayer.charAt(0).toUpperCase() +
@@ -808,6 +1214,12 @@ class ChessGame {
   setupTabs() {
     const tabButtons = document.querySelectorAll(".tab-button");
     const tabContents = document.querySelectorAll(".tab-content");
+    const resetBtn = document.getElementById("reset-btn");
+
+    // Ensure button is visible on initial load (Game tab is active by default)
+    if (resetBtn) {
+      resetBtn.style.display = "block";
+    }
 
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -825,6 +1237,15 @@ class ChessGame {
             content.style.display = "none";
           }
         });
+
+        // Hide New Game button in Lessons and Mission tabs
+        if (resetBtn) {
+          if (targetTab === "lessons" || targetTab === "mission") {
+            resetBtn.style.display = "none";
+          } else {
+            resetBtn.style.display = "block";
+          }
+        }
       });
     });
   }
