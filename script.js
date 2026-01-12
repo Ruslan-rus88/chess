@@ -7,6 +7,16 @@ class ChessGame {
     this.moveHistory = [];
     this.gameOver = false;
     this.capturedPieces = { white: [], black: [] };
+    
+    // Replay mode
+    this.replayMode = false;
+    this.replayInterval = null;
+    this.replaySpeed = 500; // 0.5 seconds in milliseconds
+    this.replayIndex = 0;
+    this.initialBoardState = null;
+    this.replayBoardState = null;
+    this.replayCapturedPieces = { white: [], black: [] };
+    this.isReplayPlaying = false;
 
     this.pieceSymbols = {
       classic: {
@@ -141,7 +151,7 @@ class ChessGame {
   }
 
   handleSquareClick(event) {
-    if (this.gameOver || !this.gameStarted) return;
+    if (this.gameOver || !this.gameStarted || this.replayMode) return;
 
     const square = event.currentTarget;
     const row = parseInt(square.dataset.row);
@@ -355,6 +365,13 @@ class ChessGame {
     this.createBoard();
     this.highlightLastMove(fromRow, fromCol, toRow, toCol);
   }
+  
+  storeInitialBoardState() {
+    // Deep copy the initial board state
+    this.initialBoardState = this.board.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+  }
 
   highlightLastMove(fromRow, fromCol, toRow, toCol) {
     const fromSquare = document.querySelector(
@@ -465,6 +482,13 @@ class ChessGame {
   }
 
   resetGame() {
+    // Exit replay mode if active
+    if (this.replayMode) {
+      this.replayStop();
+      this.replayMode = false;
+      document.getElementById("replay-controls").style.display = "none";
+    }
+    
     this.board = this.createInitialBoard();
     this.currentPlayer = "white";
     this.selectedSquare = null;
@@ -510,6 +534,31 @@ class ChessGame {
 
     document.getElementById("new-game-btn").addEventListener("click", () => {
       this.resetGame();
+    });
+    
+    document.getElementById("replay-btn").addEventListener("click", () => {
+      this.startReplay();
+    });
+    
+    // Replay controls
+    document.getElementById("replay-prev-btn").addEventListener("click", () => {
+      this.replayPrevious();
+    });
+    
+    document.getElementById("replay-next-btn").addEventListener("click", () => {
+      this.replayNext();
+    });
+    
+    document.getElementById("replay-play-btn").addEventListener("click", () => {
+      this.replayPlay();
+    });
+    
+    document.getElementById("replay-stop-btn").addEventListener("click", () => {
+      this.replayStop();
+    });
+    
+    document.getElementById("exit-replay-btn").addEventListener("click", () => {
+      this.exitReplay();
     });
 
     // Close modal when clicking outside
@@ -770,6 +819,8 @@ class ChessGame {
       return;
     }
     this.gameStarted = true;
+    // Store initial board state for replay
+    this.storeInitialBoardState();
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
     this.updatePlaygroundVisibility();
@@ -1658,6 +1709,203 @@ class ChessGame {
     document.querySelectorAll("#mission-board .square").forEach((sq) => {
       sq.classList.remove("hint-capture");
     });
+  }
+  
+  // Replay functionality
+  startReplay() {
+    if (!this.moveHistory || this.moveHistory.length === 0) {
+      alert("No moves to replay!");
+      return;
+    }
+    
+    // Close the game over modal
+    document.getElementById("game-over-modal").style.display = "none";
+    
+    // Enter replay mode
+    this.replayMode = true;
+    this.replayIndex = 0;
+    this.isReplayPlaying = false;
+    
+    // Reset board to initial state
+    this.replayBoardState = this.initialBoardState.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+    this.replayCapturedPieces = { white: [], black: [] };
+    
+    // Apply board state
+    this.board = this.replayBoardState.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+    this.capturedPieces = { white: [], black: [] };
+    
+    // Show replay controls
+    document.getElementById("replay-controls").style.display = "block";
+    
+    // Update display
+    this.createBoard();
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+    
+    // Start auto-play
+    this.replayPlay();
+  }
+  
+  replayPlay() {
+    if (this.isReplayPlaying) return;
+    
+    this.isReplayPlaying = true;
+    this.updateReplayButtons();
+    
+    // Auto-play moves
+    this.replayInterval = setInterval(() => {
+      if (this.replayIndex < this.moveHistory.length) {
+        this.replayNext();
+      } else {
+        // Reached end, stop auto-play
+        this.replayStop();
+      }
+    }, this.replaySpeed);
+  }
+  
+  replayStop() {
+    this.isReplayPlaying = false;
+    if (this.replayInterval) {
+      clearInterval(this.replayInterval);
+      this.replayInterval = null;
+    }
+    this.updateReplayButtons();
+  }
+  
+  replayNext() {
+    if (this.replayIndex >= this.moveHistory.length) return;
+    
+    const move = this.moveHistory[this.replayIndex];
+    
+    // Apply the move
+    const piece = this.replayBoardState[move.from.row][move.from.col];
+    const capturedPiece = this.replayBoardState[move.to.row][move.to.col];
+    
+    // Handle capture
+    if (capturedPiece) {
+      this.replayCapturedPieces[capturedPiece.color].push(capturedPiece);
+    }
+    
+    // Move piece
+    this.replayBoardState[move.to.row][move.to.col] = piece;
+    this.replayBoardState[move.from.row][move.from.col] = null;
+    
+    // Update board and captured pieces
+    this.board = this.replayBoardState.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+    this.capturedPieces = {
+      white: [...this.replayCapturedPieces.white],
+      black: [...this.replayCapturedPieces.black]
+    };
+    
+    this.replayIndex++;
+    
+    // Update display
+    this.createBoard();
+    this.highlightLastMove(move.from.row, move.from.col, move.to.row, move.to.col);
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+  }
+  
+  replayPrevious() {
+    if (this.replayIndex <= 0) return;
+    
+    // Stop auto-play if playing
+    if (this.isReplayPlaying) {
+      this.replayStop();
+    }
+    
+    this.replayIndex--;
+    
+    // Reset to initial state
+    this.replayBoardState = this.initialBoardState.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+    this.replayCapturedPieces = { white: [], black: [] };
+    
+    // Replay all moves up to current index
+    for (let i = 0; i < this.replayIndex; i++) {
+      const move = this.moveHistory[i];
+      const piece = this.replayBoardState[move.from.row][move.from.col];
+      const capturedPiece = this.replayBoardState[move.to.row][move.to.col];
+      
+      if (capturedPiece) {
+        this.replayCapturedPieces[capturedPiece.color].push(capturedPiece);
+      }
+      
+      this.replayBoardState[move.to.row][move.to.col] = piece;
+      this.replayBoardState[move.from.row][move.from.col] = null;
+    }
+    
+    // Update board and captured pieces
+    this.board = this.replayBoardState.map(row => 
+      row.map(cell => cell ? { ...cell } : null)
+    );
+    this.capturedPieces = {
+      white: [...this.replayCapturedPieces.white],
+      black: [...this.replayCapturedPieces.black]
+    };
+    
+    // Update display
+    this.createBoard();
+    if (this.replayIndex > 0) {
+      const lastMove = this.moveHistory[this.replayIndex - 1];
+      this.highlightLastMove(lastMove.from.row, lastMove.from.col, lastMove.to.row, lastMove.to.col);
+    }
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+  }
+  
+  exitReplay() {
+    this.replayStop();
+    this.replayMode = false;
+    this.replayIndex = 0;
+    
+    // Hide replay controls
+    document.getElementById("replay-controls").style.display = "none";
+    
+    // Reset game to end state
+    this.resetGame();
+  }
+  
+  updateReplayInfo() {
+    const infoElement = document.getElementById("replay-move-info");
+    if (infoElement) {
+      infoElement.textContent = `Move ${this.replayIndex} / ${this.moveHistory.length}`;
+    }
+  }
+  
+  updateReplayButtons() {
+    const prevBtn = document.getElementById("replay-prev-btn");
+    const nextBtn = document.getElementById("replay-next-btn");
+    const playBtn = document.getElementById("replay-play-btn");
+    const stopBtn = document.getElementById("replay-stop-btn");
+    
+    // Update previous button
+    if (prevBtn) {
+      prevBtn.disabled = this.replayIndex <= 0;
+    }
+    
+    // Update next button
+    if (nextBtn) {
+      nextBtn.disabled = this.replayIndex >= this.moveHistory.length;
+    }
+    
+    // Update play/stop buttons
+    if (playBtn) {
+      playBtn.style.display = this.isReplayPlaying ? "none" : "inline-block";
+    }
+    if (stopBtn) {
+      stopBtn.style.display = this.isReplayPlaying ? "inline-block" : "none";
+    }
   }
 }
 
