@@ -8,6 +8,16 @@ class ChessGame {
     this.gameOver = false;
     this.capturedPieces = { white: [], black: [] };
 
+    // Replay mode
+    this.replayMode = false;
+    this.replayInterval = null;
+    this.replaySpeed = 500; // 0.5 seconds in milliseconds
+    this.replayIndex = 0;
+    this.initialBoardState = null;
+    this.replayBoardState = null;
+    this.replayCapturedPieces = { white: [], black: [] };
+    this.isReplayPlaying = false;
+
     this.pieceSymbols = {
       classic: {
         white: {
@@ -124,7 +134,10 @@ class ChessGame {
     const kingInCheck = this.isKingInCheck(this.currentPlayer);
 
     // Get last move for highlighting
-    const lastMove = this.moveHistory.length > 0 ? this.moveHistory[this.moveHistory.length - 1] : null;
+    const lastMove =
+      this.moveHistory.length > 0
+        ? this.moveHistory[this.moveHistory.length - 1]
+        : null;
 
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
@@ -143,14 +156,21 @@ class ChessGame {
         }
 
         // Highlight king in check with red background
-        if (kingInCheck && piece && piece.type === "king" && piece.color === this.currentPlayer) {
+        if (
+          kingInCheck &&
+          piece &&
+          piece.type === "king" &&
+          piece.color === this.currentPlayer
+        ) {
           square.classList.add("king-in-check");
         }
 
         // Highlight last move
         if (lastMove) {
-          if ((lastMove.from.row === row && lastMove.from.col === col) ||
-              (lastMove.to.row === row && lastMove.to.col === col)) {
+          if (
+            (lastMove.from.row === row && lastMove.from.col === col) ||
+            (lastMove.to.row === row && lastMove.to.col === col)
+          ) {
             square.classList.add("last-move");
           }
         }
@@ -162,10 +182,13 @@ class ChessGame {
   }
 
   handleSquareClick(event) {
-    if (this.gameOver || !this.gameStarted) return;
+    if (this.gameOver || !this.gameStarted || this.replayMode) return;
 
     // In one-player mode, don't allow moves when it's PC's turn
-    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+    if (
+      this.gameMode === "one-player" &&
+      this.players[this.currentPlayer].name === "PC"
+    ) {
       return;
     }
 
@@ -416,26 +439,34 @@ class ChessGame {
         const direction = piece.color === "white" ? -1 : 1;
         // Pawns can only attack diagonally
         return absColDiff === 1 && rowDiff === direction;
-      
+
       case "rook":
-        return (rowDiff === 0 || colDiff === 0) && 
-               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
-      
+        return (
+          (rowDiff === 0 || colDiff === 0) &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+
       case "bishop":
-        return absRowDiff === absColDiff && 
-               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
-      
+        return (
+          absRowDiff === absColDiff &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+
       case "queen":
-        return (rowDiff === 0 || colDiff === 0 || absRowDiff === absColDiff) && 
-               this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board);
-      
+        return (
+          (rowDiff === 0 || colDiff === 0 || absRowDiff === absColDiff) &&
+          this.isPathClearForBoard(fromRow, fromCol, toRow, toCol, board)
+        );
+
       case "king":
         return absRowDiff <= 1 && absColDiff <= 1;
-      
+
       case "knight":
-        return (absRowDiff === 2 && absColDiff === 1) || 
-               (absRowDiff === 1 && absColDiff === 2);
-      
+        return (
+          (absRowDiff === 2 && absColDiff === 1) ||
+          (absRowDiff === 1 && absColDiff === 2)
+        );
+
       default:
         return false;
     }
@@ -474,7 +505,9 @@ class ChessGame {
     if (!piece) return false;
 
     // Create a copy of the board to simulate the move
-    const boardCopy = this.board.map(row => row.map(col => col ? {...col} : null));
+    const boardCopy = this.board.map((row) =>
+      row.map((col) => (col ? { ...col } : null))
+    );
 
     // Simulate the move
     boardCopy[toRow][toCol] = boardCopy[fromRow][fromCol];
@@ -506,18 +539,42 @@ class ChessGame {
       capturedPiece: capturedPiece,
     });
 
-    // Board will be recreated in switchPlayer to show check status for new player
+    // Update the display
+    this.createBoard();
+    this.highlightLastMove(fromRow, fromCol, toRow, toCol);
+  }
+
+  storeInitialBoardState() {
+    // Deep copy the initial board state
+    this.initialBoardState = this.board.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+  }
+
+  highlightLastMove(fromRow, fromCol, toRow, toCol) {
+    const fromSquare = document.querySelector(
+      `[data-row="${fromRow}"][data-col="${fromCol}"]`
+    );
+    const toSquare = document.querySelector(
+      `[data-row="${toRow}"][data-col="${toCol}"]`
+    );
+
+    fromSquare.classList.add("last-move");
+    toSquare.classList.add("last-move");
   }
 
   switchPlayer() {
     this.currentPlayer = this.currentPlayer === "white" ? "black" : "white";
     this.updateDisplay();
-    
+
     // Recreate board to update check highlight for new current player
     this.createBoard();
-    
+
     // If PC's turn, make a move automatically
-    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+    if (
+      this.gameMode === "one-player" &&
+      this.players[this.currentPlayer].name === "PC"
+    ) {
       setTimeout(() => {
         this.makePCMove();
       }, 500);
@@ -530,7 +587,7 @@ class ChessGame {
 
     // Find all possible moves for PC
     const possibleMoves = [];
-    
+
     for (let fromRow = 0; fromRow < 8; fromRow++) {
       for (let fromCol = 0; fromCol < 8; fromCol++) {
         const piece = this.board[fromRow][fromCol];
@@ -551,7 +608,8 @@ class ChessGame {
 
     // If there are possible moves, pick a random one
     if (possibleMoves.length > 0) {
-      const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+      const randomMove =
+        possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
       this.makeMove(
         randomMove.from.row,
         randomMove.from.col,
@@ -659,6 +717,13 @@ class ChessGame {
   }
 
   resetGame() {
+    // Exit replay mode if active
+    if (this.replayMode) {
+      this.replayStop();
+      this.replayMode = false;
+      document.getElementById("replay-controls").style.display = "none";
+    }
+
     this.board = this.createInitialBoard();
     this.currentPlayer = "white";
     this.selectedSquare = null;
@@ -677,14 +742,20 @@ class ChessGame {
       this.players[oppositeSide] = { name: "PC", image: "" };
     } else {
       // Reset two-player selections
-      document.querySelectorAll('.player-option[data-color="white"], .player-option[data-color="black"]').forEach((option) => {
-        option.classList.remove("selected");
-      });
-      document.querySelectorAll("#white-player, #black-player").forEach((player) => {
-        player.classList.remove("has-player");
-        const img = player.querySelector("img");
-        if (img) img.style.display = "none";
-      });
+      document
+        .querySelectorAll(
+          '.player-option[data-color="white"], .player-option[data-color="black"]'
+        )
+        .forEach((option) => {
+          option.classList.remove("selected");
+        });
+      document
+        .querySelectorAll("#white-player, #black-player")
+        .forEach((player) => {
+          player.classList.remove("has-player");
+          const img = player.querySelector("img");
+          if (img) img.style.display = "none";
+        });
       document.getElementById("white-player-name").textContent =
         "Select White Player";
       document.getElementById("black-player-name").textContent =
@@ -712,6 +783,31 @@ class ChessGame {
 
     document.getElementById("new-game-btn").addEventListener("click", () => {
       this.resetGame();
+    });
+
+    document.getElementById("replay-btn").addEventListener("click", () => {
+      this.startReplay();
+    });
+
+    // Replay controls
+    document.getElementById("replay-prev-btn").addEventListener("click", () => {
+      this.replayPrevious();
+    });
+
+    document.getElementById("replay-next-btn").addEventListener("click", () => {
+      this.replayNext();
+    });
+
+    document.getElementById("replay-play-btn").addEventListener("click", () => {
+      this.replayPlay();
+    });
+
+    document.getElementById("replay-stop-btn").addEventListener("click", () => {
+      this.replayStop();
+    });
+
+    document.getElementById("exit-replay-btn").addEventListener("click", () => {
+      this.exitReplay();
     });
 
     // Close modal when clicking outside
@@ -855,7 +951,7 @@ class ChessGame {
       } else {
         label.classList.remove("checked");
       }
-      
+
       // Add value-based classes for player-side-selection buttons
       if (radio.name === "player-side") {
         // Remove existing side classes
@@ -889,7 +985,7 @@ class ChessGame {
     gameModeRadios.forEach((radio) => {
       // Update checked class on load
       this.updateRadioLabelClass(radio);
-      
+
       radio.addEventListener("change", (e) => {
         this.gameMode = e.target.value;
         // Update all radio label classes
@@ -899,11 +995,13 @@ class ChessGame {
     });
 
     // Player side radio buttons (for one-player mode)
-    const playerSideRadios = document.querySelectorAll('input[name="player-side"]');
+    const playerSideRadios = document.querySelectorAll(
+      'input[name="player-side"]'
+    );
     playerSideRadios.forEach((radio) => {
       // Update checked class on load
       this.updateRadioLabelClass(radio);
-      
+
       radio.addEventListener("change", (e) => {
         this.playerSide = e.target.value;
         // Update all radio label classes
@@ -914,12 +1012,12 @@ class ChessGame {
 
     // Initialize game mode and radio button classes
     this.handleGameModeChange();
-    
+
     // Initialize radio button label classes
     document.querySelectorAll('input[type="radio"]').forEach((radio) => {
       this.updateRadioLabelClass(radio);
     });
-    
+
     this.updatePlayerOptionStates();
     this.updateStartButtonState();
   }
@@ -952,18 +1050,20 @@ class ChessGame {
 
   handlePlayerSideChange() {
     const onePlayerTitle = document.getElementById("one-player-title");
-    onePlayerTitle.textContent = `Your Player (${this.playerSide.charAt(0).toUpperCase() + this.playerSide.slice(1)})`;
-    
+    onePlayerTitle.textContent = `Your Player (${
+      this.playerSide.charAt(0).toUpperCase() + this.playerSide.slice(1)
+    })`;
+
     // Clear current selection
     this.clearOnePlayerSelection();
-    
+
     // Set PC as opponent
     const oppositeSide = this.playerSide === "white" ? "black" : "white";
     this.players[oppositeSide] = { name: "PC", image: "" };
-    
+
     // Clear the side we're switching from
     this.players[this.playerSide] = { name: "", image: "" };
-    
+
     this.updateStartButtonState();
   }
 
@@ -1104,13 +1204,13 @@ class ChessGame {
   updatePlayerOptionStates() {
     document.querySelectorAll(".player-option").forEach((option) => {
       const optionColor = option.dataset.color;
-      
+
       // One-player mode options don't need disabling logic
       if (optionColor === "one-player") {
         option.classList.remove("disabled");
         return;
       }
-      
+
       // Two-players mode - disable if same player is selected for other color
       const otherColor = optionColor === "white" ? "black" : "white";
       const playerName = option.dataset.player;
@@ -1128,7 +1228,7 @@ class ChessGame {
 
   updateStartButtonState() {
     const startGameBtn = document.getElementById("start-game-btn");
-    
+
     if (this.gameMode === "one-player") {
       // In one-player mode, only need the player's side to be selected
       if (this.players[this.playerSide].name) {
@@ -1160,14 +1260,19 @@ class ChessGame {
         return;
       }
     }
-    
+
     this.gameStarted = true;
+    // Store initial board state for replay
+    this.storeInitialBoardState();
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
     this.updatePlaygroundVisibility();
-    
+
     // If PC starts, make first move
-    if (this.gameMode === "one-player" && this.players[this.currentPlayer].name === "PC") {
+    if (
+      this.gameMode === "one-player" &&
+      this.players[this.currentPlayer].name === "PC"
+    ) {
       setTimeout(() => {
         this.makePCMove();
       }, 500);
@@ -1181,7 +1286,7 @@ class ChessGame {
     if (this.gameStarted && this.players[this.currentPlayer].name) {
       const playerName = this.players[this.currentPlayer].name;
       currentPlayerEl.textContent = playerName;
-      
+
       // Only show image if player has an image (not PC)
       if (this.players[this.currentPlayer].image) {
         currentPlayerImg.src = this.players[this.currentPlayer].image;
@@ -1201,7 +1306,7 @@ class ChessGame {
   updatePlaygroundVisibility() {
     const chessContainer = document.querySelector(".chess-container");
     const capturedPieces = document.querySelector(".captured-pieces");
-    
+
     if (this.gameStarted) {
       if (chessContainer) chessContainer.style.display = "flex";
       if (capturedPieces) capturedPieces.style.display = "flex";
@@ -1343,15 +1448,18 @@ class ChessGame {
     if (this.lessonsSelectedSquare) {
       const fromRow = this.lessonsSelectedSquare.row;
       const fromCol = this.lessonsSelectedSquare.col;
-      
+
       // If clicking the same square, deselect
       if (fromRow === row && fromCol === col) {
         this.deselectLessonsSquare();
         return;
       }
-      
+
       // Check if clicking on a highlighted valid move
-      if (square.classList.contains("possible-move") || square.classList.contains("possible-capture")) {
+      if (
+        square.classList.contains("possible-move") ||
+        square.classList.contains("possible-capture")
+      ) {
         // Move the piece
         const movingPiece = this.lessonsBoard[fromRow][fromCol];
         this.lessonsBoard[fromRow][fromCol] = null;
@@ -1360,13 +1468,13 @@ class ChessGame {
         this.deselectLessonsSquare();
         return;
       }
-      
+
       // If clicking on a different piece, deselect current and select new one
       if (piece) {
         this.selectLessonsSquare(row, col);
         return;
       }
-      
+
       // If clicking on empty non-highlighted square, deselect
       this.deselectLessonsSquare();
       return;
@@ -1402,7 +1510,7 @@ class ChessGame {
 
     // Highlight possible moves
     this.highlightLessonsMoves(row, col);
-    
+
     // Enable remove button
     this.updateRemovePieceButton();
   }
@@ -1422,7 +1530,7 @@ class ChessGame {
     document.querySelectorAll("#lessons-board .square").forEach((sq) => {
       sq.classList.remove("possible-move", "possible-capture");
     });
-    
+
     // Disable remove button
     this.updateRemovePieceButton();
   }
@@ -1452,7 +1560,10 @@ class ChessGame {
     }
 
     // Get up to 10 random empty squares
-    const squaresToFill = emptySquares.slice(0, Math.min(10, emptySquares.length));
+    const squaresToFill = emptySquares.slice(
+      0,
+      Math.min(10, emptySquares.length)
+    );
 
     // Piece types and colors
     const pieceTypes = ["king", "queen", "rook", "bishop", "knight", "pawn"];
@@ -1460,7 +1571,8 @@ class ChessGame {
 
     // Fill selected squares with random pieces
     squaresToFill.forEach(({ row, col }) => {
-      const randomType = pieceTypes[Math.floor(Math.random() * pieceTypes.length)];
+      const randomType =
+        pieceTypes[Math.floor(Math.random() * pieceTypes.length)];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       this.lessonsBoard[row][col] = { type: randomType, color: randomColor };
     });
@@ -1605,21 +1717,30 @@ class ChessGame {
 
   setupMission() {
     // Mission player selection
-    const missionPlayerOptions = document.querySelectorAll(".mission-player-option");
+    const missionPlayerOptions = document.querySelectorAll(
+      ".mission-player-option"
+    );
     missionPlayerOptions.forEach((option) => {
       option.addEventListener("click", () => {
         missionPlayerOptions.forEach((opt) => opt.classList.remove("selected"));
         option.classList.add("selected");
 
         const playerName = option.dataset.player;
-        const formattedName = playerName.charAt(0).toUpperCase() + playerName.slice(1);
+        const formattedName =
+          playerName.charAt(0).toUpperCase() + playerName.slice(1);
         const playerImage = option.querySelector("img").src;
 
         this.missionPlayer = { name: formattedName, image: playerImage };
 
-        const selectedPlayerEl = document.getElementById("selected-mission-player");
-        const selectedPlayerImg = document.getElementById("selected-mission-player-img");
-        const selectedPlayerName = document.getElementById("selected-mission-player-name");
+        const selectedPlayerEl = document.getElementById(
+          "selected-mission-player"
+        );
+        const selectedPlayerImg = document.getElementById(
+          "selected-mission-player-img"
+        );
+        const selectedPlayerName = document.getElementById(
+          "selected-mission-player-name"
+        );
 
         selectedPlayerEl.classList.add("has-player");
         selectedPlayerImg.src = playerImage;
@@ -1632,7 +1753,9 @@ class ChessGame {
     });
 
     // Mission piece selection
-    const missionPieceOptions = document.querySelectorAll(".mission-piece-option");
+    const missionPieceOptions = document.querySelectorAll(
+      ".mission-piece-option"
+    );
     missionPieceOptions.forEach((option) => {
       option.addEventListener("click", () => {
         missionPieceOptions.forEach((opt) => opt.classList.remove("selected"));
@@ -1643,8 +1766,11 @@ class ChessGame {
 
         this.missionUserPiece = { type: pieceType, color: pieceColor };
 
-        const selectedPieceEl = document.getElementById("selected-mission-piece");
-        const pieceName = pieceType.charAt(0).toUpperCase() + pieceType.slice(1);
+        const selectedPieceEl = document.getElementById(
+          "selected-mission-piece"
+        );
+        const pieceName =
+          pieceType.charAt(0).toUpperCase() + pieceType.slice(1);
         selectedPieceEl.classList.add("has-piece");
         selectedPieceEl.innerHTML = `<span>${pieceName}</span>`;
 
@@ -1675,7 +1801,9 @@ class ChessGame {
       });
     }
 
-    const backToMissionMenuBtn = document.getElementById("back-to-mission-menu-btn");
+    const backToMissionMenuBtn = document.getElementById(
+      "back-to-mission-menu-btn"
+    );
     if (backToMissionMenuBtn) {
       backToMissionMenuBtn.addEventListener("click", () => {
         this.resetMission();
@@ -1751,12 +1879,16 @@ class ChessGame {
       type: this.missionUserPiece.type,
       color: this.missionUserPiece.color,
     };
-    this.missionUserPiecePosition = { row: userSquare.row, col: userSquare.col };
+    this.missionUserPiecePosition = {
+      row: userSquare.row,
+      col: userSquare.col,
+    };
 
     // Handle bishop color restriction
     let availableSquares = allSquares;
     if (this.missionUserPiece.type === "bishop") {
-      const userSquareColor = (userSquare.row + userSquare.col) % 2 === 0 ? "light" : "dark";
+      const userSquareColor =
+        (userSquare.row + userSquare.col) % 2 === 0 ? "light" : "dark";
       availableSquares = allSquares.filter((sq) => {
         const squareColor = (sq.row + sq.col) % 2 === 0 ? "light" : "dark";
         return squareColor === userSquareColor;
@@ -1764,20 +1896,32 @@ class ChessGame {
     }
 
     // Place opponent pieces (opposite color of user piece)
-    const opponentColor = this.missionUserPiece.color === "white" ? "black" : "white";
+    const opponentColor =
+      this.missionUserPiece.color === "white" ? "black" : "white";
     const opponentTypes = ["king", "queen", "rook", "bishop", "knight", "pawn"];
 
-    for (let i = 0; i < opponentPiecesCount && availableSquares.length > 0; i++) {
+    for (
+      let i = 0;
+      i < opponentPiecesCount && availableSquares.length > 0;
+      i++
+    ) {
       const square = availableSquares.pop();
-      const randomType = opponentTypes[Math.floor(Math.random() * opponentTypes.length)];
+      const randomType =
+        opponentTypes[Math.floor(Math.random() * opponentTypes.length)];
       const opponentPiece = { type: randomType, color: opponentColor };
 
       this.missionBoard[square.row][square.col] = opponentPiece;
-      this.missionOpponentPieces.push({ row: square.row, col: square.col, piece: opponentPiece });
+      this.missionOpponentPieces.push({
+        row: square.row,
+        col: square.col,
+        piece: opponentPiece,
+      });
     }
 
     // Update mission info
-    document.getElementById("mission-title").textContent = `Mission ${this.currentMission}`;
+    document.getElementById(
+      "mission-title"
+    ).textContent = `Mission ${this.currentMission}`;
     document.getElementById("mission-description").textContent =
       "Capture all opponent pieces to complete the mission!";
     this.updateOpponentPiecesCount();
@@ -1809,7 +1953,9 @@ class ChessGame {
           square.appendChild(pieceElement);
         }
 
-        square.addEventListener("click", (e) => this.handleMissionSquareClick(e));
+        square.addEventListener("click", (e) =>
+          this.handleMissionSquareClick(e)
+        );
         boardElement.appendChild(square);
       }
     }
@@ -1950,7 +2096,14 @@ class ChessGame {
     if (targetPiece && targetPiece.color === piece.color) return false;
 
     // Use the same move validation logic
-    return this.isValidPieceMoveForBoard(piece, fromRow, fromCol, toRow, toCol, this.missionBoard);
+    return this.isValidPieceMoveForBoard(
+      piece,
+      fromRow,
+      fromCol,
+      toRow,
+      toCol,
+      this.missionBoard
+    );
   }
 
   updateOpponentPiecesCount() {
@@ -2005,7 +2158,8 @@ class ChessGame {
 
   resetMission() {
     document.getElementById("mission-completion-modal").style.display = "none";
-    document.getElementById("all-missions-completed-modal").style.display = "none";
+    document.getElementById("all-missions-completed-modal").style.display =
+      "none";
     document.getElementById("mission-selection").style.display = "block";
     document.getElementById("mission-game-area").style.display = "none";
 
@@ -2016,13 +2170,24 @@ class ChessGame {
     this.missionUserPiecePosition = null;
 
     // Reset selections
-    document.querySelectorAll(".mission-player-option").forEach((opt) => opt.classList.remove("selected"));
-    document.querySelectorAll(".mission-piece-option").forEach((opt) => opt.classList.remove("selected"));
-    document.getElementById("selected-mission-player").classList.remove("has-player");
-    document.getElementById("selected-mission-player-img").style.display = "none";
-    document.getElementById("selected-mission-player-name").textContent = "Select Player";
-    document.getElementById("selected-mission-piece").classList.remove("has-piece");
-    document.getElementById("selected-mission-piece").innerHTML = "<span>Select Piece</span>";
+    document
+      .querySelectorAll(".mission-player-option")
+      .forEach((opt) => opt.classList.remove("selected"));
+    document
+      .querySelectorAll(".mission-piece-option")
+      .forEach((opt) => opt.classList.remove("selected"));
+    document
+      .getElementById("selected-mission-player")
+      .classList.remove("has-player");
+    document.getElementById("selected-mission-player-img").style.display =
+      "none";
+    document.getElementById("selected-mission-player-name").textContent =
+      "Select Player";
+    document
+      .getElementById("selected-mission-piece")
+      .classList.remove("has-piece");
+    document.getElementById("selected-mission-piece").innerHTML =
+      "<span>Select Piece</span>";
 
     this.missionPlayer = null;
     this.missionUserPiece = null;
@@ -2079,6 +2244,213 @@ class ChessGame {
     document.querySelectorAll("#mission-board .square").forEach((sq) => {
       sq.classList.remove("hint-capture");
     });
+  }
+
+  // Replay functionality
+  startReplay() {
+    if (!this.moveHistory || this.moveHistory.length === 0) {
+      alert("No moves to replay!");
+      return;
+    }
+
+    // Close the game over modal
+    document.getElementById("game-over-modal").style.display = "none";
+
+    // Enter replay mode
+    this.replayMode = true;
+    this.replayIndex = 0;
+    this.isReplayPlaying = false;
+
+    // Reset board to initial state
+    this.replayBoardState = this.initialBoardState.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    this.replayCapturedPieces = { white: [], black: [] };
+
+    // Apply board state
+    this.board = this.replayBoardState.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    this.capturedPieces = { white: [], black: [] };
+
+    // Show replay controls
+    document.getElementById("replay-controls").style.display = "block";
+
+    // Update display
+    this.createBoard();
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+
+    // Start auto-play
+    this.replayPlay();
+  }
+
+  replayPlay() {
+    if (this.isReplayPlaying) return;
+
+    this.isReplayPlaying = true;
+    this.updateReplayButtons();
+
+    // Auto-play moves
+    this.replayInterval = setInterval(() => {
+      if (this.replayIndex < this.moveHistory.length) {
+        this.replayNext();
+      } else {
+        // Reached end, stop auto-play
+        this.replayStop();
+      }
+    }, this.replaySpeed);
+  }
+
+  replayStop() {
+    this.isReplayPlaying = false;
+    if (this.replayInterval) {
+      clearInterval(this.replayInterval);
+      this.replayInterval = null;
+    }
+    this.updateReplayButtons();
+  }
+
+  replayNext() {
+    if (this.replayIndex >= this.moveHistory.length) return;
+
+    const move = this.moveHistory[this.replayIndex];
+
+    // Apply the move
+    const piece = this.replayBoardState[move.from.row][move.from.col];
+    const capturedPiece = this.replayBoardState[move.to.row][move.to.col];
+
+    // Handle capture
+    if (capturedPiece) {
+      this.replayCapturedPieces[capturedPiece.color].push(capturedPiece);
+    }
+
+    // Move piece
+    this.replayBoardState[move.to.row][move.to.col] = piece;
+    this.replayBoardState[move.from.row][move.from.col] = null;
+
+    // Update board and captured pieces
+    this.board = this.replayBoardState.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    this.capturedPieces = {
+      white: [...this.replayCapturedPieces.white],
+      black: [...this.replayCapturedPieces.black],
+    };
+
+    this.replayIndex++;
+
+    // Update display
+    this.createBoard();
+    this.highlightLastMove(
+      move.from.row,
+      move.from.col,
+      move.to.row,
+      move.to.col
+    );
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+  }
+
+  replayPrevious() {
+    if (this.replayIndex <= 0) return;
+
+    // Stop auto-play if playing
+    if (this.isReplayPlaying) {
+      this.replayStop();
+    }
+
+    this.replayIndex--;
+
+    // Reset to initial state
+    this.replayBoardState = this.initialBoardState.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    this.replayCapturedPieces = { white: [], black: [] };
+
+    // Replay all moves up to current index
+    for (let i = 0; i < this.replayIndex; i++) {
+      const move = this.moveHistory[i];
+      const piece = this.replayBoardState[move.from.row][move.from.col];
+      const capturedPiece = this.replayBoardState[move.to.row][move.to.col];
+
+      if (capturedPiece) {
+        this.replayCapturedPieces[capturedPiece.color].push(capturedPiece);
+      }
+
+      this.replayBoardState[move.to.row][move.to.col] = piece;
+      this.replayBoardState[move.from.row][move.from.col] = null;
+    }
+
+    // Update board and captured pieces
+    this.board = this.replayBoardState.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    this.capturedPieces = {
+      white: [...this.replayCapturedPieces.white],
+      black: [...this.replayCapturedPieces.black],
+    };
+
+    // Update display
+    this.createBoard();
+    if (this.replayIndex > 0) {
+      const lastMove = this.moveHistory[this.replayIndex - 1];
+      this.highlightLastMove(
+        lastMove.from.row,
+        lastMove.from.col,
+        lastMove.to.row,
+        lastMove.to.col
+      );
+    }
+    this.updateCapturedPieces();
+    this.updateReplayInfo();
+    this.updateReplayButtons();
+  }
+
+  exitReplay() {
+    this.replayStop();
+    this.replayMode = false;
+    this.replayIndex = 0;
+
+    // Hide replay controls
+    document.getElementById("replay-controls").style.display = "none";
+
+    // Reset game to end state
+    this.resetGame();
+  }
+
+  updateReplayInfo() {
+    const infoElement = document.getElementById("replay-move-info");
+    if (infoElement) {
+      infoElement.textContent = `Move ${this.replayIndex} / ${this.moveHistory.length}`;
+    }
+  }
+
+  updateReplayButtons() {
+    const prevBtn = document.getElementById("replay-prev-btn");
+    const nextBtn = document.getElementById("replay-next-btn");
+    const playBtn = document.getElementById("replay-play-btn");
+    const stopBtn = document.getElementById("replay-stop-btn");
+
+    // Update previous button
+    if (prevBtn) {
+      prevBtn.disabled = this.replayIndex <= 0;
+    }
+
+    // Update next button
+    if (nextBtn) {
+      nextBtn.disabled = this.replayIndex >= this.moveHistory.length;
+    }
+
+    // Update play/stop buttons
+    if (playBtn) {
+      playBtn.style.display = this.isReplayPlaying ? "none" : "inline-block";
+    }
+    if (stopBtn) {
+      stopBtn.style.display = this.isReplayPlaying ? "inline-block" : "none";
+    }
   }
 }
 

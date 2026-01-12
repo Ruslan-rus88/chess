@@ -718,6 +718,40 @@
         <h2 id="game-over-title">Game Over</h2>
         <p id="game-over-message"></p>
         <button id="new-game-btn" class="modal-button">Start New Game</button>
+        <button
+          id="replay-btn"
+          class="modal-button"
+          style="background: #17a2b8; margin-top: 10px"
+        >
+          Replay
+        </button>
+      </div>
+    </div>
+
+    <!-- Replay Controls -->
+    <div class="replay-controls" id="replay-controls" style="display: none">
+      <div class="replay-controls-content">
+        <h3>Replay Mode</h3>
+        <div class="replay-buttons">
+          <button id="replay-prev-btn" class="replay-control-btn">
+            ⏮ Previous
+          </button>
+          <button id="replay-stop-btn" class="replay-control-btn">
+            ⏸ Stop
+          </button>
+          <button id="replay-play-btn" class="replay-control-btn">
+            ▶ Play
+          </button>
+          <button id="replay-next-btn" class="replay-control-btn">
+            Next ⏭
+          </button>
+        </div>
+        <div class="replay-info">
+          <span id="replay-move-info">Move 0 / 0</span>
+        </div>
+        <button id="exit-replay-btn" class="replay-exit-btn">
+          Exit Replay
+        </button>
       </div>
     </div>
 
