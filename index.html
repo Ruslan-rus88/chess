@@ -36,7 +36,7 @@
           </div>
           <div class="button-group">
             <button id="reset-btn" class="reset-button">🎮 New Game</button>
-            <button id="settings-toggle" class="settings-toggle-btn">⚙️</button>
+            <button id="settings-toggle" class="settings-toggle-btn" title="Settings">⚙</button>
             <button id="fullscreen-btn" class="fullscreen-button">
               📺 Fullscreen
             </button>
@@ -583,6 +583,7 @@
                   class="mission-difficulty-option"
                   data-difficulty="easy"
                 >
+                  <div class="difficulty-icon">🌟</div>
                   <span>Easy</span>
                   <small>Level × 20s</small>
                 </div>
@@ -590,6 +591,7 @@
                   class="mission-difficulty-option"
                   data-difficulty="medium"
                 >
+                  <div class="difficulty-icon">⚡</div>
                   <span>Medium</span>
                   <small>Level × 10s</small>
                 </div>
@@ -597,6 +599,7 @@
                   class="mission-difficulty-option"
                   data-difficulty="hard"
                 >
+                  <div class="difficulty-icon">👑</div>
                   <span>Hard</span>
                   <small>Level × 5s</small>
                 </div>
@@ -845,19 +848,6 @@
           <div class="radio-stations-list" id="radio-stations-list">
             <div class="radio-loading">Loading stations...</div>
           </div>
-        </div>
-        <div class="youtube-section">
-          <h4>YouTube Search</h4>
-          <div class="youtube-search-box">
-            <input
-              type="text"
-              id="youtube-search-input"
-              placeholder="Search YouTube..."
-              class="youtube-search-input"
-            />
-            <button id="youtube-search-btn" class="youtube-search-btn">🔍</button>
-          </div>
-          <div class="youtube-results" id="youtube-results"></div>
         </div>
       </div>
       <div class="radio-player-controls" id="radio-player-controls" style="display: none">

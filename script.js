@@ -1823,8 +1823,10 @@ class ChessGame {
         );
         const difficultyName =
           difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        const difficultyIconEl = option.querySelector(".difficulty-icon");
+        const difficultyIcon = difficultyIconEl ? difficultyIconEl.textContent : "";
         selectedDifficultyEl.classList.add("has-difficulty");
-        selectedDifficultyEl.innerHTML = `<span>${difficultyName}</span>`;
+        selectedDifficultyEl.innerHTML = `<span>${difficultyIcon} ${difficultyName}</span>`;
 
         this.updateStartMissionButton();
       });
@@ -2847,7 +2849,6 @@ class RadioPlayer {
     this.currentStation = null;
     this.isPlaying = false;
     this.radioStations = [];
-    this.youtubeResults = [];
     this.setupEventListeners();
     this.loadDefaultStations();
   }
@@ -2857,8 +2858,6 @@ class RadioPlayer {
     const radioClose = document.getElementById("radio-close");
     const radioSearchBtn = document.getElementById("radio-search-btn");
     const radioSearchInput = document.getElementById("radio-search-input");
-    const youtubeSearchBtn = document.getElementById("youtube-search-btn");
-    const youtubeSearchInput = document.getElementById("youtube-search-input");
     const playPauseBtn = document.getElementById("radio-play-pause");
     const stopBtn = document.getElementById("radio-stop");
 
@@ -2868,11 +2867,6 @@ class RadioPlayer {
     radioSearchBtn.addEventListener("click", () => this.searchRadioStations());
     radioSearchInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") this.searchRadioStations();
-    });
-
-    youtubeSearchBtn.addEventListener("click", () => this.searchYouTube());
-    youtubeSearchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") this.searchYouTube();
     });
 
     playPauseBtn.addEventListener("click", () => this.togglePlayPause());
@@ -3047,176 +3041,6 @@ class RadioPlayer {
       this.isPlaying = false;
       this.updatePlayerControls();
     });
-  }
-
-  async searchYouTube() {
-    const searchTerm = document.getElementById("youtube-search-input").value;
-    const resultsDiv = document.getElementById("youtube-results");
-
-    if (!searchTerm.trim()) {
-      resultsDiv.innerHTML = "";
-      return;
-    }
-
-    resultsDiv.innerHTML = '<div class="radio-loading">Searching YouTube...</div>';
-
-    try {
-      // Use a CORS proxy to access YouTube search
-      // Note: In production, you should use YouTube Data API v3 with your own API key
-      const proxyUrl = "https://api.allorigins.win/get?url=";
-      const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-        searchTerm
-      )}`;
-      
-      const response = await fetch(proxyUrl + encodeURIComponent(youtubeSearchUrl));
-      const data = await response.json();
-      
-      // Parse YouTube search results from HTML
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(data.contents, "text/html");
-      
-      // Extract video data from YouTube's JSON embedded in the page
-      const scripts = doc.querySelectorAll("script");
-      let videoData = null;
-      
-      for (const script of scripts) {
-        if (script.textContent.includes("var ytInitialData")) {
-          const match = script.textContent.match(/var ytInitialData = ({.+?});/);
-          if (match) {
-            try {
-              const ytData = JSON.parse(match[1]);
-              videoData = this.extractVideoData(ytData);
-              break;
-            } catch (e) {
-              console.error("Error parsing YouTube data:", e);
-            }
-          }
-        }
-      }
-      
-      if (videoData && videoData.length > 0) {
-        this.youtubeResults = videoData;
-        this.displayYouTubeResults(this.youtubeResults);
-      } else {
-        // Fallback: Create a direct YouTube search link
-        this.displayYouTubeFallback(searchTerm);
-      }
-    } catch (error) {
-      console.error("Error searching YouTube:", error);
-      this.displayYouTubeFallback(searchTerm);
-    }
-  }
-
-  extractVideoData(ytData) {
-    try {
-      const contents =
-        ytData?.contents?.twoColumnSearchResultsRenderer?.primaryContents
-          ?.sectionListRenderer?.contents?.[0]?.itemSectionRenderer?.contents ||
-        [];
-      
-      const videos = [];
-      for (const item of contents) {
-        if (item.videoRenderer) {
-          const video = item.videoRenderer;
-          videos.push({
-            id: { videoId: video.videoId },
-            snippet: {
-              title: video.title?.runs?.[0]?.text || video.title?.simpleText || "Untitled",
-              channelTitle: video.ownerText?.runs?.[0]?.text || "Unknown",
-              thumbnails: {
-                default: {
-                  url: video.thumbnail?.thumbnails?.[0]?.url || "",
-                },
-              },
-            },
-          });
-        }
-        if (videos.length >= 10) break;
-      }
-      return videos;
-    } catch (error) {
-      console.error("Error extracting video data:", error);
-      return [];
-    }
-  }
-
-  displayYouTubeFallback(searchTerm) {
-    const resultsDiv = document.getElementById("youtube-results");
-    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-      searchTerm
-    )}`;
-    resultsDiv.innerHTML = `
-      <div class="radio-loading">
-        <p>Click to search YouTube:</p>
-        <a href="${searchUrl}" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 8px;">
-          Open YouTube Search
-        </a>
-      </div>
-    `;
-  }
-
-  displayYouTubeResults(results) {
-    const resultsDiv = document.getElementById("youtube-results");
-
-    if (results.length === 0) {
-      resultsDiv.innerHTML = '<div class="radio-loading">No results found.</div>';
-      return;
-    }
-
-    resultsDiv.innerHTML = results
-      .map(
-        (item) => `
-      <div class="youtube-result-item" data-video-id="${item.id.videoId}">
-        <img src="${item.snippet.thumbnails.default.url}" alt="${this.escapeHtml(
-          item.snippet.title
-        )}" class="youtube-result-thumbnail" />
-        <div class="youtube-result-info">
-          <div class="youtube-result-title">${this.escapeHtml(
-            item.snippet.title
-          )}</div>
-          <div class="youtube-result-channel">${this.escapeHtml(
-            item.snippet.channelTitle
-          )}</div>
-        </div>
-      </div>
-    `
-      )
-      .join("");
-
-    // Add click listeners
-    resultsDiv.querySelectorAll(".youtube-result-item").forEach((item) => {
-      item.addEventListener("click", () => {
-        const videoId = item.dataset.videoId;
-        this.playYouTubeVideo(videoId);
-      });
-    });
-  }
-
-  playYouTubeVideo(videoId) {
-    // Stop current audio if playing
-    if (this.audio) {
-      this.audio.pause();
-      this.audio = null;
-    }
-
-    // Find the video title from results
-    const video = this.youtubeResults.find(
-      (v) => v.id.videoId === videoId
-    );
-    const videoTitle = video?.snippet?.title || "YouTube Video";
-
-    // Open YouTube video in a new tab
-    // Note: For embedded playback, you would use YouTube IFrame API
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
-    
-    // Update player controls to show YouTube is playing
-    this.currentStation = {
-      name: `YouTube: ${videoTitle}`,
-      type: "youtube",
-      videoId: videoId,
-    };
-    this.isPlaying = true;
-    this.updatePlayerControls();
   }
 
   togglePlayPause() {
