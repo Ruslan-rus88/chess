@@ -576,6 +576,36 @@
               </div>
             </div>
 
+            <div class="mission-difficulty-section">
+              <h4>Select Difficulty</h4>
+              <div class="mission-difficulty-options">
+                <div
+                  class="mission-difficulty-option"
+                  data-difficulty="easy"
+                >
+                  <span>Easy</span>
+                  <small>Level × 20s</small>
+                </div>
+                <div
+                  class="mission-difficulty-option"
+                  data-difficulty="medium"
+                >
+                  <span>Medium</span>
+                  <small>Level × 10s</small>
+                </div>
+                <div
+                  class="mission-difficulty-option"
+                  data-difficulty="hard"
+                >
+                  <span>Hard</span>
+                  <small>Level × 5s</small>
+                </div>
+              </div>
+              <div class="selected-mission-difficulty" id="selected-mission-difficulty">
+                <span>Select Difficulty</span>
+              </div>
+            </div>
+
             <div class="mission-piece-section">
               <h4>Select Your Piece</h4>
               <div class="mission-piece-options">
@@ -750,7 +780,6 @@
     <!-- Mission Failure Modal -->
     <div class="modal" id="mission-failure-modal" style="display: none">
       <div class="modal-content mission-failure-content">
-        <div class="sad-face">😢</div>
         <img
           id="mission-failure-player-img"
           class="winner-image"

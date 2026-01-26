@@ -1531,13 +1531,14 @@ body {
 
 .mission-setup {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 30px;
   margin-bottom: 25px;
 }
 
 .mission-player-section,
-.mission-piece-section {
+.mission-piece-section,
+.mission-difficulty-section {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1545,7 +1546,8 @@ body {
 }
 
 .mission-player-section h4,
-.mission-piece-section h4 {
+.mission-piece-section h4,
+.mission-difficulty-section h4 {
   color: #555;
   margin-bottom: 20px;
   font-size: 1.3em;
@@ -1612,7 +1614,8 @@ body {
   font-size: 0.9em;
 }
 
-.mission-piece-options {
+.mission-piece-options,
+.mission-difficulty-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
@@ -1620,7 +1623,8 @@ body {
   align-items: start;
 }
 
-.mission-piece-option {
+.mission-piece-option,
+.mission-difficulty-option {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1636,7 +1640,8 @@ body {
   justify-content: flex-start;
 }
 
-.mission-piece-option:hover {
+.mission-piece-option:hover,
+.mission-difficulty-option:hover {
   border-color: #007bff;
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
@@ -1647,7 +1652,8 @@ body {
   border-color: #007bff;
 }
 
-.mission-piece-option.selected {
+.mission-piece-option.selected,
+.mission-difficulty-option.selected {
   border-color: #28a745;
   background: rgba(40, 167, 69, 0.1);
   transform: translateY(-3px);
@@ -1657,6 +1663,18 @@ body {
 .mission-piece-option.selected .mission-piece {
   border-color: #28a745;
   border-width: 2px;
+}
+
+.mission-difficulty-option span {
+  font-weight: bold;
+  color: #333;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+.mission-difficulty-option small {
+  font-size: 0.85em;
+  color: #666;
 }
 
 .mission-piece {
@@ -1683,7 +1701,8 @@ body {
 }
 
 .selected-mission-player,
-.selected-mission-piece {
+.selected-mission-piece,
+.selected-mission-difficulty {
   padding: 15px;
   border: 2px dashed #ccc;
   border-radius: 10px;
@@ -1697,7 +1716,8 @@ body {
 }
 
 .selected-mission-player.has-player,
-.selected-mission-piece.has-piece {
+.selected-mission-piece.has-piece,
+.selected-mission-difficulty.has-difficulty {
   border-color: #28a745;
   border-style: solid;
   background: rgba(40, 167, 69, 0.1);
@@ -1918,20 +1938,6 @@ body {
   text-align: center;
 }
 
-.sad-face {
-  font-size: 5rem;
-  margin-bottom: 20px;
-  animation: sad-bounce 1s ease-in-out infinite;
-}
-
-@keyframes sad-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
 
 .lessons-board-container {
   flex: 1;
@@ -2001,6 +2007,10 @@ body {
   .mission-setup {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+
+  .mission-difficulty-options {
+    grid-template-columns: 1fr;
   }
 
   .mission-player-options,

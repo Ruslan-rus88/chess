@@ -64,11 +64,13 @@ class ChessGame {
     this.maxMissions = 10;
     this.missionPlayer = null;
     this.missionUserPiece = null;
+    this.missionDifficulty = "medium"; // "easy", "medium", "hard"
     this.missionUserPiecePosition = null;
     this.missionOpponentPieces = [];
     this.missionTimer = null;
     this.missionTimeRemaining = 0;
     this.missionTimerInterval = null;
+    this.missionCompleted = false; // Flag to prevent timeout after completion
 
     this.initializeGame();
   }
@@ -1804,6 +1806,30 @@ class ChessGame {
       });
     });
 
+    // Mission difficulty selection
+    const missionDifficultyOptions = document.querySelectorAll(
+      ".mission-difficulty-option"
+    );
+    missionDifficultyOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        missionDifficultyOptions.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+
+        const difficulty = option.dataset.difficulty;
+        this.missionDifficulty = difficulty;
+
+        const selectedDifficultyEl = document.getElementById(
+          "selected-mission-difficulty"
+        );
+        const difficultyName =
+          difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        selectedDifficultyEl.classList.add("has-difficulty");
+        selectedDifficultyEl.innerHTML = `<span>${difficultyName}</span>`;
+
+        this.updateStartMissionButton();
+      });
+    });
+
     // Start mission button
     const startMissionBtn = document.getElementById("start-mission-btn");
     if (startMissionBtn) {
@@ -1874,7 +1900,7 @@ class ChessGame {
   updateStartMissionButton() {
     const startMissionBtn = document.getElementById("start-mission-btn");
     if (startMissionBtn) {
-      if (this.missionPlayer && this.missionUserPiece) {
+      if (this.missionPlayer && this.missionUserPiece && this.missionDifficulty) {
         startMissionBtn.style.display = "block";
       } else {
         startMissionBtn.style.display = "none";
@@ -1883,9 +1909,10 @@ class ChessGame {
   }
 
   startMission() {
-    if (!this.missionPlayer || !this.missionUserPiece) return;
+    if (!this.missionPlayer || !this.missionUserPiece || !this.missionDifficulty) return;
 
     this.currentMission = 1;
+    this.missionCompleted = false;
     document.getElementById("mission-selection").style.display = "none";
     document.getElementById("mission-game-area").style.display = "block";
     this.initializeMissionBoard();
@@ -1896,6 +1923,7 @@ class ChessGame {
     this.missionBoard = this.createEmptyBoard();
     this.missionSelectedSquare = null;
     this.missionOpponentPieces = [];
+    this.missionCompleted = false; // Reset completion flag
     this.clearMissionHints();
     
     // Stop any existing timer
@@ -2161,6 +2189,9 @@ class ChessGame {
 
   checkMissionCompletion() {
     if (this.missionOpponentPieces.length === 0) {
+      // Set completion flag to prevent timeout
+      this.missionCompleted = true;
+      
       // Stop timer on completion
       this.stopMissionTimer();
       
@@ -2204,6 +2235,7 @@ class ChessGame {
   nextMission() {
     document.getElementById("mission-completion-modal").style.display = "none";
     this.stopMissionTimer();
+    this.missionCompleted = false; // Reset flag for next mission
     this.currentMission++;
     this.initializeMissionBoard();
   }
@@ -2217,6 +2249,7 @@ class ChessGame {
     document.getElementById("mission-game-area").style.display = "none";
 
     this.stopMissionTimer();
+    this.missionCompleted = false; // Reset flag
     this.currentMission = 1;
     this.missionBoard = this.createEmptyBoard();
     this.missionSelectedSquare = null;
@@ -2231,6 +2264,9 @@ class ChessGame {
       .querySelectorAll(".mission-piece-option")
       .forEach((opt) => opt.classList.remove("selected"));
     document
+      .querySelectorAll(".mission-difficulty-option")
+      .forEach((opt) => opt.classList.remove("selected"));
+    document
       .getElementById("selected-mission-player")
       .classList.remove("has-player");
     document.getElementById("selected-mission-player-img").style.display =
@@ -2242,9 +2278,15 @@ class ChessGame {
       .classList.remove("has-piece");
     document.getElementById("selected-mission-piece").innerHTML =
       "<span>Select Piece</span>";
+    document
+      .getElementById("selected-mission-difficulty")
+      .classList.remove("has-difficulty");
+    document.getElementById("selected-mission-difficulty").innerHTML =
+      "<span>Select Difficulty</span>";
 
     this.missionPlayer = null;
     this.missionUserPiece = null;
+    this.missionDifficulty = "medium"; // Reset to default
     this.updateStartMissionButton();
   }
 
@@ -2253,6 +2295,7 @@ class ChessGame {
     this.deselectMissionSquare();
     this.clearMissionHints();
     this.stopMissionTimer();
+    this.missionCompleted = false; // Reset flag
     this.initializeMissionBoard();
   }
 
@@ -2302,8 +2345,15 @@ class ChessGame {
   }
 
   startMissionTimer() {
-    // Calculate time for current level: level * 10 seconds
-    this.missionTimeRemaining = this.currentMission * 10;
+    // Calculate time based on difficulty
+    let timeMultiplier = 10; // default medium
+    if (this.missionDifficulty === "easy") {
+      timeMultiplier = 20;
+    } else if (this.missionDifficulty === "hard") {
+      timeMultiplier = 5;
+    }
+    
+    this.missionTimeRemaining = this.currentMission * timeMultiplier;
     this.updateTimerDisplay();
     
     // Clear any existing timer
@@ -2313,10 +2363,15 @@ class ChessGame {
     
     // Start countdown
     this.missionTimerInterval = setInterval(() => {
+      // Don't process timeout if mission is already completed
+      if (this.missionCompleted) {
+        return;
+      }
+      
       this.missionTimeRemaining--;
       this.updateTimerDisplay();
       
-      if (this.missionTimeRemaining <= 0) {
+      if (this.missionTimeRemaining <= 0 && !this.missionCompleted) {
         this.handleMissionTimeout();
       }
     }, 1000);
@@ -2342,8 +2397,14 @@ class ChessGame {
     
     timerElement.textContent = timeString;
     
-    // Calculate percentage for circular progress
-    const totalTime = this.currentMission * 10;
+    // Calculate percentage for circular progress based on difficulty
+    let timeMultiplier = 10; // default medium
+    if (this.missionDifficulty === "easy") {
+      timeMultiplier = 20;
+    } else if (this.missionDifficulty === "hard") {
+      timeMultiplier = 5;
+    }
+    const totalTime = this.currentMission * timeMultiplier;
     const percentage = Math.max(0, Math.min(100, (this.missionTimeRemaining / totalTime) * 100));
     
     // Update circle progress (circumference = 2 * π * 45 ≈ 282.74)
