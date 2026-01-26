@@ -620,6 +620,15 @@
             <p id="mission-description">
               Capture all opponent pieces to complete the mission!
             </p>
+            <div class="mission-timer-container">
+              <svg class="mission-timer-svg" viewBox="0 0 100 100">
+                <circle class="mission-timer-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="mission-timer-circle" id="mission-timer-circle" cx="50" cy="50" r="45"></circle>
+              </svg>
+              <div class="mission-timer-text">
+                <span id="mission-timer">0:00</span>
+              </div>
+            </div>
             <div class="mission-stats">
               <span
                 >Opponent pieces remaining:
@@ -701,6 +710,32 @@
         <h2>🎉 Congratulations! 🎉</h2>
         <p>You have completed all 10 missions!</p>
         <button id="back-to-mission-menu-btn" class="modal-button">
+          Back to Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- Mission Failure Modal -->
+    <div class="modal" id="mission-failure-modal" style="display: none">
+      <div class="modal-content mission-failure-content">
+        <div class="sad-face">😢</div>
+        <img
+          id="mission-failure-player-img"
+          class="winner-image"
+          src=""
+          alt=""
+          style="display: none"
+        />
+        <h2>Mission Failed!</h2>
+        <p id="mission-failure-message">Time's up!</p>
+        <button id="retry-mission-btn" class="modal-button">
+          Try Again
+        </button>
+        <button
+          id="mission-failure-menu-btn"
+          class="modal-button"
+          style="background: #6c757d; margin-top: 10px"
+        >
           Back to Menu
         </button>
       </div>

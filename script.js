@@ -66,6 +66,9 @@ class ChessGame {
     this.missionUserPiece = null;
     this.missionUserPiecePosition = null;
     this.missionOpponentPieces = [];
+    this.missionTimer = null;
+    this.missionTimeRemaining = 0;
+    this.missionTimerInterval = null;
 
     this.initializeGame();
   }
@@ -1810,6 +1813,22 @@ class ChessGame {
       });
     }
 
+    // Mission failure modal buttons
+    const retryMissionBtn = document.getElementById("retry-mission-btn");
+    if (retryMissionBtn) {
+      retryMissionBtn.addEventListener("click", () => {
+        document.getElementById("mission-failure-modal").style.display = "none";
+        this.resetCurrentMission();
+      });
+    }
+
+    const missionFailureMenuBtn = document.getElementById("mission-failure-menu-btn");
+    if (missionFailureMenuBtn) {
+      missionFailureMenuBtn.addEventListener("click", () => {
+        this.resetMission();
+      });
+    }
+
     // Hint button
     const hintBtn = document.getElementById("hint-btn");
     if (hintBtn) {
@@ -1855,6 +1874,9 @@ class ChessGame {
     this.missionSelectedSquare = null;
     this.missionOpponentPieces = [];
     this.clearMissionHints();
+    
+    // Stop any existing timer
+    this.stopMissionTimer();
 
     // Get number of opponent pieces for current mission
     const opponentPiecesCount = this.currentMission;
@@ -1928,6 +1950,9 @@ class ChessGame {
 
     // Create mission board
     this.createMissionBoard();
+    
+    // Start timer for this mission
+    this.startMissionTimer();
   }
 
   createMissionBoard() {
@@ -2113,6 +2138,9 @@ class ChessGame {
 
   checkMissionCompletion() {
     if (this.missionOpponentPieces.length === 0) {
+      // Stop timer on completion
+      this.stopMissionTimer();
+      
       // Mission completed
       if (this.currentMission >= this.maxMissions) {
         // All missions completed
@@ -2152,6 +2180,7 @@ class ChessGame {
 
   nextMission() {
     document.getElementById("mission-completion-modal").style.display = "none";
+    this.stopMissionTimer();
     this.currentMission++;
     this.initializeMissionBoard();
   }
@@ -2160,9 +2189,11 @@ class ChessGame {
     document.getElementById("mission-completion-modal").style.display = "none";
     document.getElementById("all-missions-completed-modal").style.display =
       "none";
+    document.getElementById("mission-failure-modal").style.display = "none";
     document.getElementById("mission-selection").style.display = "block";
     document.getElementById("mission-game-area").style.display = "none";
 
+    this.stopMissionTimer();
     this.currentMission = 1;
     this.missionBoard = this.createEmptyBoard();
     this.missionSelectedSquare = null;
@@ -2198,6 +2229,7 @@ class ChessGame {
     // Reset just the current mission without going back to selection
     this.deselectMissionSquare();
     this.clearMissionHints();
+    this.stopMissionTimer();
     this.initializeMissionBoard();
   }
 
@@ -2244,6 +2276,121 @@ class ChessGame {
     document.querySelectorAll("#mission-board .square").forEach((sq) => {
       sq.classList.remove("hint-capture");
     });
+  }
+
+  startMissionTimer() {
+    // Calculate time for current level: level * 10 seconds
+    this.missionTimeRemaining = this.currentMission * 10;
+    this.updateTimerDisplay();
+    
+    // Clear any existing timer
+    if (this.missionTimerInterval) {
+      clearInterval(this.missionTimerInterval);
+    }
+    
+    // Start countdown
+    this.missionTimerInterval = setInterval(() => {
+      this.missionTimeRemaining--;
+      this.updateTimerDisplay();
+      
+      if (this.missionTimeRemaining <= 0) {
+        this.handleMissionTimeout();
+      }
+    }, 1000);
+  }
+
+  stopMissionTimer() {
+    if (this.missionTimerInterval) {
+      clearInterval(this.missionTimerInterval);
+      this.missionTimerInterval = null;
+    }
+    this.missionTimeRemaining = 0;
+    this.updateTimerDisplay();
+  }
+
+  updateTimerDisplay() {
+    const timerElement = document.getElementById("mission-timer");
+    const timerCircle = document.getElementById("mission-timer-circle");
+    if (!timerElement || !timerCircle) return;
+    
+    const minutes = Math.floor(this.missionTimeRemaining / 60);
+    const seconds = this.missionTimeRemaining % 60;
+    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    timerElement.textContent = timeString;
+    
+    // Calculate percentage for circular progress
+    const totalTime = this.currentMission * 10;
+    const percentage = Math.max(0, Math.min(100, (this.missionTimeRemaining / totalTime) * 100));
+    
+    // Update circle progress (circumference = 2 * π * 45 ≈ 282.74)
+    const circumference = 2 * Math.PI * 45;
+    const offset = circumference - (percentage / 100) * circumference;
+    timerCircle.style.strokeDashoffset = offset;
+    
+    // Add warning class when time is low
+    const timerContainer = document.querySelector(".mission-timer-container");
+    if (timerContainer) {
+      if (this.missionTimeRemaining <= 5 && this.missionTimeRemaining > 0) {
+        timerContainer.classList.add("timer-warning");
+      } else {
+        timerContainer.classList.remove("timer-warning");
+      }
+    }
+  }
+
+  handleMissionTimeout() {
+    this.stopMissionTimer();
+    
+    // Play timeout sound
+    this.playTimeoutSound();
+    
+    // Show failure modal with sad face
+    this.showMissionFailure();
+  }
+
+  playTimeoutSound() {
+    // Create a beep sound using Web Audio API
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 200;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+      // Fallback: try to play a simple beep
+      console.log("Sound playback failed:", e);
+    }
+  }
+
+  showMissionFailure() {
+    const modal = document.getElementById("mission-failure-modal");
+    const message = document.getElementById("mission-failure-message");
+    const playerImg = document.getElementById("mission-failure-player-img");
+    
+    if (message) {
+      message.textContent = `Time's up! Mission ${this.currentMission} failed.`;
+    }
+    
+    if (playerImg && this.missionPlayer) {
+      playerImg.src = this.missionPlayer.image;
+      playerImg.alt = this.missionPlayer.name;
+      playerImg.style.display = "block";
+    }
+    
+    if (modal) {
+      modal.style.display = "block";
+    }
   }
 
   // Replay functionality
