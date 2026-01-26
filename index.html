@@ -10,6 +10,9 @@
     <div class="game-container">
       <div class="game-header">
         <h1>♛ Super Roman ♛</h1>
+        <button id="radio-toggle" class="radio-icon-btn" title="Radio Player">
+          📻
+        </button>
         <div class="tabs">
           <button class="tab-button active" data-tab="game">Game</button>
           <button class="tab-button" data-tab="lessons">Lessons</button>
@@ -760,6 +763,54 @@
         >
           Replay
         </button>
+      </div>
+    </div>
+
+    <!-- Radio Player Slider -->
+    <div class="radio-slider" id="radio-slider">
+      <div class="radio-slider-header">
+        <h3>🎵 Radio Player</h3>
+        <button id="radio-close" class="radio-close-btn">✕</button>
+      </div>
+      <div class="radio-slider-content">
+        <div class="radio-section">
+          <h4>Free Radio Stations</h4>
+          <div class="radio-search-box">
+            <input
+              type="text"
+              id="radio-search-input"
+              placeholder="Search radio stations..."
+              class="radio-search-input"
+            />
+            <button id="radio-search-btn" class="radio-search-btn">🔍</button>
+          </div>
+          <div class="radio-stations-list" id="radio-stations-list">
+            <div class="radio-loading">Loading stations...</div>
+          </div>
+        </div>
+        <div class="youtube-section">
+          <h4>YouTube Search</h4>
+          <div class="youtube-search-box">
+            <input
+              type="text"
+              id="youtube-search-input"
+              placeholder="Search YouTube..."
+              class="youtube-search-input"
+            />
+            <button id="youtube-search-btn" class="youtube-search-btn">🔍</button>
+          </div>
+          <div class="youtube-results" id="youtube-results"></div>
+        </div>
+      </div>
+      <div class="radio-player-controls" id="radio-player-controls" style="display: none">
+        <div class="now-playing">
+          <span id="now-playing-text">Now Playing: </span>
+          <span id="current-station-name">-</span>
+        </div>
+        <div class="player-buttons">
+          <button id="radio-play-pause" class="player-btn">⏸</button>
+          <button id="radio-stop" class="player-btn">⏹</button>
+        </div>
       </div>
     </div>
 

@@ -28,8 +28,31 @@ body {
 .game-header h1 {
   font-size: 3em;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.radio-icon-btn {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.5em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.radio-icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.radio-icon-btn:active {
+  transform: translateY(0);
 }
 
 .tabs {
@@ -2107,5 +2130,292 @@ body {
 
   .replay-control-btn {
     width: 100%;
+  }
+}
+
+/* Radio Player Slider */
+.radio-slider {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
+  z-index: 2500;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-slider.open {
+  right: 0;
+}
+
+.radio-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.radio-slider-header h3 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.radio-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.radio-slider-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.radio-section,
+.youtube-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.radio-section:last-child,
+.youtube-section:last-child {
+  border-bottom: none;
+}
+
+.radio-section h4,
+.youtube-section h4 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.radio-search-box,
+.youtube-search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.radio-search-input,
+.youtube-search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+.radio-search-input:focus,
+.youtube-search-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.radio-search-btn,
+.youtube-search-btn {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: all 0.3s ease;
+}
+
+.radio-search-btn:hover,
+.youtube-search-btn:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+}
+
+.radio-stations-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.radio-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.radio-station-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.radio-station-item:hover {
+  border-color: #667eea;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.radio-station-item.playing {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.radio-station-name {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.radio-station-info {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.youtube-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.youtube-result-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.youtube-result-item:hover {
+  border-color: #dc3545;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
+.youtube-result-thumbnail {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.youtube-result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.youtube-result-title {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.youtube-result-channel {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.radio-player-controls {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-top: 2px solid #e0e0e0;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.now-playing {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+#current-station-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.player-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.player-btn {
+  padding: 10px 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: all 0.3s ease;
+}
+
+.player-btn:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+}
+
+/* Floating player controls when slider is closed */
+.radio-player-controls.floating {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 2400;
+  border: 2px solid #667eea;
+}
+
+@media (max-width: 768px) {
+  .radio-slider {
+    width: 100%;
+    right: -100%;
+  }
+
+  .radio-icon-btn {
+    font-size: 1.2em;
+    padding: 10px 20px;
+  }
+
+  .radio-player-controls.floating {
+    width: calc(100% - 40px);
+    right: 20px;
+    left: 20px;
   }
 }

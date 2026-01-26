@@ -2604,6 +2604,7 @@ class ChessGame {
 // Initialize the game when the page loads
 document.addEventListener("DOMContentLoaded", () => {
   const game = new ChessGame();
+  const radioPlayer = new RadioPlayer();
 });
 
 // Add some sound effects (optional - will work if you add sound files)
@@ -2633,3 +2634,441 @@ class SoundManager {
 
 // Uncomment to enable sounds (requires sound files)
 // const soundManager = new SoundManager();
+
+// Radio Player Class
+class RadioPlayer {
+  constructor() {
+    this.audio = null;
+    this.currentStation = null;
+    this.isPlaying = false;
+    this.radioStations = [];
+    this.youtubeResults = [];
+    this.setupEventListeners();
+    this.loadDefaultStations();
+  }
+
+  setupEventListeners() {
+    const radioToggle = document.getElementById("radio-toggle");
+    const radioClose = document.getElementById("radio-close");
+    const radioSearchBtn = document.getElementById("radio-search-btn");
+    const radioSearchInput = document.getElementById("radio-search-input");
+    const youtubeSearchBtn = document.getElementById("youtube-search-btn");
+    const youtubeSearchInput = document.getElementById("youtube-search-input");
+    const playPauseBtn = document.getElementById("radio-play-pause");
+    const stopBtn = document.getElementById("radio-stop");
+
+    radioToggle.addEventListener("click", () => this.toggleSlider());
+    radioClose.addEventListener("click", () => this.closeSlider());
+
+    radioSearchBtn.addEventListener("click", () => this.searchRadioStations());
+    radioSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") this.searchRadioStations();
+    });
+
+    youtubeSearchBtn.addEventListener("click", () => this.searchYouTube());
+    youtubeSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") this.searchYouTube();
+    });
+
+    playPauseBtn.addEventListener("click", () => this.togglePlayPause());
+    stopBtn.addEventListener("click", () => this.stop());
+  }
+
+  toggleSlider() {
+    const slider = document.getElementById("radio-slider");
+    slider.classList.toggle("open");
+    // Update player controls position
+    this.updatePlayerControls();
+  }
+
+  closeSlider() {
+    const slider = document.getElementById("radio-slider");
+    slider.classList.remove("open");
+  }
+
+  async loadDefaultStations() {
+    try {
+      // Use Radio Browser API to get popular stations
+      const response = await fetch(
+        "https://de1.api.radio-browser.info/json/stations/topvote/20"
+      );
+      const stations = await response.json();
+      this.radioStations = stations.filter(
+        (s) => s.url_resolved && s.name
+      );
+      this.displayRadioStations(this.radioStations);
+    } catch (error) {
+      console.error("Error loading default stations:", error);
+      // Fallback to hardcoded popular stations
+      this.loadFallbackStations();
+    }
+  }
+
+  loadFallbackStations() {
+    // Popular free radio stations that work without API
+    this.radioStations = [
+      {
+        name: "Smooth Jazz 24/7",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "jazz, smooth",
+      },
+      {
+        name: "Chillout Lounge",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "chill, lounge",
+      },
+      {
+        name: "Classic Rock Radio",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "rock, classic",
+      },
+      {
+        name: "Electronic Dance Music",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "electronic, edm",
+      },
+      {
+        name: "Pop Hits Radio",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "pop, hits",
+      },
+      {
+        name: "Ambient Space",
+        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
+        tags: "ambient, space",
+      },
+    ];
+    this.displayRadioStations(this.radioStations);
+  }
+
+  async searchRadioStations() {
+    const searchTerm = document.getElementById("radio-search-input").value;
+    const stationsList = document.getElementById("radio-stations-list");
+
+    if (!searchTerm.trim()) {
+      this.loadDefaultStations();
+      return;
+    }
+
+    stationsList.innerHTML = '<div class="radio-loading">Searching...</div>';
+
+    try {
+      const response = await fetch(
+        `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(
+          searchTerm
+        )}&limit=20&order=votes&reverse=true`
+      );
+      const stations = await response.json();
+      this.radioStations = stations.filter(
+        (s) => s.url_resolved && s.name
+      );
+      this.displayRadioStations(this.radioStations);
+    } catch (error) {
+      console.error("Error searching stations:", error);
+      stationsList.innerHTML =
+        '<div class="radio-loading">Error loading stations. Please try again.</div>';
+    }
+  }
+
+  displayRadioStations(stations) {
+    const stationsList = document.getElementById("radio-stations-list");
+
+    if (stations.length === 0) {
+      stationsList.innerHTML =
+        '<div class="radio-loading">No stations found.</div>';
+      return;
+    }
+
+    stationsList.innerHTML = stations
+      .map(
+        (station, index) => `
+      <div class="radio-station-item" data-index="${index}">
+        <div class="radio-station-name">${this.escapeHtml(station.name)}</div>
+        <div class="radio-station-info">${this.escapeHtml(
+          station.tags || "Music"
+        )}</div>
+      </div>
+    `
+      )
+      .join("");
+
+    // Add click listeners
+    stationsList.querySelectorAll(".radio-station-item").forEach((item, index) => {
+      item.addEventListener("click", () => this.playStation(stations[index]));
+    });
+  }
+
+  playStation(station) {
+    // Stop current audio if playing
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+    }
+
+    // Update UI
+    document.querySelectorAll(".radio-station-item").forEach((item) => {
+      item.classList.remove("playing");
+    });
+    const stationItems = document.querySelectorAll(".radio-station-item");
+    const stationIndex = this.radioStations.findIndex(
+      (s) => s.name === station.name
+    );
+    if (stationItems[stationIndex]) {
+      stationItems[stationIndex].classList.add("playing");
+    }
+
+    // Create new audio element
+    this.audio = new Audio(station.url_resolved);
+    this.audio.crossOrigin = "anonymous";
+
+    this.audio.addEventListener("loadeddata", () => {
+      this.isPlaying = true;
+      this.currentStation = station;
+      this.updatePlayerControls();
+      this.audio.play().catch((error) => {
+        console.error("Error playing station:", error);
+        alert("Unable to play this station. Please try another one.");
+      });
+    });
+
+    this.audio.addEventListener("error", (e) => {
+      console.error("Audio error:", e);
+      alert("Error loading station. Please try another one.");
+      this.isPlaying = false;
+      this.updatePlayerControls();
+    });
+
+    this.audio.addEventListener("ended", () => {
+      this.isPlaying = false;
+      this.updatePlayerControls();
+    });
+  }
+
+  async searchYouTube() {
+    const searchTerm = document.getElementById("youtube-search-input").value;
+    const resultsDiv = document.getElementById("youtube-results");
+
+    if (!searchTerm.trim()) {
+      resultsDiv.innerHTML = "";
+      return;
+    }
+
+    resultsDiv.innerHTML = '<div class="radio-loading">Searching YouTube...</div>';
+
+    try {
+      // Use a CORS proxy to access YouTube search
+      // Note: In production, you should use YouTube Data API v3 with your own API key
+      const proxyUrl = "https://api.allorigins.win/get?url=";
+      const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        searchTerm
+      )}`;
+      
+      const response = await fetch(proxyUrl + encodeURIComponent(youtubeSearchUrl));
+      const data = await response.json();
+      
+      // Parse YouTube search results from HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data.contents, "text/html");
+      
+      // Extract video data from YouTube's JSON embedded in the page
+      const scripts = doc.querySelectorAll("script");
+      let videoData = null;
+      
+      for (const script of scripts) {
+        if (script.textContent.includes("var ytInitialData")) {
+          const match = script.textContent.match(/var ytInitialData = ({.+?});/);
+          if (match) {
+            try {
+              const ytData = JSON.parse(match[1]);
+              videoData = this.extractVideoData(ytData);
+              break;
+            } catch (e) {
+              console.error("Error parsing YouTube data:", e);
+            }
+          }
+        }
+      }
+      
+      if (videoData && videoData.length > 0) {
+        this.youtubeResults = videoData;
+        this.displayYouTubeResults(this.youtubeResults);
+      } else {
+        // Fallback: Create a direct YouTube search link
+        this.displayYouTubeFallback(searchTerm);
+      }
+    } catch (error) {
+      console.error("Error searching YouTube:", error);
+      this.displayYouTubeFallback(searchTerm);
+    }
+  }
+
+  extractVideoData(ytData) {
+    try {
+      const contents =
+        ytData?.contents?.twoColumnSearchResultsRenderer?.primaryContents
+          ?.sectionListRenderer?.contents?.[0]?.itemSectionRenderer?.contents ||
+        [];
+      
+      const videos = [];
+      for (const item of contents) {
+        if (item.videoRenderer) {
+          const video = item.videoRenderer;
+          videos.push({
+            id: { videoId: video.videoId },
+            snippet: {
+              title: video.title?.runs?.[0]?.text || video.title?.simpleText || "Untitled",
+              channelTitle: video.ownerText?.runs?.[0]?.text || "Unknown",
+              thumbnails: {
+                default: {
+                  url: video.thumbnail?.thumbnails?.[0]?.url || "",
+                },
+              },
+            },
+          });
+        }
+        if (videos.length >= 10) break;
+      }
+      return videos;
+    } catch (error) {
+      console.error("Error extracting video data:", error);
+      return [];
+    }
+  }
+
+  displayYouTubeFallback(searchTerm) {
+    const resultsDiv = document.getElementById("youtube-results");
+    const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+      searchTerm
+    )}`;
+    resultsDiv.innerHTML = `
+      <div class="radio-loading">
+        <p>Click to search YouTube:</p>
+        <a href="${searchUrl}" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 8px;">
+          Open YouTube Search
+        </a>
+      </div>
+    `;
+  }
+
+  displayYouTubeResults(results) {
+    const resultsDiv = document.getElementById("youtube-results");
+
+    if (results.length === 0) {
+      resultsDiv.innerHTML = '<div class="radio-loading">No results found.</div>';
+      return;
+    }
+
+    resultsDiv.innerHTML = results
+      .map(
+        (item) => `
+      <div class="youtube-result-item" data-video-id="${item.id.videoId}">
+        <img src="${item.snippet.thumbnails.default.url}" alt="${this.escapeHtml(
+          item.snippet.title
+        )}" class="youtube-result-thumbnail" />
+        <div class="youtube-result-info">
+          <div class="youtube-result-title">${this.escapeHtml(
+            item.snippet.title
+          )}</div>
+          <div class="youtube-result-channel">${this.escapeHtml(
+            item.snippet.channelTitle
+          )}</div>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    // Add click listeners
+    resultsDiv.querySelectorAll(".youtube-result-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const videoId = item.dataset.videoId;
+        this.playYouTubeVideo(videoId);
+      });
+    });
+  }
+
+  playYouTubeVideo(videoId) {
+    // Stop current audio if playing
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+    }
+
+    // Find the video title from results
+    const video = this.youtubeResults.find(
+      (v) => v.id.videoId === videoId
+    );
+    const videoTitle = video?.snippet?.title || "YouTube Video";
+
+    // Open YouTube video in a new tab
+    // Note: For embedded playback, you would use YouTube IFrame API
+    window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
+    
+    // Update player controls to show YouTube is playing
+    this.currentStation = {
+      name: `YouTube: ${videoTitle}`,
+      type: "youtube",
+      videoId: videoId,
+    };
+    this.isPlaying = true;
+    this.updatePlayerControls();
+  }
+
+  togglePlayPause() {
+    if (!this.audio) return;
+
+    if (this.isPlaying) {
+      this.audio.pause();
+      this.isPlaying = false;
+    } else {
+      this.audio.play();
+      this.isPlaying = true;
+    }
+    this.updatePlayerControls();
+  }
+
+  stop() {
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+      this.audio = null;
+    }
+    this.isPlaying = false;
+    this.currentStation = null;
+    this.updatePlayerControls();
+
+    // Remove playing class from stations
+    document.querySelectorAll(".radio-station-item").forEach((item) => {
+      item.classList.remove("playing");
+    });
+  }
+
+  updatePlayerControls() {
+    const controls = document.getElementById("radio-player-controls");
+    const playPauseBtn = document.getElementById("radio-play-pause");
+    const stationName = document.getElementById("current-station-name");
+    const slider = document.getElementById("radio-slider");
+
+    if (this.currentStation) {
+      controls.style.display = "block";
+      stationName.textContent = this.currentStation.name;
+      playPauseBtn.textContent = this.isPlaying ? "⏸" : "▶";
+      
+      // If slider is closed, make controls float
+      if (!slider.classList.contains("open")) {
+        controls.classList.add("floating");
+      } else {
+        controls.classList.remove("floating");
+      }
+    } else {
+      controls.style.display = "none";
+      controls.classList.remove("floating");
+    }
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+}
