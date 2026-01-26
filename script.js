@@ -2887,15 +2887,80 @@ class RadioPlayer {
 
   async loadDefaultStations() {
     try {
-      // Use Radio Browser API to get popular stations
-      const response = await fetch(
-        "https://de1.api.radio-browser.info/json/stations/topvote/20"
+      // Search for specific default stations: Zaycev stations, fn, german 1 live, wdr
+      const foundStations = [];
+      
+      // Search for Zaycev stations (Relax, Pop, NewRock)
+      try {
+        const zaycevResponse = await fetch(
+          `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(
+            "zaycev"
+          )}&limit=20&order=votes&reverse=true`
+        );
+        const zaycevStations = await zaycevResponse.json();
+        const zaycevTargets = ["Zaycev.FM Relax", "Zaycev.FM Pop", "Zaycev.FM NewRock"];
+        
+        for (const targetName of zaycevTargets) {
+          const station = zaycevStations.find(
+            (s) => s.url_resolved && s.name && s.name === targetName
+          );
+          if (station) {
+            foundStations.push(station);
+          }
+        }
+      } catch (err) {
+        console.warn("Error searching for Zaycev stations:", err);
+      }
+      
+      // Search for other default stations: fn, german 1 live, wdr
+      const otherStationSearches = [
+        ["fn", "funkhaus"],
+        ["1live", "1 live", "german 1 live"],
+        ["wdr"]
+      ];
+      
+      for (const searchTerms of otherStationSearches) {
+        let stationFound = false;
+        for (const searchTerm of searchTerms) {
+          if (stationFound) break;
+          try {
+            const response = await fetch(
+              `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(
+                searchTerm
+              )}&limit=5&order=votes&reverse=true`
+            );
+            const stations = await response.json();
+            // Filter out Hindi stations
+            const validStation = stations.find(
+              (s) => s.url_resolved && s.name && 
+              !s.name.toLowerCase().includes("hindi") &&
+              !s.tags?.toLowerCase().includes("hindi") &&
+              (s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               searchTerm.toLowerCase().includes(s.name.toLowerCase().substring(0, 3)))
+            );
+            if (validStation && !foundStations.find(s => s.name === validStation.name)) {
+              foundStations.push(validStation);
+              stationFound = true;
+            }
+          } catch (err) {
+            console.warn(`Error searching for ${searchTerm}:`, err);
+          }
+        }
+      }
+      
+      // Filter out any Hindi stations that might have been added
+      this.radioStations = foundStations.filter(
+        (s) => !s.name.toLowerCase().includes("hindi") &&
+               !s.tags?.toLowerCase().includes("hindi")
       );
-      const stations = await response.json();
-      this.radioStations = stations.filter(
-        (s) => s.url_resolved && s.name
-      );
-      this.displayRadioStations(this.radioStations);
+      
+      // If we found the default stations, use them
+      if (this.radioStations.length > 0) {
+        this.displayRadioStations(this.radioStations);
+      } else {
+        // Fallback to hardcoded stations
+        this.loadFallbackStations();
+      }
     } catch (error) {
       console.error("Error loading default stations:", error);
       // Fallback to hardcoded popular stations
@@ -2904,37 +2969,38 @@ class RadioPlayer {
   }
 
   loadFallbackStations() {
-    // Popular free radio stations that work without API
+    // Default radio stations: Zaycev stations, fn, german 1 live, wdr
+    // Note: These URLs are placeholders and may need to be updated with actual working streams
     this.radioStations = [
       {
-        name: "Smooth Jazz 24/7",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "jazz, smooth",
+        name: "Zaycev.FM Relax",
+        url_resolved: "https://zaycevfm.cdnvideo.ru/ZaycevFM_relax_128.mp3",
+        tags: "chill, lounge, relax",
       },
       {
-        name: "Chillout Lounge",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "chill, lounge",
+        name: "Zaycev.FM Pop",
+        url_resolved: "https://zaycevfm.cdnvideo.ru/ZaycevFM_pop_128.mp3",
+        tags: "hits, pop music",
       },
       {
-        name: "Classic Rock Radio",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "rock, classic",
+        name: "Zaycev.FM NewRock",
+        url_resolved: "https://zaycevfm.cdnvideo.ru/ZaycevFM_newrock_128.mp3",
+        tags: "alternative rock, rock",
       },
       {
-        name: "Electronic Dance Music",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "electronic, edm",
+        name: "Funkhaus Europa",
+        url_resolved: "https://funkhauseuropa.icecast.ndr.de/funkhauseuropa/live/mp3/128/stream.mp3",
+        tags: "german, radio",
       },
       {
-        name: "Pop Hits Radio",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "pop, hits",
+        name: "1LIVE",
+        url_resolved: "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
+        tags: "german, music, 1live",
       },
       {
-        name: "Ambient Space",
-        url_resolved: "https://streaming.radio.co/s8e9ba7b5e/listen",
-        tags: "ambient, space",
+        name: "WDR",
+        url_resolved: "https://wdr-wdr2-rheinland.icecastssl.wdr.de/wdr/wdr2/rheinland/mp3/128/stream.mp3",
+        tags: "german, wdr, radio",
       },
     ];
     this.displayRadioStations(this.radioStations);
