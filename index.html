@@ -13,9 +13,14 @@
     <div class="game-container">
       <div class="game-header">
         <h1>♛ Super Roman ♛</h1>
-        <button id="radio-toggle" class="radio-icon-btn" title="Radio Player">
-          📻
-        </button>
+        <div class="header-buttons">
+          <button id="radio-toggle" class="radio-icon-btn" title="Radio Player">
+            📻
+          </button>
+          <button id="more-games-btn" class="more-games-btn" title="More Games">
+            🎮
+          </button>
+        </div>
         <div class="tabs">
           <button class="tab-button active" data-tab="game">Game</button>
           <button class="tab-button" data-tab="lessons">Lessons</button>
@@ -886,6 +891,186 @@
         <button id="exit-replay-btn" class="replay-exit-btn">
           Exit Replay
         </button>
+      </div>
+    </div>
+
+    <!-- More Games Selection Modal -->
+    <div class="modal" id="more-games-modal" style="display: none">
+      <div class="modal-content games-modal-content">
+        <h2>🎮 More Games</h2>
+        <div class="games-list">
+          <div class="game-option" id="xo-game-option">
+            <div class="game-icon">⭕❌</div>
+            <div class="game-name">XO Game</div>
+            <div class="game-description">Tic-Tac-Toe</div>
+          </div>
+        </div>
+        <button id="close-games-modal" class="modal-button">Close</button>
+      </div>
+    </div>
+
+    <!-- XO Game Modal -->
+    <div class="modal" id="xo-game-modal" style="display: none">
+      <div class="modal-content xo-modal-content">
+        <h2>⭕❌ XO Game</h2>
+        <div class="xo-game-setup" id="xo-game-setup">
+          <h3>Select Game Mode</h3>
+          <div class="xo-game-mode-selection">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="xo-game-mode"
+                value="vs-computer"
+                id="xo-mode-vs-computer"
+                checked
+              />
+              <span>VS Computer</span>
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="xo-game-mode"
+                value="two-players"
+                id="xo-mode-two-players"
+              />
+              <span>2 Players</span>
+            </label>
+          </div>
+          <div class="xo-player-selection" id="xo-player-selection">
+            <div class="xo-player-setup">
+              <h4>Player X</h4>
+              <div class="player-options">
+                <div
+                  class="player-option"
+                  data-player="ruslan"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="roman"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="katrine"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="liana"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="peppa"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="booba"
+                  data-xo-color="x"
+                >
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
+              </div>
+              <div class="selected-player" id="xo-x-player">
+                <span>Select Player X</span>
+              </div>
+            </div>
+            <div class="vs-divider">VS</div>
+            <div class="xo-player-setup">
+              <h4>Player O</h4>
+              <div class="player-options" id="xo-o-player-options">
+                <div
+                  class="player-option"
+                  data-player="ruslan"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="roman"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="katrine"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="liana"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="peppa"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="booba"
+                  data-xo-color="o"
+                >
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
+              </div>
+              <div class="selected-player" id="xo-o-player">
+                <span id="xo-o-player-text">Select Player O</span>
+              </div>
+            </div>
+          </div>
+          <button id="start-xo-game-btn" class="start-game-button" style="display: none">
+            Start XO Game
+          </button>
+        </div>
+        <div class="xo-game-area" id="xo-game-area" style="display: none">
+          <div class="xo-game-info">
+            <div class="xo-current-player">
+              <span>Current Player: </span>
+              <span id="xo-current-player-name">X</span>
+            </div>
+            <button id="xo-reset-btn" class="reset-button">🔄 New Game</button>
+          </div>
+          <div class="xo-board-container">
+            <div class="xo-board" id="xo-board">
+              <!-- XO board cells will be generated by JavaScript -->
+            </div>
+          </div>
+          <div class="xo-game-status" id="xo-game-status"></div>
+        </div>
+        <button id="close-xo-modal" class="modal-button">Close</button>
       </div>
     </div>
 

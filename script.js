@@ -1812,7 +1812,9 @@ class ChessGame {
     );
     missionDifficultyOptions.forEach((option) => {
       option.addEventListener("click", () => {
-        missionDifficultyOptions.forEach((opt) => opt.classList.remove("selected"));
+        missionDifficultyOptions.forEach((opt) =>
+          opt.classList.remove("selected")
+        );
         option.classList.add("selected");
 
         const difficulty = option.dataset.difficulty;
@@ -1824,7 +1826,9 @@ class ChessGame {
         const difficultyName =
           difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
         const difficultyIconEl = option.querySelector(".difficulty-icon");
-        const difficultyIcon = difficultyIconEl ? difficultyIconEl.textContent : "";
+        const difficultyIcon = difficultyIconEl
+          ? difficultyIconEl.textContent
+          : "";
         selectedDifficultyEl.classList.add("has-difficulty");
         selectedDifficultyEl.innerHTML = `<span>${difficultyIcon} ${difficultyName}</span>`;
 
@@ -1873,7 +1877,9 @@ class ChessGame {
       });
     }
 
-    const missionFailureMenuBtn = document.getElementById("mission-failure-menu-btn");
+    const missionFailureMenuBtn = document.getElementById(
+      "mission-failure-menu-btn"
+    );
     if (missionFailureMenuBtn) {
       missionFailureMenuBtn.addEventListener("click", () => {
         this.resetMission();
@@ -1902,7 +1908,11 @@ class ChessGame {
   updateStartMissionButton() {
     const startMissionBtn = document.getElementById("start-mission-btn");
     if (startMissionBtn) {
-      if (this.missionPlayer && this.missionUserPiece && this.missionDifficulty) {
+      if (
+        this.missionPlayer &&
+        this.missionUserPiece &&
+        this.missionDifficulty
+      ) {
         startMissionBtn.style.display = "block";
       } else {
         startMissionBtn.style.display = "none";
@@ -1911,7 +1921,12 @@ class ChessGame {
   }
 
   startMission() {
-    if (!this.missionPlayer || !this.missionUserPiece || !this.missionDifficulty) return;
+    if (
+      !this.missionPlayer ||
+      !this.missionUserPiece ||
+      !this.missionDifficulty
+    )
+      return;
 
     this.currentMission = 1;
     this.missionCompleted = false;
@@ -1927,7 +1942,7 @@ class ChessGame {
     this.missionOpponentPieces = [];
     this.missionCompleted = false; // Reset completion flag
     this.clearMissionHints();
-    
+
     // Stop any existing timer
     this.stopMissionTimer();
 
@@ -2003,7 +2018,7 @@ class ChessGame {
 
     // Create mission board
     this.createMissionBoard();
-    
+
     // Start timer for this mission
     this.startMissionTimer();
   }
@@ -2193,10 +2208,10 @@ class ChessGame {
     if (this.missionOpponentPieces.length === 0) {
       // Set completion flag to prevent timeout
       this.missionCompleted = true;
-      
+
       // Stop timer on completion
       this.stopMissionTimer();
-      
+
       // Mission completed
       if (this.currentMission >= this.maxMissions) {
         // All missions completed
@@ -2354,25 +2369,25 @@ class ChessGame {
     } else if (this.missionDifficulty === "hard") {
       timeMultiplier = 5;
     }
-    
+
     this.missionTimeRemaining = this.currentMission * timeMultiplier;
     this.updateTimerDisplay();
-    
+
     // Clear any existing timer
     if (this.missionTimerInterval) {
       clearInterval(this.missionTimerInterval);
     }
-    
+
     // Start countdown
     this.missionTimerInterval = setInterval(() => {
       // Don't process timeout if mission is already completed
       if (this.missionCompleted) {
         return;
       }
-      
+
       this.missionTimeRemaining--;
       this.updateTimerDisplay();
-      
+
       if (this.missionTimeRemaining <= 0 && !this.missionCompleted) {
         this.handleMissionTimeout();
       }
@@ -2392,13 +2407,13 @@ class ChessGame {
     const timerElement = document.getElementById("mission-timer");
     const timerCircle = document.getElementById("mission-timer-circle");
     if (!timerElement || !timerCircle) return;
-    
+
     const minutes = Math.floor(this.missionTimeRemaining / 60);
     const seconds = this.missionTimeRemaining % 60;
-    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    
+    const timeString = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
     timerElement.textContent = timeString;
-    
+
     // Calculate percentage for circular progress based on difficulty
     let timeMultiplier = 10; // default medium
     if (this.missionDifficulty === "easy") {
@@ -2407,13 +2422,16 @@ class ChessGame {
       timeMultiplier = 5;
     }
     const totalTime = this.currentMission * timeMultiplier;
-    const percentage = Math.max(0, Math.min(100, (this.missionTimeRemaining / totalTime) * 100));
-    
+    const percentage = Math.max(
+      0,
+      Math.min(100, (this.missionTimeRemaining / totalTime) * 100)
+    );
+
     // Update circle progress (circumference = 2 * π * 45 ≈ 282.74)
     const circumference = 2 * Math.PI * 45;
     const offset = circumference - (percentage / 100) * circumference;
     timerCircle.style.strokeDashoffset = offset;
-    
+
     // Add warning class when time is low
     const timerContainer = document.querySelector(".mission-timer-container");
     if (timerContainer) {
@@ -2427,10 +2445,10 @@ class ChessGame {
 
   handleMissionTimeout() {
     this.stopMissionTimer();
-    
+
     // Play timeout sound
     this.playTimeoutSound();
-    
+
     // Show failure modal with sad face
     this.showMissionFailure();
   }
@@ -2438,19 +2456,23 @@ class ChessGame {
   playTimeoutSound() {
     // Create a beep sound using Web Audio API
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       oscillator.frequency.value = 200;
-      oscillator.type = 'sine';
-      
+      oscillator.type = "sine";
+
       gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.5
+      );
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.5);
     } catch (e) {
@@ -2463,17 +2485,17 @@ class ChessGame {
     const modal = document.getElementById("mission-failure-modal");
     const message = document.getElementById("mission-failure-message");
     const playerImg = document.getElementById("mission-failure-player-img");
-    
+
     if (message) {
       message.textContent = `Time's up! Mission ${this.currentMission} failed.`;
     }
-    
+
     if (playerImg && this.missionPlayer) {
       playerImg.src = this.missionPlayer.image;
       playerImg.alt = this.missionPlayer.name;
       playerImg.style.display = "block";
     }
-    
+
     if (modal) {
       modal.style.display = "block";
     }
@@ -2889,7 +2911,7 @@ class RadioPlayer {
     try {
       // Search for specific default stations: Zaycev stations, fn, german 1 live, wdr
       const foundStations = [];
-      
+
       // Search for Zaycev stations (Relax, Pop, NewRock)
       try {
         const zaycevResponse = await fetch(
@@ -2898,8 +2920,12 @@ class RadioPlayer {
           )}&limit=20&order=votes&reverse=true`
         );
         const zaycevStations = await zaycevResponse.json();
-        const zaycevTargets = ["Zaycev.FM Relax", "Zaycev.FM Pop", "Zaycev.FM NewRock"];
-        
+        const zaycevTargets = [
+          "Zaycev.FM Relax",
+          "Zaycev.FM Pop",
+          "Zaycev.FM NewRock",
+        ];
+
         for (const targetName of zaycevTargets) {
           const station = zaycevStations.find(
             (s) => s.url_resolved && s.name && s.name === targetName
@@ -2911,14 +2937,14 @@ class RadioPlayer {
       } catch (err) {
         console.warn("Error searching for Zaycev stations:", err);
       }
-      
+
       // Search for other default stations: fn, german 1 live, wdr
       const otherStationSearches = [
         ["fn", "funkhaus"],
         ["1live", "1 live", "german 1 live"],
-        ["wdr"]
+        ["wdr"],
       ];
-      
+
       for (const searchTerms of otherStationSearches) {
         let stationFound = false;
         for (const searchTerm of searchTerms) {
@@ -2932,13 +2958,20 @@ class RadioPlayer {
             const stations = await response.json();
             // Filter out Hindi stations
             const validStation = stations.find(
-              (s) => s.url_resolved && s.name && 
-              !s.name.toLowerCase().includes("hindi") &&
-              !s.tags?.toLowerCase().includes("hindi") &&
-              (s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               searchTerm.toLowerCase().includes(s.name.toLowerCase().substring(0, 3)))
+              (s) =>
+                s.url_resolved &&
+                s.name &&
+                !s.name.toLowerCase().includes("hindi") &&
+                !s.tags?.toLowerCase().includes("hindi") &&
+                (s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  searchTerm
+                    .toLowerCase()
+                    .includes(s.name.toLowerCase().substring(0, 3)))
             );
-            if (validStation && !foundStations.find(s => s.name === validStation.name)) {
+            if (
+              validStation &&
+              !foundStations.find((s) => s.name === validStation.name)
+            ) {
               foundStations.push(validStation);
               stationFound = true;
             }
@@ -2947,13 +2980,14 @@ class RadioPlayer {
           }
         }
       }
-      
+
       // Filter out any Hindi stations that might have been added
       this.radioStations = foundStations.filter(
-        (s) => !s.name.toLowerCase().includes("hindi") &&
-               !s.tags?.toLowerCase().includes("hindi")
+        (s) =>
+          !s.name.toLowerCase().includes("hindi") &&
+          !s.tags?.toLowerCase().includes("hindi")
       );
-      
+
       // If we found the default stations, use them
       if (this.radioStations.length > 0) {
         this.displayRadioStations(this.radioStations);
@@ -2989,17 +3023,20 @@ class RadioPlayer {
       },
       {
         name: "Funkhaus Europa",
-        url_resolved: "https://funkhauseuropa.icecast.ndr.de/funkhauseuropa/live/mp3/128/stream.mp3",
+        url_resolved:
+          "https://funkhauseuropa.icecast.ndr.de/funkhauseuropa/live/mp3/128/stream.mp3",
         tags: "german, radio",
       },
       {
         name: "1LIVE",
-        url_resolved: "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
+        url_resolved:
+          "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3",
         tags: "german, music, 1live",
       },
       {
         name: "WDR",
-        url_resolved: "https://wdr-wdr2-rheinland.icecastssl.wdr.de/wdr/wdr2/rheinland/mp3/128/stream.mp3",
+        url_resolved:
+          "https://wdr-wdr2-rheinland.icecastssl.wdr.de/wdr/wdr2/rheinland/mp3/128/stream.mp3",
         tags: "german, wdr, radio",
       },
     ];
@@ -3024,9 +3061,7 @@ class RadioPlayer {
         )}&limit=20&order=votes&reverse=true`
       );
       const stations = await response.json();
-      this.radioStations = stations.filter(
-        (s) => s.url_resolved && s.name
-      );
+      this.radioStations = stations.filter((s) => s.url_resolved && s.name);
       this.displayRadioStations(this.radioStations);
     } catch (error) {
       console.error("Error searching stations:", error);
@@ -3058,9 +3093,11 @@ class RadioPlayer {
       .join("");
 
     // Add click listeners
-    stationsList.querySelectorAll(".radio-station-item").forEach((item, index) => {
-      item.addEventListener("click", () => this.playStation(stations[index]));
-    });
+    stationsList
+      .querySelectorAll(".radio-station-item")
+      .forEach((item, index) => {
+        item.addEventListener("click", () => this.playStation(stations[index]));
+      });
   }
 
   playStation(station) {
@@ -3148,7 +3185,7 @@ class RadioPlayer {
       controls.style.display = "block";
       stationName.textContent = this.currentStation.name;
       playPauseBtn.textContent = this.isPlaying ? "⏸" : "▶";
-      
+
       // If slider is closed, make controls float
       if (!slider.classList.contains("open")) {
         controls.classList.add("floating");
@@ -3167,6 +3204,368 @@ class RadioPlayer {
     return div.innerHTML;
   }
 }
+// XO Game Class
+class XOGame {
+  constructor() {
+    this.board = Array(9).fill(null);
+    this.currentPlayer = "X";
+    this.gameOver = false;
+    this.winner = null;
+    this.gameMode = "two-players"; // "two-players" or "vs-computer"
+    this.players = {
+      X: { name: "", image: "" },
+      O: { name: "", image: "" },
+    };
+    this.computerSymbol = "O";
+    this.humanSymbol = "X";
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    // More Games button
+    document.getElementById("more-games-btn").addEventListener("click", () => {
+      document.getElementById("more-games-modal").style.display = "flex";
+    });
+
+    // Close games modal
+    document
+      .getElementById("close-games-modal")
+      .addEventListener("click", () => {
+        document.getElementById("more-games-modal").style.display = "none";
+      });
+
+    // XO Game option
+    document.getElementById("xo-game-option").addEventListener("click", () => {
+      document.getElementById("more-games-modal").style.display = "none";
+      document.getElementById("xo-game-modal").style.display = "flex";
+      this.resetGameSetup();
+    });
+
+    // Close XO modal
+    document.getElementById("close-xo-modal").addEventListener("click", () => {
+      this.resetAndCloseXOGame();
+    });
+
+    // Game mode selection
+    document.querySelectorAll('input[name="xo-game-mode"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        this.gameMode = e.target.value;
+        this.updatePlayerSelection();
+      });
+    });
+
+    // Player selection for X
+    document.querySelectorAll('[data-xo-color="x"]').forEach((option) => {
+      option.addEventListener("click", () => {
+        const player = option.dataset.player;
+        const img = option.querySelector("img").src;
+        this.selectPlayer("X", player, img);
+      });
+    });
+
+    // Player selection for O
+    document.querySelectorAll('[data-xo-color="o"]').forEach((option) => {
+      option.addEventListener("click", () => {
+        if (this.gameMode === "two-players") {
+          const player = option.dataset.player;
+          const img = option.querySelector("img").src;
+          this.selectPlayer("O", player, img);
+        }
+      });
+    });
+
+    // Start XO game
+    document
+      .getElementById("start-xo-game-btn")
+      .addEventListener("click", () => {
+        this.startGame();
+      });
+
+    // Reset XO game
+    document.getElementById("xo-reset-btn").addEventListener("click", () => {
+      this.resetGame();
+    });
+  }
+
+  resetGameSetup() {
+    this.players = { X: { name: "", image: "" }, O: { name: "", image: "" } };
+    this.gameMode = "vs-computer";
+    document.getElementById("xo-mode-two-players").checked = false;
+    document.getElementById("xo-mode-vs-computer").checked = true;
+
+    // Reset player displays
+    document.getElementById("xo-x-player").innerHTML =
+      "<span>Select Player X</span>";
+    document.getElementById("xo-x-player").classList.remove("has-player");
+    document.getElementById("xo-o-player").innerHTML =
+      '<span id="xo-o-player-text">Select Player O</span>';
+    document.getElementById("xo-o-player").classList.remove("has-player");
+
+    this.updatePlayerSelection();
+    this.updateStartButton();
+  }
+
+  updatePlayerSelection() {
+    const oPlayerOptions = document.getElementById("xo-o-player-options");
+    const oPlayerElement = document.getElementById("xo-o-player");
+
+    if (this.gameMode === "vs-computer") {
+      oPlayerOptions.style.display = "none";
+      oPlayerElement.innerHTML = "<span>Computer</span>";
+      oPlayerElement.classList.add("has-player");
+      this.players.O = { name: "Computer", image: "" };
+    } else {
+      oPlayerOptions.style.display = "grid";
+      oPlayerElement.innerHTML =
+        '<span id="xo-o-player-text">Select Player O</span>';
+      if (!this.players.O.name || this.players.O.name === "Computer") {
+        oPlayerElement.classList.remove("has-player");
+        this.players.O = { name: "", image: "" };
+      }
+    }
+    this.updateStartButton();
+  }
+
+  selectPlayer(symbol, playerName, imageSrc) {
+    this.players[symbol] = { name: playerName, image: imageSrc };
+
+    const playerElement = document.getElementById(
+      `xo-${symbol.toLowerCase()}-player`
+    );
+    playerElement.innerHTML = `
+      <img src="${imageSrc}" alt="${playerName}" style="display: block; width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 8px; border: 2px solid #28a745;" />
+      <span>${playerName}</span>
+    `;
+    playerElement.classList.add("has-player");
+
+    this.updateStartButton();
+  }
+
+  updateStartButton() {
+    const startBtn = document.getElementById("start-xo-game-btn");
+    if (this.players.X.name && this.players.O.name) {
+      startBtn.style.display = "block";
+    } else {
+      startBtn.style.display = "none";
+    }
+  }
+
+  startGame() {
+    document.getElementById("xo-game-setup").style.display = "none";
+    document.getElementById("xo-game-area").style.display = "block";
+
+    // Set symbols for vs computer mode
+    if (this.gameMode === "vs-computer") {
+      this.humanSymbol = "X";
+      this.computerSymbol = "O";
+      this.currentPlayer = "X"; // Human always starts
+    }
+
+    this.createBoard();
+    this.resetGame();
+  }
+
+  createBoard() {
+    const board = document.getElementById("xo-board");
+    board.innerHTML = "";
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("button");
+      cell.className = "xo-cell";
+      cell.dataset.index = i;
+      cell.addEventListener("click", () => this.handleCellClick(i));
+      board.appendChild(cell);
+    }
+  }
+
+  resetGame() {
+    this.board = Array(9).fill(null);
+    this.currentPlayer = "X";
+    this.gameOver = false;
+    this.winner = null;
+
+    // Reset symbols for vs computer mode
+    if (this.gameMode === "vs-computer") {
+      this.humanSymbol = "X";
+      this.computerSymbol = "O";
+    }
+
+    this.updateBoard();
+    this.updateStatus();
+  }
+
+  resetAndCloseXOGame() {
+    // Reset the game state
+    this.resetGame();
+
+    // Hide game area and show setup
+    document.getElementById("xo-game-area").style.display = "none";
+    document.getElementById("xo-game-setup").style.display = "block";
+
+    // Reset game setup
+    this.resetGameSetup();
+
+    // Close the modal
+    document.getElementById("xo-game-modal").style.display = "none";
+  }
+
+  handleCellClick(index) {
+    if (this.gameOver || this.board[index] !== null) return;
+
+    // In vs computer mode, only allow human (X) to click
+    if (
+      this.gameMode === "vs-computer" &&
+      this.currentPlayer !== this.humanSymbol
+    ) {
+      return;
+    }
+
+    // Make the move
+    this.makeMove(index, this.currentPlayer);
+
+    if (this.gameOver) return;
+
+    // Computer's turn (if vs computer mode)
+    if (
+      this.gameMode === "vs-computer" &&
+      this.currentPlayer === this.computerSymbol
+    ) {
+      setTimeout(() => {
+        this.computerMove();
+      }, 500);
+    }
+  }
+
+  makeMove(index, symbol) {
+    this.board[index] = symbol;
+    this.updateBoard();
+
+    if (this.checkWinner()) {
+      this.gameOver = true;
+      this.updateStatus();
+      return;
+    }
+
+    if (this.isBoardFull()) {
+      this.gameOver = true;
+      this.winner = "draw";
+      this.updateStatus();
+      return;
+    }
+
+    this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+    this.updateStatus();
+  }
+
+  computerMove() {
+    if (this.gameOver) return;
+
+    // Simple AI: Try to win, then block, then take center, then take corner, else random
+    let move = this.findWinningMove(this.computerSymbol);
+    if (move === null) {
+      move = this.findWinningMove(this.humanSymbol); // Block opponent
+    }
+    if (move === null && this.board[4] === null) {
+      move = 4; // Take center
+    }
+    if (move === null) {
+      const corners = [0, 2, 6, 8];
+      const availableCorners = corners.filter((i) => this.board[i] === null);
+      if (availableCorners.length > 0) {
+        move =
+          availableCorners[Math.floor(Math.random() * availableCorners.length)];
+      }
+    }
+    if (move === null) {
+      const available = this.board
+        .map((cell, index) => (cell === null ? index : null))
+        .filter((val) => val !== null);
+      move = available[Math.floor(Math.random() * available.length)];
+    }
+
+    if (move !== null) {
+      this.makeMove(move, this.computerSymbol);
+    }
+  }
+
+  findWinningMove(symbol) {
+    for (let i = 0; i < 9; i++) {
+      if (this.board[i] === null) {
+        this.board[i] = symbol;
+        if (this.checkWinner()) {
+          this.board[i] = null;
+          return i;
+        }
+        this.board[i] = null;
+      }
+    }
+    return null;
+  }
+
+  checkWinner() {
+    const winPatterns = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8], // Rows
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8], // Columns
+      [0, 4, 8],
+      [2, 4, 6], // Diagonals
+    ];
+
+    for (const pattern of winPatterns) {
+      const [a, b, c] = pattern;
+      if (
+        this.board[a] &&
+        this.board[a] === this.board[b] &&
+        this.board[a] === this.board[c]
+      ) {
+        this.winner = this.board[a];
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isBoardFull() {
+    return this.board.every((cell) => cell !== null);
+  }
+
+  updateBoard() {
+    const cells = document.querySelectorAll(".xo-cell");
+    cells.forEach((cell, index) => {
+      const symbol = this.board[index];
+      cell.textContent = symbol || "";
+      cell.className = "xo-cell";
+      if (symbol) {
+        cell.classList.add(symbol.toLowerCase());
+        cell.classList.add("disabled");
+      }
+    });
+  }
+
+  updateStatus() {
+    const statusEl = document.getElementById("xo-game-status");
+    const currentPlayerEl = document.getElementById("xo-current-player-name");
+
+    if (this.gameOver) {
+      if (this.winner === "draw") {
+        statusEl.textContent = "It's a draw!";
+        currentPlayerEl.textContent = "Draw";
+      } else {
+        const winnerName = this.players[this.winner].name;
+        statusEl.textContent = `${winnerName} wins!`;
+        currentPlayerEl.textContent = winnerName;
+      }
+    } else {
+      const currentPlayerName = this.players[this.currentPlayer].name;
+      statusEl.textContent = "";
+      currentPlayerEl.textContent = currentPlayerName;
+    }
+  }
+}
+
 // Initialize sound manager globally
 let soundManager;
 
@@ -3174,4 +3573,5 @@ let soundManager;
 document.addEventListener("DOMContentLoaded", () => {
   soundManager = new SoundManager();
   const game = new ChessGame();
+  const xoGame = new XOGame();
 });
