@@ -2554,6 +2554,13 @@ body {
   font-size: 1.2em;
 }
 
+.xo-player-setup .player-options {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
 .xo-game-area {
   margin: 20px 0;
 }
@@ -2643,6 +2650,10 @@ body {
   .xo-player-selection {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+
+  .xo-player-setup .player-options {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 
   .xo-board {
