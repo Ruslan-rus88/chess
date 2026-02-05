@@ -72,6 +72,9 @@ class ChessGame {
     this.missionTimerInterval = null;
     this.missionCompleted = false; // Flag to prevent timeout after completion
 
+    // Lessons mode instructor
+    this.lessonsInstructor = "roman";
+
     this.initializeGame();
   }
 
@@ -1440,7 +1443,22 @@ class ChessGame {
   }
 
   setupLessons() {
-    // Initialize Roman's speech bubble
+    // Initialize instructor dropdown
+    const instructorSelect = document.getElementById(
+      "lessons-instructor-select"
+    );
+    const instructorImg = document.getElementById("lessons-instructor-img");
+
+    if (instructorSelect) {
+      instructorSelect.addEventListener("change", (e) => {
+        this.lessonsInstructor = e.target.value;
+        this.updateInstructorImage();
+      });
+      // Set initial image
+      this.updateInstructorImage();
+    }
+
+    // Initialize instructor's speech bubble
     this.showRomanMessage("Welcome! Select a piece to learn its movements.");
 
     // Piece selection
@@ -1548,7 +1566,7 @@ class ChessGame {
       dotsEl.textContent = ".".repeat(dotCount);
     }, 500);
 
-    // Show dots for 1.5 seconds, then type out the message
+    // Show dots for 0.8 seconds, then type out the message
     setTimeout(() => {
       if (this.dotsInterval) {
         clearInterval(this.dotsInterval);
@@ -1585,7 +1603,28 @@ class ChessGame {
           this.currentTypingMessage = null;
         }
       }, 30); // 30ms per character for typing effect
-    }, 1500);
+    }, 800);
+  }
+
+  updateInstructorImage() {
+    const instructorImg = document.getElementById("lessons-instructor-img");
+    if (!instructorImg) return;
+
+    const imageMap = {
+      roman: "assets/images/roman.jpg",
+      ruslan: "assets/images/ruslan.jpeg",
+      booba: "assets/images/booba.jpeg",
+      katrine: "assets/images/katrine.jpg",
+      liana: "assets/images/liana.jpeg",
+      peppa: "assets/images/peppa.jpeg",
+    };
+
+    if (imageMap[this.lessonsInstructor]) {
+      instructorImg.src = imageMap[this.lessonsInstructor];
+      instructorImg.alt =
+        this.lessonsInstructor.charAt(0).toUpperCase() +
+        this.lessonsInstructor.slice(1);
+    }
   }
 
   speakMessage(message) {
@@ -1598,24 +1637,76 @@ class ChessGame {
     // Create a new speech synthesis utterance
     const utterance = new SpeechSynthesisUtterance(message);
 
-    // Configure voice settings
-    utterance.rate = 1.0; // Normal speed
-    utterance.pitch = 1.0; // Normal pitch
-    utterance.volume = 1.0; // Full volume
+    // Configure voice settings based on instructor
+    const instructor = this.lessonsInstructor || "roman";
+
+    // Voice settings by instructor type
+    if (instructor === "katrine") {
+      // Lady voice
+      utterance.rate = 1.0;
+      utterance.pitch = 1.2; // Slightly higher for female
+      utterance.volume = 1.0;
+    } else if (instructor === "liana" || instructor === "peppa") {
+      // Girl kid sound
+      utterance.rate = 1.1; // Slightly faster
+      utterance.pitch = 1.6; // Higher pitch for young girl
+      utterance.volume = 1.0;
+    } else {
+      // Man voice (Roman, Ruslan, Booba)
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0; // Normal pitch
+      utterance.volume = 1.0;
+    }
 
     // Try to use a more natural voice if available
     const voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
-      // Prefer English voices, or use the first available voice
-      const englishVoice =
-        voices.find(
-          (voice) => voice.lang.startsWith("en") && voice.localService
-        ) ||
-        voices.find((voice) => voice.lang.startsWith("en")) ||
-        voices[0];
+      let selectedVoice = null;
 
-      if (englishVoice) {
-        utterance.voice = englishVoice;
+      if (instructor === "katrine") {
+        // Prefer female voices for lady
+        selectedVoice =
+          voices.find(
+            (voice) =>
+              voice.lang.startsWith("en") &&
+              (voice.name.toLowerCase().includes("female") ||
+                voice.name.toLowerCase().includes("woman") ||
+                voice.name.toLowerCase().includes("zira") ||
+                voice.name.toLowerCase().includes("samantha"))
+          ) ||
+          voices.find(
+            (voice) => voice.lang.startsWith("en") && voice.localService
+          );
+      } else if (instructor === "liana" || instructor === "peppa") {
+        // Prefer higher-pitched voices for young girls
+        selectedVoice =
+          voices.find(
+            (voice) =>
+              voice.lang.startsWith("en") &&
+              (voice.name.toLowerCase().includes("child") ||
+                voice.name.toLowerCase().includes("young") ||
+                voice.name.toLowerCase().includes("kid"))
+          ) ||
+          voices.find(
+            (voice) =>
+              voice.lang.startsWith("en") &&
+              (voice.name.toLowerCase().includes("female") ||
+                voice.name.toLowerCase().includes("woman"))
+          );
+      }
+
+      // Fallback to any English voice
+      if (!selectedVoice) {
+        selectedVoice =
+          voices.find(
+            (voice) => voice.lang.startsWith("en") && voice.localService
+          ) ||
+          voices.find((voice) => voice.lang.startsWith("en")) ||
+          voices[0];
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
       }
     }
 
