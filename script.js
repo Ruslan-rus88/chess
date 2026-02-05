@@ -129,6 +129,16 @@ class ChessGame {
     this.setupLessons();
     this.setupMission();
     this.updatePlaygroundVisibility();
+    
+    // Load voices for speech synthesis (some browsers need this)
+    if (window.speechSynthesis) {
+      // Chrome needs voices to be loaded
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', () => {
+          // Voices loaded
+        });
+      }
+    }
   }
 
   createBoard() {
@@ -802,6 +812,7 @@ class ChessGame {
     this.updateDisplay();
     this.updateCapturedPieces();
     this.updatePlaygroundVisibility();
+    this.updateCurrentPlayerDisplay();
   }
 
   setupEventListeners() {
@@ -864,10 +875,27 @@ class ChessGame {
   setupCustomization() {
     // Settings toggle
     const settingsToggle = document.getElementById("settings-toggle");
-    const settingsContent = document.getElementById("settings-content");
+    const settingsModal = document.getElementById("settings-modal");
+    const settingsClose = document.getElementById("settings-close");
+    const settingsCloseBtn = document.getElementById("settings-close-btn");
 
     settingsToggle.addEventListener("click", () => {
-      settingsContent.classList.toggle("active");
+      settingsModal.style.display = "flex";
+    });
+
+    settingsClose.addEventListener("click", () => {
+      settingsModal.style.display = "none";
+    });
+
+    settingsCloseBtn.addEventListener("click", () => {
+      settingsModal.style.display = "none";
+    });
+
+    // Close modal when clicking outside
+    settingsModal.addEventListener("click", (e) => {
+      if (e.target.id === "settings-modal") {
+        settingsModal.style.display = "none";
+      }
     });
 
     // Piece style selector
@@ -888,16 +916,6 @@ class ChessGame {
       this.changeBoardStyle(e.target.value);
     });
 
-    // Fullscreen button
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    fullscreenBtn.addEventListener("click", () => {
-      this.toggleFullscreen();
-    });
-
-    // Listen for fullscreen changes
-    document.addEventListener("fullscreenchange", () => {
-      this.updateFullscreenButton();
-    });
   }
 
   changePieceStyle(style) {
@@ -931,45 +949,6 @@ class ChessGame {
     this.currentBoardStyle = style;
   }
 
-  toggleFullscreen() {
-    const gameContainer = document.querySelector(".game-container");
-
-    if (!document.fullscreenElement) {
-      // Enter fullscreen
-      document.documentElement
-        .requestFullscreen()
-        .then(() => {
-          gameContainer.classList.add("fullscreen");
-        })
-        .catch((err) => {
-          console.error("Error entering fullscreen:", err);
-        });
-    } else {
-      // Exit fullscreen
-      document
-        .exitFullscreen()
-        .then(() => {
-          gameContainer.classList.remove("fullscreen");
-        })
-        .catch((err) => {
-          console.error("Error exiting fullscreen:", err);
-        });
-    }
-  }
-
-  updateFullscreenButton() {
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    const gameContainer = document.querySelector(".game-container");
-
-    if (document.fullscreenElement) {
-      fullscreenBtn.textContent = "🚪 Exit Fullscreen";
-      gameContainer.classList.add("fullscreen");
-    } else {
-      fullscreenBtn.textContent = "📺 Fullscreen";
-      gameContainer.classList.remove("fullscreen");
-    }
-  }
-
   updateRadioLabelClass(radio) {
     const label = radio.closest(".radio-label");
     if (label) {
@@ -995,7 +974,8 @@ class ChessGame {
   }
 
   setupPlayerSelection() {
-    const playerOptions = document.querySelectorAll(".player-option");
+    // Only select player options for chess game (not XO game which uses data-xo-color)
+    const playerOptions = document.querySelectorAll('.player-option[data-color]:not([data-xo-color])');
     const startGameBtn = document.getElementById("start-game-btn");
 
     playerOptions.forEach((option) => {
@@ -1230,7 +1210,8 @@ class ChessGame {
   }
 
   updatePlayerOptionStates() {
-    document.querySelectorAll(".player-option").forEach((option) => {
+    // Only update chess game player options (not XO game which uses data-xo-color)
+    document.querySelectorAll('.player-option[data-color]:not([data-xo-color])').forEach((option) => {
       const optionColor = option.dataset.color;
 
       // One-player mode options don't need disabling logic
@@ -1242,7 +1223,7 @@ class ChessGame {
       // Two-players mode - disable if same player is selected for other color
       const otherColor = optionColor === "white" ? "black" : "white";
       const playerName = option.dataset.player;
-      const otherPlayerName = this.players[otherColor].name
+      const otherPlayerName = this.players[otherColor] && this.players[otherColor].name
         ? this.players[otherColor].name.toLowerCase()
         : "";
 
@@ -1256,17 +1237,18 @@ class ChessGame {
 
   updateStartButtonState() {
     const startGameBtn = document.getElementById("start-game-btn");
+    if (!startGameBtn) return;
 
     if (this.gameMode === "one-player") {
       // In one-player mode, only need the player's side to be selected
-      if (this.players[this.playerSide].name) {
+      if (this.players[this.playerSide] && this.players[this.playerSide].name) {
         startGameBtn.style.display = "block";
       } else {
         startGameBtn.style.display = "none";
       }
     } else {
       // In two-players mode, need both players
-      if (this.players.white.name && this.players.black.name) {
+      if (this.players.white && this.players.white.name && this.players.black && this.players.black.name) {
         startGameBtn.style.display = "block";
       } else {
         startGameBtn.style.display = "none";
@@ -1310,24 +1292,39 @@ class ChessGame {
   updateCurrentPlayerDisplay() {
     const currentPlayerEl = document.getElementById("current-player");
     const currentPlayerImg = document.getElementById("current-player-img");
+    const currentPlayerInfo = document.querySelector(".current-player-info");
+    const gameTab = document.getElementById("game-tab");
+    const isGameTabActive = gameTab && gameTab.style.display !== "none";
 
-    if (this.gameStarted && this.players[this.currentPlayer].name) {
-      const playerName = this.players[this.currentPlayer].name;
-      currentPlayerEl.textContent = playerName;
+    // Only show current player info if game is started AND we're on the game tab
+    if (this.gameStarted && isGameTabActive) {
+      if (currentPlayerInfo) {
+        currentPlayerInfo.style.display = "flex";
+      }
 
-      // Only show image if player has an image (not PC)
-      if (this.players[this.currentPlayer].image) {
-        currentPlayerImg.src = this.players[this.currentPlayer].image;
-        currentPlayerImg.alt = playerName;
-        currentPlayerImg.style.display = "block";
+      if (this.players[this.currentPlayer].name) {
+        const playerName = this.players[this.currentPlayer].name;
+        currentPlayerEl.textContent = playerName;
+
+        // Only show image if player has an image (not PC)
+        if (this.players[this.currentPlayer].image) {
+          currentPlayerImg.src = this.players[this.currentPlayer].image;
+          currentPlayerImg.alt = playerName;
+          currentPlayerImg.style.display = "block";
+        } else {
+          currentPlayerImg.style.display = "none";
+        }
       } else {
+        currentPlayerEl.textContent =
+          this.currentPlayer.charAt(0).toUpperCase() +
+          this.currentPlayer.slice(1);
         currentPlayerImg.style.display = "none";
       }
     } else {
-      currentPlayerEl.textContent =
-        this.currentPlayer.charAt(0).toUpperCase() +
-        this.currentPlayer.slice(1);
-      currentPlayerImg.style.display = "none";
+      // Hide current player info if game not started or not on game tab
+      if (currentPlayerInfo) {
+        currentPlayerInfo.style.display = "none";
+      }
     }
   }
 
@@ -1348,10 +1345,15 @@ class ChessGame {
     const tabButtons = document.querySelectorAll(".tab-button");
     const tabContents = document.querySelectorAll(".tab-content");
     const resetBtn = document.getElementById("reset-btn");
+    const currentPlayerInfo = document.querySelector(".current-player-info");
 
     // Ensure button is visible on initial load (Game tab is active by default)
+    // Current player info should be hidden until game starts
     if (resetBtn) {
       resetBtn.style.display = "block";
+    }
+    if (currentPlayerInfo) {
+      currentPlayerInfo.style.display = "none";
     }
 
     tabButtons.forEach((button) => {
@@ -1379,6 +1381,19 @@ class ChessGame {
             resetBtn.style.display = "block";
           }
         }
+
+        // Hide current player info in Lessons and Mission tabs, or if game not started
+        const currentPlayerInfo = document.querySelector(".current-player-info");
+        if (currentPlayerInfo) {
+          if (targetTab === "game" && this.gameStarted) {
+            currentPlayerInfo.style.display = "flex";
+          } else {
+            currentPlayerInfo.style.display = "none";
+          }
+        }
+        
+        // Update current player display when switching tabs
+        this.updateCurrentPlayerDisplay();
       });
     });
   }
@@ -1414,6 +1429,9 @@ class ChessGame {
   }
 
   setupLessons() {
+    // Initialize Roman's speech bubble
+    this.showRomanMessage("Welcome! Select a piece to learn its movements.");
+
     // Piece selection
     const pieceOptions = document.querySelectorAll(".lesson-piece-option");
     pieceOptions.forEach((option) => {
@@ -1425,6 +1443,17 @@ class ChessGame {
         const pieceType = option.dataset.piece;
         const pieceColor = option.dataset.color;
         this.selectedPieceForLesson = { type: pieceType, color: pieceColor };
+        
+        // Show reactive message
+        const pieceNames = {
+          king: "King",
+          queen: "Queen",
+          rook: "Rook",
+          bishop: "Bishop",
+          knight: "Knight",
+          pawn: "Pawn"
+        };
+        this.showRomanMessage(`Great! Now click on the board to place the ${pieceNames[pieceType]}.`);
       });
     });
 
@@ -1438,6 +1467,7 @@ class ChessGame {
         this.createLessonsBoard();
         pieceOptions.forEach((opt) => opt.classList.remove("selected"));
         this.updateRemovePieceButton();
+        this.showRomanMessage("Board cleared! Ready to start fresh.");
       });
     }
 
@@ -1462,8 +1492,114 @@ class ChessGame {
     if (randomBoardButton) {
       randomBoardButton.addEventListener("click", () => {
         this.fillRandomPieces();
+        this.showRomanMessage("Random pieces added! Click on any piece to explore its moves.");
       });
     }
+  }
+
+  showRomanMessage(message) {
+    const contentEl = document.getElementById("speech-bubble-content");
+    const dotsEl = document.getElementById("speech-bubble-dots");
+    
+    if (!contentEl || !dotsEl) return;
+
+    // Stop any ongoing speech
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    // Clear previous content and stop any ongoing typing
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+      this.typingInterval = null;
+    }
+    if (this.dotsInterval) {
+      clearInterval(this.dotsInterval);
+      this.dotsInterval = null;
+    }
+    
+    // Store the message to type
+    this.currentTypingMessage = message;
+    this.currentTypingIndex = 0;
+    
+    contentEl.textContent = "";
+    dotsEl.style.display = "block";
+    dotsEl.textContent = ".";
+
+    // Animate dots
+    let dotCount = 1;
+    this.dotsInterval = setInterval(() => {
+      dotCount = (dotCount % 3) + 1;
+      dotsEl.textContent = ".".repeat(dotCount);
+    }, 500);
+
+    // Show dots for 1.5 seconds, then type out the message
+    setTimeout(() => {
+      if (this.dotsInterval) {
+        clearInterval(this.dotsInterval);
+        this.dotsInterval = null;
+      }
+      dotsEl.style.display = "none";
+      
+      // Reset typing state
+      this.currentTypingIndex = 0;
+      contentEl.textContent = "";
+      
+      // Start reading the message immediately as typing begins
+      this.speakMessage(message);
+      
+      // Type out the message character by character
+      this.typingInterval = setInterval(() => {
+        // Check if this is still the current message (prevent race conditions)
+        if (this.currentTypingMessage !== message) {
+          clearInterval(this.typingInterval);
+          this.typingInterval = null;
+          return;
+        }
+        
+        if (this.currentTypingIndex < message.length) {
+          // Build the text from the beginning each time to ensure correctness
+          contentEl.textContent = message.substring(0, this.currentTypingIndex + 1);
+          this.currentTypingIndex++;
+        } else {
+          clearInterval(this.typingInterval);
+          this.typingInterval = null;
+          this.currentTypingMessage = null;
+        }
+      }, 30); // 30ms per character for typing effect
+    }, 1500);
+  }
+
+  speakMessage(message) {
+    // Check if browser supports speech synthesis
+    if (!window.speechSynthesis) {
+      console.log("Speech synthesis not supported in this browser");
+      return;
+    }
+
+    // Create a new speech synthesis utterance
+    const utterance = new SpeechSynthesisUtterance(message);
+    
+    // Configure voice settings
+    utterance.rate = 1.0; // Normal speed
+    utterance.pitch = 1.0; // Normal pitch
+    utterance.volume = 1.0; // Full volume
+    
+    // Try to use a more natural voice if available
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      // Prefer English voices, or use the first available voice
+      const englishVoice = voices.find(voice => 
+        voice.lang.startsWith('en') && voice.localService
+      ) || voices.find(voice => voice.lang.startsWith('en')) || voices[0];
+      
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      }
+    }
+    
+    // Speak the message
+    window.speechSynthesis.speak(utterance);
   }
 
   handleLessonsSquareClick(event) {
@@ -1509,19 +1645,29 @@ class ChessGame {
     }
 
     // No piece selected - normal behavior
-    // If clicking on an existing piece, show its moves
-    if (piece) {
-      // Select this piece and show moves
-      this.selectLessonsSquare(row, col);
-    } else if (this.selectedPieceForLesson) {
-      // Place the selected piece from the selector on the board
-      this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
-      this.createLessonsBoard();
-      this.selectedPieceForLesson = null;
-      document
-        .querySelectorAll(".lesson-piece-option")
-        .forEach((opt) => opt.classList.remove("selected"));
-    }
+      // If clicking on an existing piece, show its moves
+      if (piece) {
+        // Select this piece and show moves
+        this.selectLessonsSquare(row, col);
+        const pieceNames = {
+          king: "King",
+          queen: "Queen",
+          rook: "Rook",
+          bishop: "Bishop",
+          knight: "Knight",
+          pawn: "Pawn"
+        };
+        this.showRomanMessage(`Click on the highlighted squares to see where this ${pieceNames[piece.type]} can move!`);
+      } else if (this.selectedPieceForLesson) {
+        // Place the selected piece from the selector on the board
+        this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
+        this.createLessonsBoard();
+        this.selectedPieceForLesson = null;
+        document
+          .querySelectorAll(".lesson-piece-option")
+          .forEach((opt) => opt.classList.remove("selected"));
+        this.showRomanMessage("Perfect! Now click on the piece to see its possible moves.");
+      }
   }
 
   selectLessonsSquare(row, col) {
@@ -2709,11 +2855,7 @@ class ChessGame {
   }
 }
 
-// Initialize the game when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-  const game = new ChessGame();
-  const radioPlayer = new RadioPlayer();
-});
+// Initialize the game when the page loads (removed - see bottom of file)
 
 // Add some sound effects (optional - will work if you add sound files)
 // Sound Manager - Generates sounds programmatically using Web Audio API
@@ -3574,4 +3716,5 @@ document.addEventListener("DOMContentLoaded", () => {
   soundManager = new SoundManager();
   const game = new ChessGame();
   const xoGame = new XOGame();
+  const radioPlayer = new RadioPlayer();
 });

@@ -42,36 +42,6 @@
           <div class="button-group">
             <button id="reset-btn" class="reset-button">🎮 New Game</button>
             <button id="settings-toggle" class="settings-toggle-btn" title="Settings">⚙</button>
-            <button id="fullscreen-btn" class="fullscreen-button">
-              📺 Fullscreen
-            </button>
-            <div id="settings-content" class="settings-content">
-              <div class="setting-group">
-                <label for="piece-style">Piece Style:</label>
-                <select id="piece-style" class="setting-select">
-                  <option value="classic">Classic</option>
-                </select>
-              </div>
-              <div class="setting-group">
-                <label for="color-theme">Color Theme:</label>
-                <select id="color-theme" class="setting-select">
-                  <option value="traditional">Traditional</option>
-                  <option value="blue">Blue & Gold</option>
-                  <option value="green">Green & Cream</option>
-                  <option value="purple">Purple & Silver</option>
-                  <option value="red">Red & White</option>
-                </select>
-              </div>
-              <div class="setting-group">
-                <label for="board-style">Board Style:</label>
-                <select id="board-style" class="setting-select">
-                  <option value="wood">Wood</option>
-                  <option value="marble">Marble</option>
-                  <option value="neon">Neon</option>
-                  <option value="classic">Classic</option>
-                </select>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -386,7 +356,19 @@
 
       <div class="tab-content" id="lessons-tab" style="display: none">
         <div class="lessons-container">
-          <h2>Chess Lessons - Learn Piece Movements</h2>
+          <div class="lessons-header">
+            <div class="lessons-title">
+              <h2>Chess Lessons</h2>
+              <h3>Learn Piece Movements</h3>
+            </div>
+            <div class="lessons-roman-container">
+              <img src="assets/images/roman.jpg" alt="Roman" class="lessons-roman-img" />
+              <div class="roman-speech-bubble" id="roman-speech-bubble">
+                <div class="speech-bubble-content" id="speech-bubble-content"></div>
+                <div class="speech-bubble-dots" id="speech-bubble-dots" style="display: none;">...</div>
+              </div>
+            </div>
+          </div>
           <div class="lessons-content">
             <div class="piece-selector">
               <h3>Select a Piece</h3>
@@ -747,88 +729,148 @@
     <!-- Mission Completion Modal -->
     <div class="modal" id="mission-completion-modal" style="display: none">
       <div class="modal-content">
-        <img
-          id="mission-winner-img"
-          class="winner-image"
-          src=""
-          alt=""
-          style="display: none"
-        />
-        <h2 id="mission-completion-title">Mission Completed!</h2>
-        <p id="mission-completion-message"></p>
-        <button id="next-mission-btn" class="modal-button">Next Mission</button>
-        <button
-          id="mission-menu-btn"
-          class="modal-button"
-          style="background: #6c757d; margin-top: 10px"
-        >
-          Back to Menu
-        </button>
+        <div class="modal-header">
+          <h2 id="mission-completion-title">Mission Completed!</h2>
+          <button class="modal-close-btn" onclick="document.getElementById('mission-completion-modal').style.display='none'">✕</button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="mission-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="mission-completion-message"></p>
+          <button id="next-mission-btn" class="modal-button">Next Mission</button>
+          <button
+            id="mission-menu-btn"
+            class="modal-button"
+            style="background: #6c757d; margin-top: 10px"
+          >
+            Back to Menu
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- All Missions Completed Modal -->
     <div class="modal" id="all-missions-completed-modal" style="display: none">
       <div class="modal-content">
-        <img
-          id="all-missions-winner-img"
-          class="winner-image"
-          src=""
-          alt=""
-          style="display: none"
-        />
-        <h2>🎉 Congratulations! 🎉</h2>
-        <p>You have completed all 10 missions!</p>
-        <button id="back-to-mission-menu-btn" class="modal-button">
-          Back to Menu
-        </button>
+        <div class="modal-header">
+          <h2>🎉 Congratulations! 🎉</h2>
+          <button class="modal-close-btn" onclick="document.getElementById('all-missions-completed-modal').style.display='none'">✕</button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="all-missions-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p>You have completed all 10 missions!</p>
+          <button id="back-to-mission-menu-btn" class="modal-button">
+            Back to Menu
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Mission Failure Modal -->
     <div class="modal" id="mission-failure-modal" style="display: none">
       <div class="modal-content mission-failure-content">
-        <img
-          id="mission-failure-player-img"
-          class="winner-image"
-          src=""
-          alt=""
-          style="display: none"
-        />
-        <h2>Mission Failed!</h2>
-        <p id="mission-failure-message">Time's up!</p>
-        <button id="retry-mission-btn" class="modal-button">
-          Try Again
-        </button>
-        <button
-          id="mission-failure-menu-btn"
-          class="modal-button"
-          style="background: #6c757d; margin-top: 10px"
-        >
-          Back to Menu
-        </button>
+        <div class="modal-header">
+          <h2>Mission Failed!</h2>
+          <button class="modal-close-btn" onclick="document.getElementById('mission-failure-modal').style.display='none'">✕</button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="mission-failure-player-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="mission-failure-message">Time's up!</p>
+          <button id="retry-mission-btn" class="modal-button">
+            Try Again
+          </button>
+          <button
+            id="mission-failure-menu-btn"
+            class="modal-button"
+            style="background: #6c757d; margin-top: 10px"
+          >
+            Back to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal" style="display: none">
+      <div class="modal-content settings-modal-content">
+        <div class="settings-modal-header">
+          <h2>⚙ Settings</h2>
+          <button id="settings-close" class="settings-close-btn">✕</button>
+        </div>
+        <div class="settings-modal-body">
+          <div class="setting-group">
+            <label for="piece-style">Piece Style</label>
+            <select id="piece-style" class="setting-select">
+              <option value="classic">Classic</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="color-theme">Color Theme</label>
+            <select id="color-theme" class="setting-select">
+              <option value="traditional">Traditional</option>
+              <option value="blue">Blue & Gold</option>
+              <option value="green">Green & Cream</option>
+              <option value="purple">Purple & Silver</option>
+              <option value="red">Red & White</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="board-style">Board Style</label>
+            <select id="board-style" class="setting-select">
+              <option value="wood">Wood</option>
+              <option value="marble">Marble</option>
+              <option value="neon">Neon</option>
+              <option value="classic">Classic</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-modal-footer">
+          <button id="settings-close-btn" class="modal-button">Close</button>
+        </div>
       </div>
     </div>
 
     <div class="modal" id="game-over-modal">
       <div class="modal-content">
-        <img
-          id="game-over-winner-img"
-          class="winner-image"
-          src=""
-          alt=""
-          style="display: none"
-        />
-        <h2 id="game-over-title">Game Over</h2>
-        <p id="game-over-message"></p>
-        <button id="new-game-btn" class="modal-button">Start New Game</button>
-        <button
-          id="replay-btn"
-          class="modal-button"
-          style="background: #17a2b8; margin-top: 10px"
-        >
-          Replay
-        </button>
+        <div class="modal-header">
+          <h2 id="game-over-title">Game Over</h2>
+          <button class="modal-close-btn" onclick="document.getElementById('game-over-modal').style.display='none'">✕</button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="game-over-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="game-over-message"></p>
+          <button id="new-game-btn" class="modal-button">Start New Game</button>
+          <button
+            id="replay-btn"
+            class="modal-button"
+            style="background: #17a2b8; margin-top: 10px"
+          >
+            Replay
+          </button>
+        </div>
       </div>
     </div>
 
@@ -897,22 +939,30 @@
     <!-- More Games Selection Modal -->
     <div class="modal" id="more-games-modal" style="display: none">
       <div class="modal-content games-modal-content">
-        <h2>🎮 More Games</h2>
-        <div class="games-list">
-          <div class="game-option" id="xo-game-option">
-            <div class="game-icon">⭕❌</div>
-            <div class="game-name">XO Game</div>
-            <div class="game-description">Tic-Tac-Toe</div>
+        <div class="modal-header">
+          <h2>🎮 More Games</h2>
+          <button id="close-games-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="games-list">
+            <div class="game-option" id="xo-game-option">
+              <div class="game-icon">⭕❌</div>
+              <div class="game-name">XO Game</div>
+              <div class="game-description">Tic-Tac-Toe</div>
+            </div>
           </div>
         </div>
-        <button id="close-games-modal" class="modal-button">Close</button>
       </div>
     </div>
 
     <!-- XO Game Modal -->
     <div class="modal" id="xo-game-modal" style="display: none">
       <div class="modal-content xo-modal-content">
-        <h2>⭕❌ XO Game</h2>
+        <div class="modal-header">
+          <h2>⭕❌ XO Game</h2>
+          <button id="close-xo-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
         <div class="xo-game-setup" id="xo-game-setup">
           <h3>Select Game Mode</h3>
           <div class="xo-game-mode-selection">
@@ -1070,7 +1120,7 @@
           </div>
           <div class="xo-game-status" id="xo-game-status"></div>
         </div>
-        <button id="close-xo-modal" class="modal-button">Close</button>
+        </div>
       </div>
     </div>
 
