@@ -129,12 +129,12 @@ class ChessGame {
     this.setupLessons();
     this.setupMission();
     this.updatePlaygroundVisibility();
-    
+
     // Load voices for speech synthesis (some browsers need this)
     if (window.speechSynthesis) {
       // Chrome needs voices to be loaded
       if (window.speechSynthesis.getVoices().length === 0) {
-        window.speechSynthesis.addEventListener('voiceschanged', () => {
+        window.speechSynthesis.addEventListener("voiceschanged", () => {
           // Voices loaded
         });
       }
@@ -915,7 +915,6 @@ class ChessGame {
     boardStyleSelect.addEventListener("change", (e) => {
       this.changeBoardStyle(e.target.value);
     });
-
   }
 
   changePieceStyle(style) {
@@ -975,7 +974,9 @@ class ChessGame {
 
   setupPlayerSelection() {
     // Only select player options for chess game (not XO game which uses data-xo-color)
-    const playerOptions = document.querySelectorAll('.player-option[data-color]:not([data-xo-color])');
+    const playerOptions = document.querySelectorAll(
+      ".player-option[data-color]:not([data-xo-color])"
+    );
     const startGameBtn = document.getElementById("start-game-btn");
 
     playerOptions.forEach((option) => {
@@ -1211,28 +1212,31 @@ class ChessGame {
 
   updatePlayerOptionStates() {
     // Only update chess game player options (not XO game which uses data-xo-color)
-    document.querySelectorAll('.player-option[data-color]:not([data-xo-color])').forEach((option) => {
-      const optionColor = option.dataset.color;
+    document
+      .querySelectorAll(".player-option[data-color]:not([data-xo-color])")
+      .forEach((option) => {
+        const optionColor = option.dataset.color;
 
-      // One-player mode options don't need disabling logic
-      if (optionColor === "one-player") {
-        option.classList.remove("disabled");
-        return;
-      }
+        // One-player mode options don't need disabling logic
+        if (optionColor === "one-player") {
+          option.classList.remove("disabled");
+          return;
+        }
 
-      // Two-players mode - disable if same player is selected for other color
-      const otherColor = optionColor === "white" ? "black" : "white";
-      const playerName = option.dataset.player;
-      const otherPlayerName = this.players[otherColor] && this.players[otherColor].name
-        ? this.players[otherColor].name.toLowerCase()
-        : "";
+        // Two-players mode - disable if same player is selected for other color
+        const otherColor = optionColor === "white" ? "black" : "white";
+        const playerName = option.dataset.player;
+        const otherPlayerName =
+          this.players[otherColor] && this.players[otherColor].name
+            ? this.players[otherColor].name.toLowerCase()
+            : "";
 
-      if (otherPlayerName && otherPlayerName === playerName) {
-        option.classList.add("disabled");
-      } else {
-        option.classList.remove("disabled");
-      }
-    });
+        if (otherPlayerName && otherPlayerName === playerName) {
+          option.classList.add("disabled");
+        } else {
+          option.classList.remove("disabled");
+        }
+      });
   }
 
   updateStartButtonState() {
@@ -1248,7 +1252,12 @@ class ChessGame {
       }
     } else {
       // In two-players mode, need both players
-      if (this.players.white && this.players.white.name && this.players.black && this.players.black.name) {
+      if (
+        this.players.white &&
+        this.players.white.name &&
+        this.players.black &&
+        this.players.black.name
+      ) {
         startGameBtn.style.display = "block";
       } else {
         startGameBtn.style.display = "none";
@@ -1383,7 +1392,9 @@ class ChessGame {
         }
 
         // Hide current player info in Lessons and Mission tabs, or if game not started
-        const currentPlayerInfo = document.querySelector(".current-player-info");
+        const currentPlayerInfo = document.querySelector(
+          ".current-player-info"
+        );
         if (currentPlayerInfo) {
           if (targetTab === "game" && this.gameStarted) {
             currentPlayerInfo.style.display = "flex";
@@ -1391,7 +1402,7 @@ class ChessGame {
             currentPlayerInfo.style.display = "none";
           }
         }
-        
+
         // Update current player display when switching tabs
         this.updateCurrentPlayerDisplay();
       });
@@ -1443,7 +1454,7 @@ class ChessGame {
         const pieceType = option.dataset.piece;
         const pieceColor = option.dataset.color;
         this.selectedPieceForLesson = { type: pieceType, color: pieceColor };
-        
+
         // Show reactive message
         const pieceNames = {
           king: "King",
@@ -1451,9 +1462,11 @@ class ChessGame {
           rook: "Rook",
           bishop: "Bishop",
           knight: "Knight",
-          pawn: "Pawn"
+          pawn: "Pawn",
         };
-        this.showRomanMessage(`Great! Now click on the board to place the ${pieceNames[pieceType]}.`);
+        this.showRomanMessage(
+          `Great! Now click on the board to place the ${pieceNames[pieceType]}.`
+        );
       });
     });
 
@@ -1492,7 +1505,9 @@ class ChessGame {
     if (randomBoardButton) {
       randomBoardButton.addEventListener("click", () => {
         this.fillRandomPieces();
-        this.showRomanMessage("Random pieces added! Click on any piece to explore its moves.");
+        this.showRomanMessage(
+          "Random pieces added! Click on any piece to explore its moves."
+        );
       });
     }
   }
@@ -1500,7 +1515,7 @@ class ChessGame {
   showRomanMessage(message) {
     const contentEl = document.getElementById("speech-bubble-content");
     const dotsEl = document.getElementById("speech-bubble-dots");
-    
+
     if (!contentEl || !dotsEl) return;
 
     // Stop any ongoing speech
@@ -1517,11 +1532,11 @@ class ChessGame {
       clearInterval(this.dotsInterval);
       this.dotsInterval = null;
     }
-    
+
     // Store the message to type
     this.currentTypingMessage = message;
     this.currentTypingIndex = 0;
-    
+
     contentEl.textContent = "";
     dotsEl.style.display = "block";
     dotsEl.textContent = ".";
@@ -1540,14 +1555,14 @@ class ChessGame {
         this.dotsInterval = null;
       }
       dotsEl.style.display = "none";
-      
+
       // Reset typing state
       this.currentTypingIndex = 0;
       contentEl.textContent = "";
-      
+
       // Start reading the message immediately as typing begins
       this.speakMessage(message);
-      
+
       // Type out the message character by character
       this.typingInterval = setInterval(() => {
         // Check if this is still the current message (prevent race conditions)
@@ -1556,10 +1571,13 @@ class ChessGame {
           this.typingInterval = null;
           return;
         }
-        
+
         if (this.currentTypingIndex < message.length) {
           // Build the text from the beginning each time to ensure correctness
-          contentEl.textContent = message.substring(0, this.currentTypingIndex + 1);
+          contentEl.textContent = message.substring(
+            0,
+            this.currentTypingIndex + 1
+          );
           this.currentTypingIndex++;
         } else {
           clearInterval(this.typingInterval);
@@ -1579,25 +1597,28 @@ class ChessGame {
 
     // Create a new speech synthesis utterance
     const utterance = new SpeechSynthesisUtterance(message);
-    
+
     // Configure voice settings
     utterance.rate = 1.0; // Normal speed
     utterance.pitch = 1.0; // Normal pitch
     utterance.volume = 1.0; // Full volume
-    
+
     // Try to use a more natural voice if available
     const voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
       // Prefer English voices, or use the first available voice
-      const englishVoice = voices.find(voice => 
-        voice.lang.startsWith('en') && voice.localService
-      ) || voices.find(voice => voice.lang.startsWith('en')) || voices[0];
-      
+      const englishVoice =
+        voices.find(
+          (voice) => voice.lang.startsWith("en") && voice.localService
+        ) ||
+        voices.find((voice) => voice.lang.startsWith("en")) ||
+        voices[0];
+
       if (englishVoice) {
         utterance.voice = englishVoice;
       }
     }
-    
+
     // Speak the message
     window.speechSynthesis.speak(utterance);
   }
@@ -1645,29 +1666,35 @@ class ChessGame {
     }
 
     // No piece selected - normal behavior
-      // If clicking on an existing piece, show its moves
-      if (piece) {
-        // Select this piece and show moves
-        this.selectLessonsSquare(row, col);
-        const pieceNames = {
-          king: "King",
-          queen: "Queen",
-          rook: "Rook",
-          bishop: "Bishop",
-          knight: "Knight",
-          pawn: "Pawn"
-        };
-        this.showRomanMessage(`Click on the highlighted squares to see where this ${pieceNames[piece.type]} can move!`);
-      } else if (this.selectedPieceForLesson) {
-        // Place the selected piece from the selector on the board
-        this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
-        this.createLessonsBoard();
-        this.selectedPieceForLesson = null;
-        document
-          .querySelectorAll(".lesson-piece-option")
-          .forEach((opt) => opt.classList.remove("selected"));
-        this.showRomanMessage("Perfect! Now click on the piece to see its possible moves.");
-      }
+    // If clicking on an existing piece, show its moves
+    if (piece) {
+      // Select this piece and show moves
+      this.selectLessonsSquare(row, col);
+      const pieceNames = {
+        king: "King",
+        queen: "Queen",
+        rook: "Rook",
+        bishop: "Bishop",
+        knight: "Knight",
+        pawn: "Pawn",
+      };
+      this.showRomanMessage(
+        `Click on the highlighted squares to see where this ${
+          pieceNames[piece.type]
+        } can move!`
+      );
+    } else if (this.selectedPieceForLesson) {
+      // Place the selected piece from the selector on the board
+      this.lessonsBoard[row][col] = { ...this.selectedPieceForLesson };
+      this.createLessonsBoard();
+      this.selectedPieceForLesson = null;
+      document
+        .querySelectorAll(".lesson-piece-option")
+        .forEach((opt) => opt.classList.remove("selected"));
+      this.showRomanMessage(
+        "Perfect! Now click on the piece to see its possible moves."
+      );
+    }
   }
 
   selectLessonsSquare(row, col) {
