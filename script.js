@@ -664,6 +664,18 @@ class ChessGame {
     this.board[toRow][toCol] = piece;
     this.board[fromRow][fromCol] = null;
 
+    // Handle pawn promotion - automatically promote to queen when reaching the last row
+    if (piece.type === "pawn") {
+      const promotionRow = piece.color === "white" ? 0 : 7;
+      if (toRow === promotionRow) {
+        // Promote pawn to queen
+        this.board[toRow][toCol] = {
+          type: "queen",
+          color: piece.color
+        };
+      }
+    }
+
     // Add move to history
     this.moveHistory.push({
       from: { row: fromRow, col: fromCol },
@@ -1508,6 +1520,18 @@ class ChessGame {
 
         // Update current player display when switching tabs
         this.updateCurrentPlayerDisplay();
+
+        // Start speech only when navigating to mission tab (not on page load)
+        if (targetTab === "mission") {
+          // Show welcome message when mission tab is opened for the first time
+          // Use a small delay to ensure tab is visible
+          setTimeout(() => {
+            const missionPlayerEl = document.getElementById("selected-mission-player");
+            if (missionPlayerEl && !missionPlayerEl.classList.contains("has-player")) {
+              this.showRomanMessage("Welcome to Mission Mode! Select your player, difficulty, and piece to begin.");
+            }
+          }, 100);
+        }
       });
     });
   }
@@ -1558,8 +1582,8 @@ class ChessGame {
       this.updateInstructorImage();
     }
 
-    // Initialize instructor's speech bubble
-    this.showRomanMessage("Welcome! Select a piece to learn its movements.");
+    // Initialize instructor's speech bubble (no automatic speech on page load)
+    // Speech will only start when user navigates to missions
 
     // Piece selection
     const pieceOptions = document.querySelectorAll(".lesson-piece-option");
@@ -3926,6 +3950,827 @@ class XOGame {
   }
 }
 
+// Race Game Class
+class RaceGame {
+  constructor() {
+    this.canvas = null;
+    this.ctx = null;
+    this.player = { name: "", image: "", imageObj: null, x: 0, y: 0, speed: 0, angle: 0 };
+    this.opponents = [];
+    this.raceStarted = false;
+    this.raceFinished = false;
+    this.keys = {};
+    this.animationId = null;
+    this.trackWidth = 300; // Wider road
+    this.trackLength = 5000;
+    this.playerProgress = 0;
+    this.opponentProgress = [];
+    this.raceMusic = null;
+    this.roadOffset = 0; // For scrolling road
+    this.playerY = 0; // Fixed Y position for player car
+    this.audioContext = null;
+    this.musicOscillator = null;
+    this.musicGain = null;
+    this.musicFilter = null;
+    this.rockets = []; // Array to store active rockets
+    this.opponentCounter = 0; // Counter for endless opponents
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    // Race Game option
+    document.getElementById("race-game-option").addEventListener("click", () => {
+      document.getElementById("more-games-modal").style.display = "none";
+      document.getElementById("race-game-modal").style.display = "flex";
+      this.resetGameSetup();
+    });
+
+    // Close race modal
+    document.getElementById("close-race-modal").addEventListener("click", () => {
+      this.resetAndCloseRaceGame();
+    });
+
+    // Player selection
+    document.querySelectorAll('[data-race-player="true"]').forEach((option) => {
+      option.addEventListener("click", () => {
+        const player = option.dataset.player;
+        const img = option.querySelector("img").src;
+        this.selectPlayer(player, img);
+      });
+    });
+
+    // Start race
+    document.getElementById("start-race-btn").addEventListener("click", () => {
+      this.startRace();
+    });
+
+    // Reset race
+    document.getElementById("race-reset-btn").addEventListener("click", () => {
+      this.resetRace();
+    });
+
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      if (this.raceStarted && !this.raceFinished) {
+        this.keys[e.key.toLowerCase()] = true;
+        // Fire rocket on space
+        if (e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          this.fireRocket();
+        }
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      this.keys[e.key.toLowerCase()] = false;
+    });
+  }
+
+  resetGameSetup() {
+    this.player = { name: "", image: "", imageObj: null, x: 0, y: 0, speed: 0, angle: 0 };
+    document.getElementById("race-selected-player").innerHTML =
+      "<span>Select Your Player</span>";
+    document.getElementById("race-selected-player").classList.remove("has-player");
+    document.getElementById("start-race-btn").style.display = "none";
+  }
+
+  selectPlayer(playerName, imageSrc) {
+    this.player.name = playerName;
+    this.player.image = imageSrc;
+    
+    // Preload player image
+    const img = new Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      this.player.imageObj = img;
+    };
+
+    const playerElement = document.getElementById("race-selected-player");
+    playerElement.innerHTML = `
+      <img src="${imageSrc}" alt="${playerName}" style="display: block; width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 8px; border: 2px solid #28a745;" />
+      <span>${playerName}</span>
+    `;
+    playerElement.classList.add("has-player");
+    document.getElementById("start-race-btn").style.display = "block";
+  }
+
+  startRace() {
+    document.getElementById("race-game-setup").style.display = "none";
+    document.getElementById("race-game-area").style.display = "block";
+
+    this.canvas = document.getElementById("race-canvas");
+    this.ctx = this.canvas.getContext("2d");
+    this.raceMusic = document.getElementById("race-music");
+
+    // Make canvas responsive
+    const container = this.canvas.parentElement;
+    const maxWidth = Math.min(800, window.innerWidth - 40);
+    const aspectRatio = 600 / 800;
+    this.canvas.width = maxWidth;
+    this.canvas.height = maxWidth * aspectRatio;
+    
+    // Adjust track width based on canvas width (maintain proportion)
+    this.trackWidth = Math.min(300, maxWidth * 0.375); // 37.5% of canvas width, max 300
+
+    // Set player info
+    document.getElementById("race-player-name").textContent = this.player.name;
+    const playerImg = document.getElementById("race-player-img");
+    playerImg.src = this.player.image;
+    playerImg.style.display = "block";
+    
+    // Ensure player image is loaded
+    if (!this.player.imageObj) {
+      const img = new Image();
+      img.src = this.player.image;
+      img.onload = () => {
+        this.player.imageObj = img;
+      };
+    }
+
+    // Initialize race
+    this.initializeRace();
+    this.startBackgroundMusic();
+    this.gameLoop();
+  }
+
+  initializeRace() {
+    this.raceStarted = true;
+    this.raceFinished = false;
+    this.playerProgress = 0;
+    this.player.speed = 0;
+    this.player.x = this.canvas.width / 2;
+    this.playerY = this.canvas.height - 100; // Fixed Y position
+    this.player.angle = 0; // Pointing right (rotated 90 degrees from up)
+    this.roadOffset = 0; // Reset road scroll
+    this.rockets = []; // Clear rockets
+    this.opponentCounter = 0; // Reset counter
+
+    // Initialize with empty opponents array - will spawn endlessly
+    this.opponents = [];
+    this.opponentProgress = [];
+    
+    // Spawn initial batch of opponents
+    this.spawnOpponents(15); // Start with 15 opponents
+  }
+
+  spawnOpponents(count) {
+    const opponentColors = ["#ff0000", "#0000ff", "#00ff00", "#ff00ff", "#ffff00",
+                           "#00ffff", "#ff8800", "#8800ff", "#88ff00", "#ff0088",
+                           "#ff4444", "#44ff44", "#4444ff", "#ffff44", "#ff44ff"];
+    const centerX = this.canvas.width / 2;
+    
+    for (let i = 0; i < count; i++) {
+      this.opponentCounter++;
+      const laneOffset = ((this.opponentCounter % 5) - 2) * 40; // 5 lanes, centered
+      const colorIndex = this.opponentCounter % opponentColors.length;
+      
+      this.opponents.push({
+        name: `Racer ${this.opponentCounter}`,
+        color: opponentColors[colorIndex],
+        x: centerX + laneOffset,
+        y: -100 - (this.opponentCounter % 20) * 60, // Stagger positions
+        speed: 0,
+        angle: 0, // Pointing right (rotated 90 degrees from up)
+        aiSpeed: 2 + Math.random() * 1.5,
+        destroyed: false, // Track if car is destroyed
+      });
+      this.opponentProgress.push(0);
+    }
+  }
+
+  startBackgroundMusic() {
+    // Create a nicer, more pleasant racing soundtrack
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!this.audioContext) {
+        this.audioContext = new AudioContext();
+      }
+      
+      // Create a pleasant, energetic racing soundtrack
+      if (!this.musicOscillator) {
+        const now = this.audioContext.currentTime;
+        
+        // Create a rhythmic pattern with multiple oscillators
+        // Use a more musical approach with chord-like structure
+        
+        // Root note (C - 130.81 Hz for a pleasant bass)
+        const root = this.audioContext.createOscillator();
+        const rootGain = this.audioContext.createGain();
+        root.type = 'sine';
+        root.frequency.setValueAtTime(130.81, now);
+        rootGain.gain.setValueAtTime(0.08, now);
+        root.connect(rootGain);
+        
+        // Third (E - 164.81 Hz)
+        const third = this.audioContext.createOscillator();
+        const thirdGain = this.audioContext.createGain();
+        third.type = 'sine';
+        third.frequency.setValueAtTime(164.81, now);
+        thirdGain.gain.setValueAtTime(0.06, now);
+        third.connect(thirdGain);
+        
+        // Fifth (G - 196.00 Hz)
+        const fifth = this.audioContext.createOscillator();
+        const fifthGain = this.audioContext.createGain();
+        fifth.type = 'triangle';
+        fifth.frequency.setValueAtTime(196.00, now);
+        fifthGain.gain.setValueAtTime(0.05, now);
+        fifth.connect(fifthGain);
+        
+        // Octave (C - 261.63 Hz) for brightness
+        const octave = this.audioContext.createOscillator();
+        const octaveGain = this.audioContext.createGain();
+        octave.type = 'triangle';
+        octave.frequency.setValueAtTime(261.63, now);
+        octaveGain.gain.setValueAtTime(0.04, now);
+        octave.connect(octaveGain);
+        
+        // Add a subtle high frequency for sparkle (C - 523.25 Hz)
+        const sparkle = this.audioContext.createOscillator();
+        const sparkleGain = this.audioContext.createGain();
+        sparkle.type = 'sine';
+        sparkle.frequency.setValueAtTime(523.25, now);
+        sparkleGain.gain.setValueAtTime(0.02, now);
+        sparkle.connect(sparkleGain);
+        
+        // Apply a low-pass filter for warmer sound
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2000, now);
+        filter.Q.setValueAtTime(1, now);
+        
+        // Master gain
+        const masterGain = this.audioContext.createGain();
+        masterGain.gain.setValueAtTime(0.15, now);
+        
+        // Connect through filter for warmer sound
+        rootGain.connect(filter);
+        thirdGain.connect(filter);
+        fifthGain.connect(filter);
+        octaveGain.connect(filter);
+        sparkleGain.connect(filter);
+        filter.connect(masterGain);
+        masterGain.connect(this.audioContext.destination);
+        
+        root.start();
+        third.start();
+        fifth.start();
+        octave.start();
+        sparkle.start();
+        
+        this.musicOscillator = [root, third, fifth, octave, sparkle];
+        this.musicGain = masterGain;
+        this.musicFilter = filter;
+      } else {
+        // Resume if suspended
+        if (this.audioContext.state === 'suspended') {
+          this.audioContext.resume();
+        }
+      }
+    } catch (e) {
+      console.log("Web Audio API not available:", e);
+      // Fallback to HTML5 audio if available
+      if (this.raceMusic && this.raceMusic.src) {
+        this.raceMusic.volume = 0.3;
+        const playPromise = this.raceMusic.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((e) => {
+            console.log("Music autoplay prevented:", e);
+            const tryPlay = () => {
+              this.raceMusic.play().catch(() => {});
+              document.removeEventListener("click", tryPlay);
+              document.removeEventListener("keydown", tryPlay);
+            };
+            document.addEventListener("click", tryPlay, { once: true });
+            document.addEventListener("keydown", tryPlay, { once: true });
+          });
+        }
+      }
+    }
+  }
+
+  stopBackgroundMusic() {
+    // Stop Web Audio API music
+    if (this.musicOscillator) {
+      try {
+        if (Array.isArray(this.musicOscillator)) {
+          this.musicOscillator.forEach(osc => {
+            try {
+              osc.stop();
+            } catch (e) {
+              // Oscillator might already be stopped
+            }
+          });
+        } else {
+          this.musicOscillator.stop();
+        }
+        this.musicOscillator = null;
+        this.musicGain = null;
+      } catch (e) {
+        console.log("Error stopping music:", e);
+      }
+    }
+    
+    // Stop HTML5 audio if used
+    if (this.raceMusic) {
+      this.raceMusic.pause();
+      this.raceMusic.currentTime = 0;
+    }
+  }
+
+  handleInput() {
+    const acceleration = 0.2;
+    const maxSpeed = 8;
+    const friction = 0.95;
+    const maxTurnAngle = 0.3; // Maximum rotation angle when turning
+    const turnSpeed = 0.05;
+
+    // Accelerate
+    if (this.keys["w"] || this.keys["arrowup"]) {
+      this.player.speed = Math.min(this.player.speed + acceleration, maxSpeed);
+    } else if (this.keys["s"] || this.keys["arrowdown"]) {
+      this.player.speed = Math.max(this.player.speed - acceleration * 0.5, -maxSpeed * 0.5);
+    } else {
+      this.player.speed *= friction;
+    }
+
+    // Turn - only rotate slightly when moving left/right
+    const baseAngle = 0; // Pointing right (rotated 90 degrees)
+    if (this.keys["a"] || this.keys["arrowleft"]) {
+      // Rotate slightly left (counter-clockwise)
+      this.player.angle = Math.max(baseAngle - maxTurnAngle, this.player.angle - turnSpeed);
+      // Move left
+      this.player.x -= 3;
+    } else if (this.keys["d"] || this.keys["arrowright"]) {
+      // Rotate slightly right (clockwise)
+      this.player.angle = Math.min(baseAngle + maxTurnAngle, this.player.angle + turnSpeed);
+      // Move right
+      this.player.x += 3;
+    } else {
+      // Return to straight position
+      if (this.player.angle < baseAngle) {
+        this.player.angle = Math.min(baseAngle, this.player.angle + turnSpeed);
+      } else if (this.player.angle > baseAngle) {
+        this.player.angle = Math.max(baseAngle, this.player.angle - turnSpeed);
+      }
+    }
+
+    // Keep player on track
+    const centerX = this.canvas.width / 2;
+    const maxOffset = this.trackWidth / 2 - 30;
+    if (Math.abs(this.player.x - centerX) > maxOffset) {
+      this.player.x = centerX + Math.sign(this.player.x - centerX) * maxOffset;
+      this.player.speed *= 0.8;
+    }
+
+    // Update progress based on speed (road scrolls up - opposite direction)
+    if (this.player.speed > 0) {
+      this.playerProgress += this.player.speed;
+      this.roadOffset -= this.player.speed; // Negative to scroll up (opposite direction)
+    }
+  }
+
+  checkCollisions() {
+    const playerCarWidth = 30;
+    const playerCarHeight = 50;
+    const playerLeft = this.player.x - playerCarWidth / 2;
+    const playerRight = this.player.x + playerCarWidth / 2;
+    const playerTop = this.playerY - playerCarHeight / 2;
+    const playerBottom = this.playerY + playerCarHeight / 2;
+
+    for (let i = 0; i < this.opponents.length; i++) {
+      const opponent = this.opponents[i];
+      if (opponent.destroyed) continue;
+
+      const oppCarWidth = 30;
+      const oppCarHeight = 50;
+      const oppLeft = opponent.x - oppCarWidth / 2;
+      const oppRight = opponent.x + oppCarWidth / 2;
+      const oppTop = opponent.y - oppCarHeight / 2;
+      const oppBottom = opponent.y + oppCarHeight / 2;
+
+      // Check collision
+      if (playerLeft < oppRight && playerRight > oppLeft &&
+          playerTop < oppBottom && playerBottom > oppTop) {
+        // Collision detected - slow down player
+        this.player.speed *= 0.5;
+        // Push opponent back slightly
+        opponent.y += 5;
+      }
+    }
+  }
+
+  fireRocket() {
+    // Create a new rocket from player car position
+    this.rockets.push({
+      x: this.player.x,
+      y: this.playerY - 30, // Start from front of car
+      speed: 15, // Fast moving rocket
+      distance: 0,
+      maxDistance: 400, // Explode after this distance
+      exploded: false,
+    });
+  }
+
+  updateRockets() {
+    for (let i = this.rockets.length - 1; i >= 0; i--) {
+      const rocket = this.rockets[i];
+      
+      if (rocket.exploded) {
+        this.rockets.splice(i, 1);
+        continue;
+      }
+
+      // Move rocket forward (up on screen)
+      rocket.y -= rocket.speed;
+      rocket.distance += rocket.speed;
+
+      // Check if rocket hit an opponent car
+      let hit = false;
+      for (let j = 0; j < this.opponents.length; j++) {
+        const opponent = this.opponents[j];
+        if (opponent.destroyed) continue;
+
+        const distance = Math.sqrt(
+          Math.pow(rocket.x - opponent.x, 2) + 
+          Math.pow(rocket.y - opponent.y, 2)
+        );
+
+        if (distance < 25) {
+          // Hit! Destroy opponent
+          opponent.destroyed = true;
+          opponent.y = -200; // Move off screen
+          hit = true;
+          rocket.exploded = true;
+          // Play explosion sound
+          this.playExplosionSound();
+          break;
+        }
+      }
+
+      // Check if rocket exceeded max distance
+      if (!hit && rocket.distance >= rocket.maxDistance) {
+        rocket.exploded = true;
+      }
+
+      // Remove exploded rockets
+      if (rocket.exploded) {
+        this.rockets.splice(i, 1);
+      }
+    }
+  }
+
+  playExplosionSound() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!this.audioContext) {
+        this.audioContext = new AudioContext();
+      }
+      
+      // Resume context if suspended
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
+      
+      const now = this.audioContext.currentTime;
+      
+      // Create explosion sound with noise-like characteristics
+      // Use multiple oscillators for a more complex explosion sound
+      
+      // Low frequency boom
+      const boomOsc = this.audioContext.createOscillator();
+      const boomGain = this.audioContext.createGain();
+      boomOsc.type = 'sawtooth';
+      boomOsc.frequency.setValueAtTime(60, now);
+      boomOsc.frequency.exponentialRampToValueAtTime(30, now + 0.1);
+      boomGain.gain.setValueAtTime(0.3, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+      boomOsc.connect(boomGain);
+      
+      // Mid frequency crack
+      const crackOsc = this.audioContext.createOscillator();
+      const crackGain = this.audioContext.createGain();
+      crackOsc.type = 'square';
+      crackOsc.frequency.setValueAtTime(200, now);
+      crackOsc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+      crackGain.gain.setValueAtTime(0.2, now);
+      crackGain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+      crackOsc.connect(crackGain);
+      
+      // High frequency sizzle
+      const sizzleOsc = this.audioContext.createOscillator();
+      const sizzleGain = this.audioContext.createGain();
+      sizzleOsc.type = 'triangle';
+      sizzleOsc.frequency.setValueAtTime(800, now);
+      sizzleOsc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+      sizzleGain.gain.setValueAtTime(0.15, now);
+      sizzleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      sizzleOsc.connect(sizzleGain);
+      
+      // Connect to destination
+      boomGain.connect(this.audioContext.destination);
+      crackGain.connect(this.audioContext.destination);
+      sizzleGain.connect(this.audioContext.destination);
+      
+      // Start and stop oscillators
+      boomOsc.start(now);
+      boomOsc.stop(now + 0.2);
+      crackOsc.start(now);
+      crackOsc.stop(now + 0.15);
+      sizzleOsc.start(now);
+      sizzleOsc.stop(now + 0.1);
+    } catch (e) {
+      console.log("Error playing explosion sound:", e);
+    }
+  }
+
+  updateOpponents() {
+    const centerX = this.canvas.width / 2;
+    const maxOffset = this.trackWidth / 2 - 30;
+    
+    // Remove destroyed opponents and ones that went off screen
+    for (let i = this.opponents.length - 1; i >= 0; i--) {
+      const opponent = this.opponents[i];
+      
+      // Remove destroyed opponents or ones that went far off screen
+      if (opponent.destroyed || opponent.y > this.canvas.height + 200) {
+        this.opponents.splice(i, 1);
+        this.opponentProgress.splice(i, 1);
+        continue;
+      }
+      
+      // AI movement - cars move down with the road (opposite direction to player progress)
+      opponent.speed = opponent.aiSpeed + Math.sin(Date.now() / 500 + i) * 0.5;
+      opponent.y += opponent.speed; // Move down (road scrolls up)
+      
+      // Slight side-to-side movement
+      const laneOffset = ((i % 5) - 2) * 40;
+      const offset = Math.sin(Date.now() / 800 + i) * 25;
+      opponent.x = centerX + laneOffset + offset;
+      
+      // Keep on track
+      if (Math.abs(opponent.x - centerX) > maxOffset) {
+        opponent.x = centerX + Math.sign(opponent.x - centerX) * maxOffset;
+      }
+
+      // Update progress
+      this.opponentProgress[i] += opponent.speed;
+    }
+    
+    // Spawn new opponents to maintain endless flow
+    // Keep at least 15 opponents on screen
+    const activeOpponents = this.opponents.filter(opp => !opp.destroyed && opp.y < this.canvas.height + 100).length;
+    if (activeOpponents < 15) {
+      const needed = 15 - activeOpponents;
+      this.spawnOpponents(needed);
+    }
+  }
+
+  checkRaceFinish() {
+    if (this.playerProgress >= this.trackLength && !this.raceFinished) {
+      this.raceFinished = true;
+      this.stopBackgroundMusic();
+      
+      // Calculate position
+      const allProgress = [this.playerProgress, ...this.opponentProgress];
+      allProgress.sort((a, b) => b - a);
+      const position = allProgress.indexOf(this.playerProgress) + 1;
+      
+      let message = "";
+      if (position === 1) {
+        message = `🎉 ${this.player.name} Wins! 🎉`;
+      } else if (position === 2) {
+        message = `${this.player.name} finished 2nd!`;
+      } else if (position === 3) {
+        message = `${this.player.name} finished 3rd!`;
+      } else {
+        message = `${this.player.name} finished ${position}th!`;
+      }
+
+      document.getElementById("race-status").textContent = message;
+      document.getElementById("race-status").style.display = "block";
+    }
+  }
+
+  drawTrack() {
+    const ctx = this.ctx;
+    const centerX = this.canvas.width / 2;
+    
+    // Grass/background
+    ctx.fillStyle = "#228B22";
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Road background (scrolling up - opposite direction)
+    ctx.fillStyle = "#333";
+    // Use absolute value and modulo for scrolling effect
+    const absOffset = Math.abs(this.roadOffset);
+    const roadY = (absOffset % 40) - 40; // Scrolling effect
+    for (let y = roadY; y < this.canvas.height + 40; y += 40) {
+      ctx.fillRect(centerX - this.trackWidth / 2, y, this.trackWidth, 40);
+    }
+    
+    // Road markings (scrolling dashed line - moving up)
+    ctx.strokeStyle = "#ffff00";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([20, 20]);
+    const dashOffset = absOffset % 40;
+    for (let y = -dashOffset; y < this.canvas.height + 40; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(centerX, y);
+      ctx.lineTo(centerX, y + 20);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    
+    // Road edges
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(centerX - this.trackWidth / 2, 0);
+    ctx.lineTo(centerX - this.trackWidth / 2, this.canvas.height);
+    ctx.moveTo(centerX + this.trackWidth / 2, 0);
+    ctx.lineTo(centerX + this.trackWidth / 2, this.canvas.height);
+    ctx.stroke();
+  }
+
+  drawCar(x, y, angle, color, isPlayer = false) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+
+    // Car body
+    ctx.fillStyle = color;
+    ctx.fillRect(-15, -25, 30, 50);
+
+    // Car windows
+    ctx.fillStyle = "#87CEEB";
+    ctx.fillRect(-10, -15, 20, 15);
+    ctx.fillRect(-10, 5, 20, 15);
+
+    // Car wheels
+    ctx.fillStyle = "#000";
+    ctx.fillRect(-18, -20, 6, 10);
+    ctx.fillRect(12, -20, 6, 10);
+    ctx.fillRect(-18, 10, 6, 10);
+    ctx.fillRect(12, 10, 6, 10);
+
+    // Player logo on car
+    if (isPlayer) {
+      ctx.save();
+      ctx.rotate(-angle);
+      // Draw a white circle background for the logo
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Try to draw the player image if available
+      if (this.player && this.player.imageObj && this.player.imageObj.complete) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(this.player.imageObj, -8, -8, 16, 16);
+        ctx.restore();
+      } else {
+        // Draw initial letter as fallback
+        ctx.fillStyle = "#333";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        if (this.player && this.player.name) {
+          ctx.fillText(this.player.name.charAt(0).toUpperCase(), 0, 0);
+        }
+      }
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
+  drawPlayerLogo(x, y, imageSrc) {
+    const ctx = this.ctx;
+    const img = new Image();
+    img.onload = () => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, -10, -10, 20, 20);
+      ctx.restore();
+    };
+    img.src = imageSrc;
+  }
+
+  render() {
+    const ctx = this.ctx;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Draw track
+    this.drawTrack();
+    
+    // Draw opponent cars (only if visible on screen and not destroyed)
+    for (let i = 0; i < this.opponents.length; i++) {
+      const opponent = this.opponents[i];
+      if (!opponent.destroyed && opponent.y >= -50 && opponent.y <= this.canvas.height + 50) {
+        this.drawCar(opponent.x, opponent.y, opponent.angle, opponent.color);
+      }
+    }
+    
+    // Draw rockets
+    for (let i = 0; i < this.rockets.length; i++) {
+      const rocket = this.rockets[i];
+      if (!rocket.exploded) {
+        ctx.save();
+        ctx.fillStyle = "#ff0000";
+        ctx.beginPath();
+        ctx.arc(rocket.x, rocket.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        // Rocket trail
+        ctx.fillStyle = "#ff8800";
+        ctx.beginPath();
+        ctx.arc(rocket.x, rocket.y + 8, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    
+    // Draw player car with logo (fixed Y position)
+    this.drawCar(this.player.x, this.playerY, this.player.angle, "#FFD700", true);
+    
+    // Draw finish line at top (always visible when race is active)
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(this.canvas.width / 2 - this.trackWidth / 2, 0, this.trackWidth, 8);
+    ctx.fillStyle = "#000";
+    for (let i = 0; i < this.trackWidth; i += 20) {
+      ctx.fillRect(this.canvas.width / 2 - this.trackWidth / 2 + i, 0, 10, 8);
+    }
+    
+    // Draw progress bar
+    const progress = Math.min(this.playerProgress / this.trackLength, 1);
+    ctx.fillStyle = "#00ff00";
+    ctx.fillRect(10, 10, 200 * progress, 20);
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(10, 10, 200, 20);
+    
+    // Update UI
+    const speedKmh = Math.abs(this.player.speed * 20).toFixed(0);
+    document.getElementById("race-speed").textContent = speedKmh;
+    
+    // Calculate position
+    const allProgress = [this.playerProgress, ...this.opponentProgress];
+    allProgress.sort((a, b) => b - a);
+    const position = allProgress.indexOf(this.playerProgress) + 1;
+    document.getElementById("race-position").textContent = position;
+  }
+
+  gameLoop() {
+    if (!this.raceStarted || this.raceFinished) {
+      return;
+    }
+
+    this.handleInput();
+    this.checkCollisions();
+    this.updateOpponents();
+    this.updateRockets();
+    this.checkRaceFinish();
+    this.render();
+
+    this.animationId = requestAnimationFrame(() => this.gameLoop());
+  }
+
+  resetRace() {
+    this.raceFinished = false;
+    this.raceStarted = false;
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.stopBackgroundMusic();
+    document.getElementById("race-status").style.display = "none";
+    this.initializeRace();
+    this.startBackgroundMusic();
+    this.gameLoop();
+  }
+
+  resetAndCloseRaceGame() {
+    this.raceFinished = false;
+    this.raceStarted = false;
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.stopBackgroundMusic();
+    document.getElementById("race-game-area").style.display = "none";
+    document.getElementById("race-game-setup").style.display = "block";
+    document.getElementById("race-game-modal").style.display = "none";
+    this.resetGameSetup();
+  }
+}
+
 // Initialize sound manager globally
 let soundManager;
 
@@ -3934,5 +4779,6 @@ document.addEventListener("DOMContentLoaded", () => {
   soundManager = new SoundManager();
   const game = new ChessGame();
   const xoGame = new XOGame();
+  const raceGame = new RaceGame();
   const radioPlayer = new RadioPlayer();
 });

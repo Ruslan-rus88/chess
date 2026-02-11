@@ -629,15 +629,18 @@ body {
   width: 450px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  position: relative;
-  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 2.5rem;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -672,7 +675,7 @@ body {
 }
 
 .modal-body {
-  padding: 2.5rem;
+  padding: 1rem;
 }
 
 .winner-image {
@@ -2827,8 +2830,8 @@ body {
 
 /* XO Game Modal */
 .xo-modal-content {
-  max-width: 700px;
-  width: 90%;
+  max-width: 100%;
+  width: 95%;
   max-height: 90vh;
   overflow-y: auto;
   margin: auto;
@@ -3005,5 +3008,132 @@ body {
   .xo-game-info {
     flex-direction: column;
     gap: 15px;
+  }
+}
+
+/* Race Game Modal */
+.race-modal-content {
+  width: 100%;
+  margin: auto;
+  padding: 0;
+      }
+
+.race-modal-content .modal-body {
+  overflow-y: auto;
+  max-height: calc(90vh - 100px);
+}
+
+.race-game-setup {
+  margin: 20px 0;
+}
+
+.race-game-setup h3 {
+  color: #fff;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.race-player-selection {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.race-player-selection .player-options {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.race-game-area {
+  margin: 20px 0;
+}
+
+.race-game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.race-player-info {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  color: #fff;
+  font-weight: bold;
+}
+
+.race-position,
+.race-speed {
+  font-size: 1.1em;
+  color: #fff;
+}
+
+.race-position strong,
+.race-speed strong {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.race-canvas-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#race-canvas {
+  border: 3px solid #fff;
+  border-radius: 5px;
+  background: #228B22;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+ 
+
+.race-status {
+  text-align: center;
+  font-size: 1.5em;
+  color: #ffd700;
+  font-weight: bold;
+  margin-top: 20px;
+  min-height: 40px;
+  display: none;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .race-game-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .race-player-selection .player-options {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  #race-canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .race-canvas-container {
+    padding: 5px;
   }
 }

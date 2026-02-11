@@ -950,6 +950,11 @@
               <div class="game-name">XO Game</div>
               <div class="game-description">Tic-Tac-Toe</div>
             </div>
+            <div class="game-option" id="race-game-option">
+              <div class="game-icon">🏎️</div>
+              <div class="game-name">Race Game</div>
+              <div class="game-description">Racing Game</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1120,6 +1125,101 @@
           </div>
           <div class="xo-game-status" id="xo-game-status"></div>
         </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Race Game Modal -->
+    <div class="modal" id="race-game-modal" style="display: none">
+      <div class="modal-content race-modal-content">
+        <div class="modal-header">
+          <h2>🏎️ Race Game</h2>
+          <button id="close-race-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="race-game-setup" id="race-game-setup">
+            <h3>Select Your Player</h3>
+            <div class="race-player-selection">
+              <div class="player-options">
+                <div
+                  class="player-option"
+                  data-player="ruslan"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                  <span>Ruslan</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="roman"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/roman.jpg" alt="Roman" />
+                  <span>Roman</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="katrine"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/katrine.jpg" alt="Katrine" />
+                  <span>Katrine</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="liana"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/liana.jpeg" alt="Liana" />
+                  <span>Liana</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="peppa"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                  <span>Peppa Pig</span>
+                </div>
+                <div
+                  class="player-option"
+                  data-player="booba"
+                  data-race-player="true"
+                >
+                  <img src="assets/images/booba.jpeg" alt="Booba" />
+                  <span>Booba</span>
+                </div>
+              </div>
+              <div class="selected-player" id="race-selected-player">
+                <span>Select Your Player</span>
+              </div>
+            </div>
+            <button id="start-race-btn" class="start-game-button" style="display: none">
+              Start Race
+            </button>
+          </div>
+          <div class="race-game-area" id="race-game-area" style="display: none">
+            <div class="race-game-info">
+              <div class="race-player-info">
+                <img id="race-player-img" src="" alt="" style="display: none; width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;" />
+                <span id="race-player-name"></span>
+              </div>
+              <div class="race-position">
+                <span>Position: <strong id="race-position">-</strong></span>
+              </div>
+              <div class="race-speed">
+                <span>Speed: <strong id="race-speed">0</strong> km/h</span>
+              </div>
+              <button id="race-reset-btn" class="reset-button">🔄 New Race</button>
+            </div>
+            <div class="race-canvas-container">
+              <canvas id="race-canvas" width="800" height="600"></canvas>
+            </div>
+            <div class="race-status" id="race-status"></div>
+            <audio id="race-music" loop>
+              <!-- Background music will be handled by JavaScript -->
+            </audio>
+          </div>
         </div>
       </div>
     </div>
