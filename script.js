@@ -325,7 +325,12 @@ class ChessGame {
       return false;
     }
 
-    // Prevent moves that would leave the king in check
+    // If the king is in check, only allow moves that remove the check
+    if (this.isKingInCheck(piece.color)) {
+      return this.doesMoveRemoveCheck(fromRow, fromCol, toRow, toCol);
+    }
+
+    // If the king is not in check, prevent moves that would leave the king in check
     if (this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol)) {
       return false;
     }
@@ -522,6 +527,46 @@ class ChessGame {
     return this.isSquareUnderAttack(kingPos.row, kingPos.col, color, board);
   }
 
+  // Find all pieces attacking the king
+  getAttackingPieces(color, board = this.board) {
+    const kingPos = this.findKing(color, board);
+    if (!kingPos) return [];
+
+    const opponentColor = color === "white" ? "black" : "white";
+    const attackingPieces = [];
+
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const piece = board[r][c];
+        if (piece && piece.color === opponentColor) {
+          if (this.canPieceAttackSquare(piece, r, c, kingPos.row, kingPos.col, board)) {
+            attackingPieces.push({ piece, row: r, col: c });
+          }
+        }
+      }
+    }
+
+    return attackingPieces;
+  }
+
+  // Get squares between two positions (for blocking checks)
+  getSquaresBetween(fromRow, fromCol, toRow, toCol) {
+    const squares = [];
+    const rowStep = toRow === fromRow ? 0 : toRow > fromRow ? 1 : -1;
+    const colStep = toCol === fromCol ? 0 : toCol > fromCol ? 1 : -1;
+
+    let currentRow = fromRow + rowStep;
+    let currentCol = fromCol + colStep;
+
+    while (currentRow !== toRow || currentCol !== toCol) {
+      squares.push({ row: currentRow, col: currentCol });
+      currentRow += rowStep;
+      currentCol += colStep;
+    }
+
+    return squares;
+  }
+
   // Check if a move would leave the king in check
   wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol) {
     const piece = this.board[fromRow][fromCol];
@@ -538,6 +583,61 @@ class ChessGame {
 
     // Check if the king is in check after the move
     return this.isKingInCheck(piece.color, boardCopy);
+  }
+
+  // Check if a move removes check (when king is already in check)
+  doesMoveRemoveCheck(fromRow, fromCol, toRow, toCol) {
+    const piece = this.board[fromRow][fromCol];
+    if (!piece) return false;
+
+    const color = piece.color;
+    
+    // If king is not in check, any move that doesn't leave it in check is valid
+    if (!this.isKingInCheck(color)) {
+      return !this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol);
+    }
+
+    // King is in check - find all attacking pieces
+    const attackingPieces = this.getAttackingPieces(color);
+    
+    // If multiple pieces are attacking, only the king can move
+    if (attackingPieces.length > 1) {
+      if (piece.type === "king") {
+        // Check if the destination square is safe (not under attack)
+        return !this.isSquareUnderAttack(toRow, toCol, color);
+      }
+      return false;
+    }
+
+    // Only one piece is attacking
+    const attacker = attackingPieces[0];
+    const kingPos = this.findKing(color);
+
+    // Case 1: Moving the king to a safe square
+    if (piece.type === "king") {
+      // The destination square must not be under attack
+      return !this.isSquareUnderAttack(toRow, toCol, color);
+    }
+
+    // Case 2: Capturing the attacking piece
+    if (toRow === attacker.row && toCol === attacker.col) {
+      return !this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol);
+    }
+
+    // Case 3: Blocking the check (only works for line attacks: rook, bishop, queen)
+    const attackerPiece = attacker.piece;
+    if (attackerPiece.type === "rook" || attackerPiece.type === "bishop" || attackerPiece.type === "queen") {
+      // Check if the move is on the line between the attacker and the king
+      const blockingSquares = this.getSquaresBetween(attacker.row, attacker.col, kingPos.row, kingPos.col);
+      const isOnBlockingLine = blockingSquares.some(sq => sq.row === toRow && sq.col === toCol);
+      
+      if (isOnBlockingLine) {
+        return !this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol);
+      }
+    }
+
+    // Move doesn't remove the check
+    return false;
   }
 
   makeMove(fromRow, fromCol, toRow, toCol) {
