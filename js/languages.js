@@ -116,8 +116,6 @@ const translations = {
     moreGames: "🎮 More Games",
     xoGame: "XO Game",
     ticTacToe: "Tic-Tac-Toe",
-    raceGame: "Race Game",
-    racingGame: "Racing Game",
     
     // XO Game
     selectGameMode: "Select Game Mode",
@@ -130,13 +128,6 @@ const translations = {
     currentPlayerXO: "Current Player: ",
     newGameXO: "🔄 New Game",
     
-    // Race Game
-    selectYourPlayerRace: "Select Your Player",
-    startRace: "Start Race",
-    position: "Position:",
-    speed: "Speed:",
-    kmh: "km/h",
-    newRace: "🔄 New Race",
     
     // Voice Commands
     voiceCommands: "Voice Commands",
@@ -274,9 +265,6 @@ const translations = {
     moreGames: "🎮 Больше игр",
     xoGame: "Крестики-нолики",
     ticTacToe: "Крестики-нолики",
-    raceGame: "Гонка",
-    racingGame: "Гонка",
-    
     // XO Game
     selectGameMode: "Выберите режим игры",
     vsComputer: "Против компьютера",
@@ -287,14 +275,6 @@ const translations = {
     startXOGame: "Начать игру в крестики-нолики",
     currentPlayerXO: "Текущий игрок: ",
     newGameXO: "🔄 Новая игра",
-    
-    // Race Game
-    selectYourPlayerRace: "Выберите вашего игрока",
-    startRace: "Начать гонку",
-    position: "Позиция:",
-    speed: "Скорость:",
-    kmh: "км/ч",
-    newRace: "🔄 Новая гонка",
     
     // Voice Commands
     voiceCommands: "Голосовые команды",
@@ -432,9 +412,6 @@ const translations = {
     moreGames: "🎮 Más juegos",
     xoGame: "Juego XO",
     ticTacToe: "Tres en raya",
-    raceGame: "Juego de carreras",
-    racingGame: "Juego de carreras",
-    
     // XO Game
     selectGameMode: "Selecciona modo de juego",
     vsComputer: "VS Computadora",
@@ -445,14 +422,6 @@ const translations = {
     startXOGame: "Iniciar juego XO",
     currentPlayerXO: "Jugador actual: ",
     newGameXO: "🔄 Nuevo juego",
-    
-    // Race Game
-    selectYourPlayerRace: "Selecciona tu jugador",
-    startRace: "Iniciar carrera",
-    position: "Posición:",
-    speed: "Velocidad:",
-    kmh: "km/h",
-    newRace: "🔄 Nueva carrera",
     
     // Voice Commands
     voiceCommands: "Comandos de voz",
@@ -590,9 +559,6 @@ const translations = {
     moreGames: "🎮 المزيد من الألعاب",
     xoGame: "لعبة XO",
     ticTacToe: "تيك تاك تو",
-    raceGame: "لعبة سباق",
-    racingGame: "لعبة سباق",
-    
     // XO Game
     selectGameMode: "اختر وضع اللعبة",
     vsComputer: "ضد الكمبيوتر",
@@ -603,14 +569,6 @@ const translations = {
     startXOGame: "بدء لعبة XO",
     currentPlayerXO: "اللاعب الحالي: ",
     newGameXO: "🔄 لعبة جديدة",
-    
-    // Race Game
-    selectYourPlayerRace: "اختر لاعبك",
-    startRace: "بدء السباق",
-    position: "الموضع:",
-    speed: "السرعة:",
-    kmh: "كم/ساعة",
-    newRace: "🔄 سباق جديد",
     
     // Voice Commands
     voiceCommands: "الأوامر الصوتية",
