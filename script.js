@@ -75,6 +75,9 @@ class ChessGame {
     // Lessons mode instructor
     this.lessonsInstructor = "roman";
 
+    // Voice recognition
+    this.voiceRecognition = null;
+
     this.initializeGame();
   }
 
@@ -829,6 +832,157 @@ class ChessGame {
       this.currentPlayer === "white" ? "#8B4513" : "#2C2C2C";
   }
 
+  updateAllUITexts() {
+    if (typeof languageManager === 'undefined') return;
+    
+    // Header
+    const title = document.querySelector('.game-header h1');
+    if (title) title.textContent = languageManager.get('title');
+    
+    // Current player label
+    const currentPlayerLabel = document.querySelector('.current-player-info span');
+    if (currentPlayerLabel && currentPlayerLabel.textContent.includes('Current Player')) {
+      currentPlayerLabel.textContent = languageManager.get('currentPlayer');
+    }
+    
+    // Buttons
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) resetBtn.textContent = languageManager.get('newGame');
+    
+    const startGameBtn = document.getElementById('start-game-btn');
+    if (startGameBtn) startGameBtn.textContent = languageManager.get('startGame');
+    
+    // Tabs
+    const tabs = document.querySelectorAll('.tab-button');
+    tabs.forEach(tab => {
+      const tabName = tab.dataset.tab;
+      if (tabName === 'game') tab.textContent = languageManager.get('game');
+      if (tabName === 'lessons') tab.textContent = languageManager.get('lessons');
+      if (tabName === 'mission') tab.textContent = languageManager.get('mission');
+    });
+    
+    // Player selection
+    const selectPlayers = document.querySelector('.player-selection h3');
+    if (selectPlayers) selectPlayers.textContent = languageManager.get('selectPlayers');
+    
+    const onePlayerLabel = document.querySelector('label[for="mode-one-player"] span');
+    if (onePlayerLabel) onePlayerLabel.textContent = languageManager.get('onePlayerVsPC');
+    
+    const twoPlayersLabel = document.querySelector('label[for="mode-two-players"] span');
+    if (twoPlayersLabel) twoPlayersLabel.textContent = languageManager.get('twoPlayers');
+    
+    const selectYourSide = document.querySelector('.player-side-selection h4');
+    if (selectYourSide) selectYourSide.textContent = languageManager.get('selectYourSide');
+    
+    const whiteLabel = document.querySelector('label[for="player-side-white"] span');
+    if (whiteLabel) whiteLabel.textContent = languageManager.get('white');
+    
+    const blackLabel = document.querySelector('label[for="player-side-black"] span');
+    if (blackLabel) blackLabel.textContent = languageManager.get('black');
+    
+    const pcPlayerName = document.getElementById('pc-player-name');
+    if (pcPlayerName) pcPlayerName.textContent = languageManager.get('computer');
+    
+    // Captured pieces
+    const capturedWhite = document.querySelector('.captured-white h3');
+    if (capturedWhite) capturedWhite.textContent = languageManager.get('capturedWhitePieces');
+    
+    const capturedBlack = document.querySelector('.captured-black h3');
+    if (capturedBlack) capturedBlack.textContent = languageManager.get('capturedBlackPieces');
+    
+    // Lessons
+    const lessonsTitle = document.querySelector('.lessons-title h2');
+    if (lessonsTitle) lessonsTitle.textContent = languageManager.get('chessLessons');
+    
+    const learnMovements = document.querySelector('.lessons-title h3');
+    if (learnMovements) learnMovements.textContent = languageManager.get('learnPieceMovements');
+    
+    const selectPiece = document.querySelector('.piece-selector h3');
+    if (selectPiece) selectPiece.textContent = languageManager.get('selectAPiece');
+    
+    const clearBoardBtn = document.getElementById('clear-lesson-board');
+    if (clearBoardBtn) clearBoardBtn.textContent = languageManager.get('clearBoard');
+    
+    const removePieceBtn = document.getElementById('remove-selected-piece');
+    if (removePieceBtn) removePieceBtn.textContent = languageManager.get('removeSelectedPiece');
+    
+    const randomBoardBtn = document.getElementById('random-board-fill');
+    if (randomBoardBtn) randomBoardBtn.textContent = languageManager.get('randomBoardFill');
+    
+    // Lesson instructions
+    const lessonInstruction1 = document.getElementById('lesson-instruction-1');
+    if (lessonInstruction1) lessonInstruction1.textContent = languageManager.get('lessonInstructions1');
+    
+    const lessonInstruction2 = document.getElementById('lesson-instruction-2');
+    if (lessonInstruction2) lessonInstruction2.textContent = languageManager.get('lessonInstructions2');
+    
+    const lessonInstruction3 = document.getElementById('lesson-instruction-3');
+    if (lessonInstruction3) lessonInstruction3.textContent = languageManager.get('lessonInstructions3');
+    
+    // Mission
+    const missionSelectTitle = document.querySelector('#mission-selection h3');
+    if (missionSelectTitle) missionSelectTitle.textContent = languageManager.get('selectPlayerAndPiece');
+    
+    const startMissionBtn = document.getElementById('start-mission-btn');
+    if (startMissionBtn) startMissionBtn.textContent = languageManager.get('startMission');
+    
+    // Settings modal
+    this.updateSettingsModalTexts();
+    
+    // Game over modal
+    const newGameBtn = document.getElementById('new-game-btn');
+    if (newGameBtn) newGameBtn.textContent = languageManager.get('newGame');
+    
+    const replayBtn = document.getElementById('replay-btn');
+    if (replayBtn) replayBtn.textContent = languageManager.get('replay');
+    
+    // Replay controls
+    const replayPrevBtn = document.getElementById('replay-prev-btn');
+    if (replayPrevBtn) replayPrevBtn.textContent = languageManager.get('previous');
+    
+    const replayStopBtn = document.getElementById('replay-stop-btn');
+    if (replayStopBtn) replayStopBtn.textContent = languageManager.get('stop');
+    
+    const replayPlayBtn = document.getElementById('replay-play-btn');
+    if (replayPlayBtn) replayPlayBtn.textContent = languageManager.get('play');
+    
+    const replayNextBtn = document.getElementById('replay-next-btn');
+    if (replayNextBtn) replayNextBtn.textContent = languageManager.get('next');
+    
+    const exitReplayBtn = document.getElementById('exit-replay-btn');
+    if (exitReplayBtn) exitReplayBtn.textContent = languageManager.get('exitReplay');
+  }
+
+  updateSettingsModalTexts() {
+    if (typeof languageManager === 'undefined') return;
+    
+    const languageLabel = document.getElementById('language-label');
+    if (languageLabel) languageLabel.textContent = languageManager.get('language');
+    
+    const pieceStyleLabel = document.getElementById('piece-style-label');
+    if (pieceStyleLabel) pieceStyleLabel.textContent = languageManager.get('pieceStyle');
+    
+    const colorThemeLabel = document.getElementById('color-theme-label');
+    if (colorThemeLabel) colorThemeLabel.textContent = languageManager.get('colorTheme');
+    
+    const boardStyleLabel = document.getElementById('board-style-label');
+    if (boardStyleLabel) boardStyleLabel.textContent = languageManager.get('boardStyle');
+    
+    const enableVoiceLabel = document.getElementById('enable-voice-commands-label');
+    if (enableVoiceLabel) enableVoiceLabel.textContent = languageManager.get('enableVoiceCommands');
+    
+    const voiceInstructions = document.getElementById('voice-command-instructions');
+    if (voiceInstructions) voiceInstructions.textContent = languageManager.get('voiceCommandInstructions');
+    
+    const settingsCloseBtn = document.getElementById('settings-close-btn');
+    if (settingsCloseBtn) settingsCloseBtn.textContent = languageManager.get('close');
+  }
+
+  updateUITexts() {
+    // Alias for updateAllUITexts (for language manager compatibility)
+    this.updateAllUITexts();
+  }
+
   updateCapturedPieces() {
     ["white", "black"].forEach((color) => {
       const container = document.getElementById(`captured-${color}`);
@@ -852,9 +1006,12 @@ class ChessGame {
     const winnerName = this.players[winnerColor].name;
     const winnerImage = this.players[winnerColor].image;
 
+    const winsText = typeof languageManager !== 'undefined' 
+      ? languageManager.get('wins') 
+      : 'Wins! 🎉';
     document.getElementById(
       "game-over-title"
-    ).textContent = `${winnerName} Wins! 🎉`;
+    ).textContent = `${winnerName} ${winsText}`;
 
     const winnerImg = document.getElementById("game-over-winner-img");
     if (winnerImage) {
@@ -996,6 +1153,7 @@ class ChessGame {
 
     settingsToggle.addEventListener("click", () => {
       settingsModal.style.display = "flex";
+      this.updateSettingsModalTexts();
     });
 
     settingsClose.addEventListener("click", () => {
@@ -1012,6 +1170,36 @@ class ChessGame {
         settingsModal.style.display = "none";
       }
     });
+
+    // Language selector
+    const languageSelect = document.getElementById("language-select");
+    if (languageSelect) {
+      languageSelect.value = languageManager.getLanguageCode();
+      languageSelect.addEventListener("change", (e) => {
+        languageManager.setLanguage(e.target.value);
+        this.updateAllUITexts();
+        if (this.voiceRecognition) {
+          this.voiceRecognition.updateLanguage();
+        }
+      });
+    }
+
+    // Voice commands checkbox
+    const enableVoiceCommands = document.getElementById("enable-voice-commands");
+    if (enableVoiceCommands) {
+      enableVoiceCommands.addEventListener("change", (e) => {
+        if (e.target.checked) {
+          if (!this.voiceRecognition) {
+            this.voiceRecognition = new VoiceRecognitionManager(this);
+          }
+          this.voiceRecognition.enable();
+        } else {
+          if (this.voiceRecognition) {
+            this.voiceRecognition.disable();
+          }
+        }
+      });
+    }
 
     // Piece style selector
     const pieceStyleSelect = document.getElementById("piece-style");
@@ -1528,7 +1716,10 @@ class ChessGame {
           setTimeout(() => {
             const missionPlayerEl = document.getElementById("selected-mission-player");
             if (missionPlayerEl && !missionPlayerEl.classList.contains("has-player")) {
-              this.showRomanMessage("Welcome to Mission Mode! Select your player, difficulty, and piece to begin.");
+              const message = typeof languageManager !== 'undefined' 
+                ? languageManager.get('welcomeToMissionMode')
+                : "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.";
+              this.showRomanMessage(message);
             }
           }, 100);
         }
@@ -1597,18 +1788,19 @@ class ChessGame {
         const pieceColor = option.dataset.color;
         this.selectedPieceForLesson = { type: pieceType, color: pieceColor };
 
-        // Show reactive message
+        // Show reactive message with translated piece name
         const pieceNames = {
-          king: "King",
-          queen: "Queen",
-          rook: "Rook",
-          bishop: "Bishop",
-          knight: "Knight",
-          pawn: "Pawn",
+          king: typeof languageManager !== 'undefined' ? languageManager.get('king') : "King",
+          queen: typeof languageManager !== 'undefined' ? languageManager.get('queen') : "Queen",
+          rook: typeof languageManager !== 'undefined' ? languageManager.get('rook') : "Rook",
+          bishop: typeof languageManager !== 'undefined' ? languageManager.get('bishop') : "Bishop",
+          knight: typeof languageManager !== 'undefined' ? languageManager.get('knight') : "Knight",
+          pawn: typeof languageManager !== 'undefined' ? languageManager.get('pawn') : "Pawn",
         };
-        this.showRomanMessage(
-          `Great! Now click on the board to place the ${pieceNames[pieceType]}.`
-        );
+        const message = typeof languageManager !== 'undefined' 
+          ? languageManager.get('lessonPieceSelected').replace('{piece}', pieceNames[pieceType])
+          : `Great! Now click on the board to place the ${pieceNames[pieceType]}.`;
+        this.showRomanMessage(message);
       });
     });
 
@@ -1622,7 +1814,10 @@ class ChessGame {
         this.createLessonsBoard();
         pieceOptions.forEach((opt) => opt.classList.remove("selected"));
         this.updateRemovePieceButton();
-        this.showRomanMessage("Board cleared! Ready to start fresh.");
+        const message = typeof languageManager !== 'undefined' 
+          ? languageManager.get('lessonBoardCleared')
+          : "Board cleared! Ready to start fresh.";
+        this.showRomanMessage(message);
       });
     }
 
@@ -1647,9 +1842,10 @@ class ChessGame {
     if (randomBoardButton) {
       randomBoardButton.addEventListener("click", () => {
         this.fillRandomPieces();
-        this.showRomanMessage(
-          "Random pieces added! Click on any piece to explore its moves."
-        );
+        const message = typeof languageManager !== 'undefined' 
+          ? languageManager.get('lessonRandomPiecesAdded')
+          : "Random pieces added! Click on any piece to explore its moves.";
+        this.showRomanMessage(message);
       });
     }
   }
@@ -1761,6 +1957,19 @@ class ChessGame {
     // Create a new speech synthesis utterance
     const utterance = new SpeechSynthesisUtterance(message);
 
+    // Get current language code
+    const langCode = typeof languageManager !== 'undefined' 
+      ? languageManager.getLanguageCode() 
+      : 'en';
+    const languageMap = {
+      'en': 'en-US',
+      'ru': 'ru-RU',
+      'es': 'es-ES',
+      'ar': 'ar-SA'
+    };
+    const speechLang = languageMap[langCode] || 'en-US';
+    utterance.lang = speechLang;
+
     // Configure voice settings based on instructor
     const instructor = this.lessonsInstructor || "roman";
 
@@ -1786,46 +1995,47 @@ class ChessGame {
     const voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
       let selectedVoice = null;
+      const langPrefix = speechLang.split('-')[0];
 
       if (instructor === "katrine") {
         // Prefer female voices for lady
         selectedVoice =
           voices.find(
             (voice) =>
-              voice.lang.startsWith("en") &&
+              voice.lang.startsWith(langPrefix) &&
               (voice.name.toLowerCase().includes("female") ||
                 voice.name.toLowerCase().includes("woman") ||
                 voice.name.toLowerCase().includes("zira") ||
                 voice.name.toLowerCase().includes("samantha"))
           ) ||
           voices.find(
-            (voice) => voice.lang.startsWith("en") && voice.localService
+            (voice) => voice.lang.startsWith(langPrefix) && voice.localService
           );
       } else if (instructor === "liana" || instructor === "peppa") {
         // Prefer higher-pitched voices for young girls
         selectedVoice =
           voices.find(
             (voice) =>
-              voice.lang.startsWith("en") &&
+              voice.lang.startsWith(langPrefix) &&
               (voice.name.toLowerCase().includes("child") ||
                 voice.name.toLowerCase().includes("young") ||
                 voice.name.toLowerCase().includes("kid"))
           ) ||
           voices.find(
             (voice) =>
-              voice.lang.startsWith("en") &&
+              voice.lang.startsWith(langPrefix) &&
               (voice.name.toLowerCase().includes("female") ||
                 voice.name.toLowerCase().includes("woman"))
           );
       }
 
-      // Fallback to any English voice
+      // Fallback to any voice in current language
       if (!selectedVoice) {
         selectedVoice =
           voices.find(
-            (voice) => voice.lang.startsWith("en") && voice.localService
+            (voice) => voice.lang.startsWith(langPrefix) && voice.localService
           ) ||
-          voices.find((voice) => voice.lang.startsWith("en")) ||
+          voices.find((voice) => voice.lang.startsWith(langPrefix)) ||
           voices[0];
       }
 
@@ -1907,7 +2117,9 @@ class ChessGame {
         .querySelectorAll(".lesson-piece-option")
         .forEach((opt) => opt.classList.remove("selected"));
       this.showRomanMessage(
-        "Perfect! Now click on the piece to see its possible moves."
+        typeof languageManager !== 'undefined' 
+          ? languageManager.get('lessonClickPieceForMoves')
+          : "Perfect! Now click on the piece to see its possible moves."
       );
     }
   }
@@ -3100,153 +3312,7 @@ class ChessGame {
 // Initialize the game when the page loads (removed - see bottom of file)
 
 // Add some sound effects (optional - will work if you add sound files)
-// Sound Manager - Generates sounds programmatically using Web Audio API
-class SoundManager {
-  constructor() {
-    this.audioContext = null;
-    this.enabled = true;
-
-    // Initialize Web Audio API
-    try {
-      this.audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
-    } catch (e) {
-      console.warn("Web Audio API not supported, sounds disabled");
-      this.enabled = false;
-    }
-  }
-
-  // Generate a beep sound with specified frequency and duration
-  generateBeep(frequency, duration, type = "sine") {
-    if (!this.enabled || !this.audioContext) return;
-
-    const oscillator = this.audioContext.createOscillator();
-    const gainNode = this.audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
-
-    oscillator.frequency.value = frequency;
-    oscillator.type = type;
-
-    gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      this.audioContext.currentTime + duration
-    );
-
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + duration);
-  }
-
-  // Generate a click/tap sound
-  generateClick() {
-    if (!this.enabled || !this.audioContext) return;
-
-    const oscillator = this.audioContext.createOscillator();
-    const gainNode = this.audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
-
-    oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
-    oscillator.type = "sine";
-
-    gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      this.audioContext.currentTime + 0.1
-    );
-
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.1);
-  }
-
-  // Generate a capture sound (lower, more dramatic)
-  generateCapture() {
-    if (!this.enabled || !this.audioContext) return;
-
-    const oscillator = this.audioContext.createOscillator();
-    const gainNode = this.audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
-
-    // Start high, drop down
-    oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(
-      200,
-      this.audioContext.currentTime + 0.15
-    );
-    oscillator.type = "sawtooth";
-
-    gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      this.audioContext.currentTime + 0.15
-    );
-
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.15);
-  }
-
-  // Generate a check sound (urgent, higher pitch)
-  generateCheck() {
-    if (!this.enabled || !this.audioContext) return;
-
-    const oscillator = this.audioContext.createOscillator();
-    const gainNode = this.audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
-
-    // Quick high-pitched beep
-    oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(
-      1200,
-      this.audioContext.currentTime + 0.1
-    );
-    oscillator.type = "square";
-
-    gainNode.gain.setValueAtTime(0.25, this.audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-      0.01,
-      this.audioContext.currentTime + 0.1
-    );
-
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + 0.1);
-  }
-
-  play(soundName) {
-    if (!this.enabled) return;
-
-    // Resume audio context if it's suspended (browser autoplay policy)
-    if (this.audioContext && this.audioContext.state === "suspended") {
-      this.audioContext.resume();
-    }
-
-    switch (soundName) {
-      case "select":
-        this.generateClick();
-        break;
-      case "move":
-        this.generateBeep(600, 0.1, "sine");
-        break;
-      case "capture":
-        this.generateCapture();
-        break;
-      case "check":
-        this.generateCheck();
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-// Uncomment to enable sounds (requires sound files)
-// const soundManager = new SoundManager();
+// SoundManager is now in js/utils/sound-manager.js
 
 // Radio Player Class
 class RadioPlayer {
@@ -4778,7 +4844,11 @@ let soundManager;
 document.addEventListener("DOMContentLoaded", () => {
   soundManager = new SoundManager();
   const game = new ChessGame();
+  window.chessGameInstance = game; // Make accessible for language manager
   const xoGame = new XOGame();
   const raceGame = new RaceGame();
   const radioPlayer = new RadioPlayer();
+  
+  // Update UI texts on initial load
+  game.updateAllUITexts();
 });
