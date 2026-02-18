@@ -5,6 +5,9 @@ class RadioPlayer {
     this.currentStation = null;
     this.isPlaying = false;
     this.radioStations = [];
+    this.danceInterval = null;
+    this.katrineDanceInterval = null;
+    this.melodyInterval = null;
     this.setupEventListeners();
     this.loadDefaultStations();
   }
@@ -16,6 +19,7 @@ class RadioPlayer {
     const radioSearchInput = document.getElementById("radio-search-input");
     const playPauseBtn = document.getElementById("radio-play-pause");
     const stopBtn = document.getElementById("radio-stop");
+    const danceBtn = document.getElementById("radio-dance");
 
     radioToggle.addEventListener("click", () => this.toggleSlider());
     radioClose.addEventListener("click", () => this.closeSlider());
@@ -27,6 +31,7 @@ class RadioPlayer {
 
     playPauseBtn.addEventListener("click", () => this.togglePlayPause());
     stopBtn.addEventListener("click", () => this.stop());
+    danceBtn.addEventListener("click", () => this.toggleDance());
   }
 
   toggleSlider() {
@@ -336,5 +341,215 @@ class RadioPlayer {
     const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  toggleDance() {
+    const danceSlider = document.getElementById("dance-slider");
+    const isVisible = danceSlider.style.display !== "none";
+
+    if (isVisible) {
+      this.closeDance();
+    } else {
+      this.showDance();
+    }
+  }
+
+  showDance() {
+    const danceSlider = document.getElementById("dance-slider");
+    
+    danceSlider.style.display = "flex";
+    
+    // Start dancing animation (position changes) for both dancers
+    this.startDancingAnimation();
+    this.startKatrineDancingAnimation();
+    
+    // Start moving melodies
+    this.startMelodies();
+    
+    // Add click listener to close on click
+    danceSlider.addEventListener("click", () => this.closeDance(), { once: true });
+  }
+
+  closeDance() {
+    const danceSlider = document.getElementById("dance-slider");
+    danceSlider.style.display = "none";
+    
+    // Stop animations
+    this.stopDancingAnimation();
+    this.stopKatrineDancingAnimation();
+    this.stopMelodies();
+  }
+
+  startDancingAnimation() {
+    const dancingPerson = document.getElementById("dancing-person");
+    const dancingKatrine = document.getElementById("dancing-katrine");
+    const danceSlider = document.getElementById("dance-slider");
+    
+    // Person dimensions (reduced by 20%)
+    const personWidth = 160;
+    const personHeight = 240;
+    
+    // Helper function to check overlap
+    const checkOverlap = (x, y, otherPerson) => {
+      if (!otherPerson) return false;
+      const otherRect = otherPerson.getBoundingClientRect();
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const otherX = otherRect.left - sliderRect.left;
+      const otherY = otherRect.top - sliderRect.top;
+      
+      // Check if rectangles overlap
+      return !(x + personWidth < otherX || 
+               otherX + personWidth < x || 
+               y + personHeight < otherY || 
+               otherY + personHeight < y);
+    };
+    
+    // Random position movement - ensure person stays within screen bounds and doesn't overlap
+    this.danceInterval = setInterval(() => {
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const maxX = sliderRect.width - personWidth;
+      const maxY = sliderRect.height - personHeight;
+      
+      let attempts = 0;
+      let randomX, randomY;
+      do {
+        randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+        randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+        attempts++;
+      } while (checkOverlap(randomX, randomY, dancingKatrine) && attempts < 50);
+      
+      dancingPerson.style.left = `${randomX}px`;
+      dancingPerson.style.top = `${randomY}px`;
+    }, 3500); // Different timing from Katrine (not synchronized)
+    
+    // Set initial position
+    const sliderRect = danceSlider.getBoundingClientRect();
+    const maxX = sliderRect.width - personWidth;
+    const maxY = sliderRect.height - personHeight;
+    let initialX, initialY;
+    let attempts = 0;
+    do {
+      initialX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      initialY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+      attempts++;
+    } while (checkOverlap(initialX, initialY, dancingKatrine) && attempts < 50);
+    dancingPerson.style.left = `${initialX}px`;
+    dancingPerson.style.top = `${initialY}px`;
+  }
+
+  stopDancingAnimation() {
+    if (this.danceInterval) {
+      clearInterval(this.danceInterval);
+      this.danceInterval = null;
+    }
+  }
+
+  startKatrineDancingAnimation() {
+    const dancingKatrine = document.getElementById("dancing-katrine");
+    const dancingPerson = document.getElementById("dancing-person");
+    const danceSlider = document.getElementById("dance-slider");
+    
+    // Person dimensions (reduced by 20%)
+    const personWidth = 160;
+    const personHeight = 240;
+    
+    // Helper function to check overlap
+    const checkOverlap = (x, y, otherPerson) => {
+      if (!otherPerson) return false;
+      const otherRect = otherPerson.getBoundingClientRect();
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const otherX = otherRect.left - sliderRect.left;
+      const otherY = otherRect.top - sliderRect.top;
+      
+      // Check if rectangles overlap
+      return !(x + personWidth < otherX || 
+               otherX + personWidth < x || 
+               y + personHeight < otherY || 
+               otherY + personHeight < y);
+    };
+    
+    // Random position movement - ensure person stays within screen bounds and doesn't overlap
+    this.katrineDanceInterval = setInterval(() => {
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const maxX = sliderRect.width - personWidth;
+      const maxY = sliderRect.height - personHeight;
+      
+      let attempts = 0;
+      let randomX, randomY;
+      do {
+        randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+        randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+        attempts++;
+      } while (checkOverlap(randomX, randomY, dancingPerson) && attempts < 50);
+      
+      dancingKatrine.style.left = `${randomX}px`;
+      dancingKatrine.style.top = `${randomY}px`;
+    }, 4500); // Different timing from Roman (not synchronized)
+    
+    // Set initial position (different from Roman and no overlap)
+    const sliderRect = danceSlider.getBoundingClientRect();
+    const maxX = sliderRect.width - personWidth;
+    const maxY = sliderRect.height - personHeight;
+    let initialX, initialY;
+    let attempts = 0;
+    do {
+      initialX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      initialY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+      attempts++;
+    } while (checkOverlap(initialX, initialY, dancingPerson) && attempts < 50);
+    dancingKatrine.style.left = `${initialX}px`;
+    dancingKatrine.style.top = `${initialY}px`;
+  }
+
+  stopKatrineDancingAnimation() {
+    if (this.katrineDanceInterval) {
+      clearInterval(this.katrineDanceInterval);
+      this.katrineDanceInterval = null;
+    }
+  }
+
+  startMelodies() {
+    const melodiesContainer = document.getElementById("dance-melodies");
+    const musicalNotes = ["♪", "♫", "♬", "♩", "♭", "♮", "♯", "𝄞", "𝄢", "🎵", "🎶"];
+    
+    // Create melodies periodically
+    this.melodyInterval = setInterval(() => {
+      const melody = document.createElement("div");
+      melody.className = "dance-melody";
+      melody.textContent = musicalNotes[Math.floor(Math.random() * musicalNotes.length)];
+      
+      // Random starting position
+      const startX = Math.random() * 100;
+      melody.style.left = `${startX}%`;
+      
+      // Random delay for variety
+      melody.style.animationDelay = `${Math.random() * 2}s`;
+      
+      // Random size
+      const size = Math.random() * 2 + 1.5; // 1.5rem to 3.5rem
+      melody.style.fontSize = `${size}rem`;
+      
+      melodiesContainer.appendChild(melody);
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        if (melody.parentNode) {
+          melody.parentNode.removeChild(melody);
+        }
+      }, 20000);
+    }, 800); // Create a new melody every 800ms
+  }
+
+  stopMelodies() {
+    if (this.melodyInterval) {
+      clearInterval(this.melodyInterval);
+      this.melodyInterval = null;
+    }
+    
+    // Clear all existing melodies
+    const melodiesContainer = document.getElementById("dance-melodies");
+    if (melodiesContainer) {
+      melodiesContainer.innerHTML = "";
+    }
   }
 }
