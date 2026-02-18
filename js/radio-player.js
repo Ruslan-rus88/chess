@@ -7,6 +7,8 @@ class RadioPlayer {
     this.radioStations = [];
     this.danceInterval = null;
     this.katrineDanceInterval = null;
+    this.lianaDanceInterval = null;
+    this.ruslanDanceInterval = null;
     this.melodyInterval = null;
     this.setupEventListeners();
     this.loadDefaultStations();
@@ -360,6 +362,8 @@ class RadioPlayer {
     // Stop any existing animations first to prevent conflicts
     this.stopDancingAnimation();
     this.stopKatrineDancingAnimation();
+    this.stopLianaDancingAnimation();
+    this.stopRuslanDancingAnimation();
     this.stopMelodies();
     
     danceSlider.style.display = "flex";
@@ -367,9 +371,14 @@ class RadioPlayer {
     // Force a reflow to ensure display change is applied
     danceSlider.offsetHeight;
     
-    // Start dancing animation (position changes) for both dancers
-    this.startDancingAnimation();
-    this.startKatrineDancingAnimation();
+    // Small delay to ensure slider is fully rendered before starting animations
+    setTimeout(() => {
+      // Start dancing animation (position changes) for all dancers
+      this.startDancingAnimation();
+      this.startKatrineDancingAnimation();
+      this.startLianaDancingAnimation();
+      this.startRuslanDancingAnimation();
+    }, 50);
     
     // Start moving melodies
     this.startMelodies();
@@ -384,6 +393,8 @@ class RadioPlayer {
     // Stop all animations first
     this.stopDancingAnimation();
     this.stopKatrineDancingAnimation();
+    this.stopLianaDancingAnimation();
+    this.stopRuslanDancingAnimation();
     this.stopMelodies();
     
     // Hide the slider
@@ -392,6 +403,8 @@ class RadioPlayer {
     // Reset dancer positions to prevent animation glitches
     const dancingPerson = document.getElementById("dancing-person");
     const dancingKatrine = document.getElementById("dancing-katrine");
+    const dancingLiana = document.getElementById("dancing-liana");
+    const dancingRuslan = document.getElementById("dancing-ruslan");
     
     if (dancingPerson) {
       dancingPerson.style.left = "";
@@ -401,6 +414,16 @@ class RadioPlayer {
     if (dancingKatrine) {
       dancingKatrine.style.left = "";
       dancingKatrine.style.top = "";
+    }
+    
+    if (dancingLiana) {
+      dancingLiana.style.left = "";
+      dancingLiana.style.top = "";
+    }
+    
+    if (dancingRuslan) {
+      dancingRuslan.style.left = "";
+      dancingRuslan.style.top = "";
     }
   }
 
@@ -413,27 +436,38 @@ class RadioPlayer {
     
     const dancingPerson = document.getElementById("dancing-person");
     const dancingKatrine = document.getElementById("dancing-katrine");
+    const dancingLiana = document.getElementById("dancing-liana");
+    const dancingRuslan = document.getElementById("dancing-ruslan");
     const danceSlider = document.getElementById("dance-slider");
     
     if (!dancingPerson || !danceSlider) return;
     
-    // Person dimensions (reduced by 20%)
-    const personWidth = 160;
-    const personHeight = 240;
+    // Person dimensions (reduced by 20%, further reduced on mobile)
+    const isMobile = window.innerWidth <= 768;
+    const personWidth = isMobile ? 120 : 160;
+    const personHeight = isMobile ? 180 : 240;
     
-    // Helper function to check overlap
-    const checkOverlap = (x, y, otherPerson) => {
-      if (!otherPerson) return false;
-      const otherRect = otherPerson.getBoundingClientRect();
-      const sliderRect = danceSlider.getBoundingClientRect();
-      const otherX = otherRect.left - sliderRect.left;
-      const otherY = otherRect.top - sliderRect.top;
+    // Helper function to check overlap with all other dancers
+    const checkOverlap = (x, y, otherDancers) => {
+      // Ensure otherDancers is an array
+      const dancersArray = Array.isArray(otherDancers) ? otherDancers : [otherDancers].filter(d => d);
       
-      // Check if rectangles overlap
-      return !(x + personWidth < otherX || 
-               otherX + personWidth < x || 
-               y + personHeight < otherY || 
-               otherY + personHeight < y);
+      for (const otherPerson of dancersArray) {
+        if (!otherPerson) continue;
+        const otherRect = otherPerson.getBoundingClientRect();
+        const sliderRect = danceSlider.getBoundingClientRect();
+        const otherX = otherRect.left - sliderRect.left;
+        const otherY = otherRect.top - sliderRect.top;
+        
+        // Check if rectangles overlap
+        if (!(x + personWidth < otherX || 
+              otherX + personWidth < x || 
+              y + personHeight < otherY || 
+              otherY + personHeight < y)) {
+          return true;
+        }
+      }
+      return false;
     };
     
     // Random position movement - ensure person stays within screen bounds and doesn't overlap
@@ -444,11 +478,12 @@ class RadioPlayer {
       
       let attempts = 0;
       let randomX, randomY;
+      const otherDancers = [dancingKatrine, dancingLiana, dancingRuslan];
       do {
         randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
         randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
         attempts++;
-      } while (checkOverlap(randomX, randomY, dancingKatrine) && attempts < 50);
+      } while (checkOverlap(randomX, randomY, otherDancers) && attempts < 50);
       
       dancingPerson.style.left = `${randomX}px`;
       dancingPerson.style.top = `${randomY}px`;
@@ -460,11 +495,12 @@ class RadioPlayer {
     const maxY = sliderRect.height - personHeight;
     let initialX, initialY;
     let attempts = 0;
+    const otherDancers = [dancingKatrine, dancingLiana, dancingRuslan];
     do {
       initialX = Math.max(0, Math.min(maxX, Math.random() * maxX));
       initialY = Math.max(0, Math.min(maxY, Math.random() * maxY));
       attempts++;
-    } while (checkOverlap(initialX, initialY, dancingKatrine) && attempts < 50);
+    } while (checkOverlap(initialX, initialY, otherDancers) && attempts < 50);
     dancingPerson.style.left = `${initialX}px`;
     dancingPerson.style.top = `${initialY}px`;
   }
@@ -485,27 +521,38 @@ class RadioPlayer {
     
     const dancingKatrine = document.getElementById("dancing-katrine");
     const dancingPerson = document.getElementById("dancing-person");
+    const dancingLiana = document.getElementById("dancing-liana");
+    const dancingRuslan = document.getElementById("dancing-ruslan");
     const danceSlider = document.getElementById("dance-slider");
     
     if (!dancingKatrine || !danceSlider) return;
     
-    // Person dimensions (reduced by 20%)
-    const personWidth = 160;
-    const personHeight = 240;
+    // Person dimensions (reduced by 20%, further reduced on mobile)
+    const isMobile = window.innerWidth <= 768;
+    const personWidth = isMobile ? 120 : 160;
+    const personHeight = isMobile ? 180 : 240;
     
-    // Helper function to check overlap
-    const checkOverlap = (x, y, otherPerson) => {
-      if (!otherPerson) return false;
-      const otherRect = otherPerson.getBoundingClientRect();
-      const sliderRect = danceSlider.getBoundingClientRect();
-      const otherX = otherRect.left - sliderRect.left;
-      const otherY = otherRect.top - sliderRect.top;
+    // Helper function to check overlap with all other dancers
+    const checkOverlap = (x, y, otherDancers) => {
+      // Ensure otherDancers is an array
+      const dancersArray = Array.isArray(otherDancers) ? otherDancers : [otherDancers].filter(d => d);
       
-      // Check if rectangles overlap
-      return !(x + personWidth < otherX || 
-               otherX + personWidth < x || 
-               y + personHeight < otherY || 
-               otherY + personHeight < y);
+      for (const otherPerson of dancersArray) {
+        if (!otherPerson) continue;
+        const otherRect = otherPerson.getBoundingClientRect();
+        const sliderRect = danceSlider.getBoundingClientRect();
+        const otherX = otherRect.left - sliderRect.left;
+        const otherY = otherRect.top - sliderRect.top;
+        
+        // Check if rectangles overlap
+        if (!(x + personWidth < otherX || 
+              otherX + personWidth < x || 
+              y + personHeight < otherY || 
+              otherY + personHeight < y)) {
+          return true;
+        }
+      }
+      return false;
     };
     
     // Random position movement - ensure person stays within screen bounds and doesn't overlap
@@ -516,27 +563,29 @@ class RadioPlayer {
       
       let attempts = 0;
       let randomX, randomY;
+      const otherDancers = [dancingPerson, dancingLiana, dancingRuslan];
       do {
         randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
         randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
         attempts++;
-      } while (checkOverlap(randomX, randomY, dancingPerson) && attempts < 50);
+      } while (checkOverlap(randomX, randomY, otherDancers) && attempts < 50);
       
       dancingKatrine.style.left = `${randomX}px`;
       dancingKatrine.style.top = `${randomY}px`;
     }, 4500); // Different timing from Roman (not synchronized)
     
-    // Set initial position (different from Roman and no overlap)
+    // Set initial position (different from others and no overlap)
     const sliderRect = danceSlider.getBoundingClientRect();
     const maxX = sliderRect.width - personWidth;
     const maxY = sliderRect.height - personHeight;
     let initialX, initialY;
     let attempts = 0;
+    const otherDancers = [dancingPerson, dancingLiana, dancingRuslan].filter(d => d);
     do {
       initialX = Math.max(0, Math.min(maxX, Math.random() * maxX));
       initialY = Math.max(0, Math.min(maxY, Math.random() * maxY));
       attempts++;
-    } while (checkOverlap(initialX, initialY, dancingPerson) && attempts < 50);
+    } while (checkOverlap(initialX, initialY, otherDancers) && attempts < 50);
     dancingKatrine.style.left = `${initialX}px`;
     dancingKatrine.style.top = `${initialY}px`;
   }
@@ -545,6 +594,226 @@ class RadioPlayer {
     if (this.katrineDanceInterval) {
       clearInterval(this.katrineDanceInterval);
       this.katrineDanceInterval = null;
+    }
+  }
+
+  startLianaDancingAnimation() {
+    // Clear any existing interval first
+    if (this.lianaDanceInterval) {
+      clearInterval(this.lianaDanceInterval);
+      this.lianaDanceInterval = null;
+    }
+    
+    const dancingLiana = document.getElementById("dancing-liana");
+    const dancingPerson = document.getElementById("dancing-person");
+    const dancingKatrine = document.getElementById("dancing-katrine");
+    const dancingRuslan = document.getElementById("dancing-ruslan");
+    const danceSlider = document.getElementById("dance-slider");
+    
+    if (!dancingLiana || !danceSlider) {
+      return;
+    }
+    
+    // Ensure Liana is visible immediately
+    dancingLiana.style.display = "block";
+    dancingLiana.style.visibility = "visible";
+    dancingLiana.style.opacity = "0.85";
+    
+    // Person dimensions (reduced by 20%, further reduced on mobile)
+    const isMobile = window.innerWidth <= 768;
+    const personWidth = isMobile ? 120 : 160;
+    const personHeight = isMobile ? 180 : 240;
+    
+    // Helper function to check overlap with all other dancers
+    const checkOverlap = (x, y, otherDancers) => {
+      // Ensure otherDancers is an array
+      const dancersArray = Array.isArray(otherDancers) ? otherDancers : [otherDancers].filter(d => d);
+      
+      for (const otherPerson of dancersArray) {
+        if (!otherPerson) continue;
+        const otherRect = otherPerson.getBoundingClientRect();
+        const sliderRect = danceSlider.getBoundingClientRect();
+        const otherX = otherRect.left - sliderRect.left;
+        const otherY = otherRect.top - sliderRect.top;
+        
+        // Check if rectangles overlap
+        if (!(x + personWidth < otherX || 
+              otherX + personWidth < x || 
+              y + personHeight < otherY || 
+              otherY + personHeight < y)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    
+    // Random position movement - ensure person stays within screen bounds and doesn't overlap
+    this.lianaDanceInterval = setInterval(() => {
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const maxX = sliderRect.width - personWidth;
+      const maxY = sliderRect.height - personHeight;
+      
+      let attempts = 0;
+      let randomX, randomY;
+      const otherDancers = [dancingPerson, dancingKatrine, dancingRuslan];
+      do {
+        randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+        randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+        attempts++;
+      } while (checkOverlap(randomX, randomY, otherDancers) && attempts < 50);
+      
+      dancingLiana.style.left = `${randomX}px`;
+      dancingLiana.style.top = `${randomY}px`;
+    }, 5000); // Different timing (not synchronized)
+    
+    // Set initial position immediately - set a default first, then improve it
+    const setInitialPosition = () => {
+      const sliderRect = danceSlider.getBoundingClientRect();
+      if (sliderRect.width === 0 || sliderRect.height === 0) {
+        // Slider not fully rendered yet, set a temporary position and retry
+        dancingLiana.style.left = "100px";
+        dancingLiana.style.top = "100px";
+        setTimeout(setInitialPosition, 50);
+        return;
+      }
+      
+      const maxX = Math.max(0, sliderRect.width - personWidth);
+      const maxY = Math.max(0, sliderRect.height - personHeight);
+      
+      // Set a default position first to ensure visibility
+      let initialX = Math.max(0, maxX * 0.6);
+      let initialY = Math.max(0, maxY * 0.4);
+      
+      // Try to find a non-overlapping position
+      let attempts = 0;
+      const otherDancers = [dancingPerson, dancingKatrine, dancingRuslan].filter(d => d);
+      
+      // Try to find a better position that doesn't overlap
+      while (attempts < 100) {
+        const testX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+        const testY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+        
+        if (!checkOverlap(testX, testY, otherDancers)) {
+          initialX = testX;
+          initialY = testY;
+          break;
+        }
+        attempts++;
+      }
+      
+      // Ensure valid pixel values
+      initialX = Math.max(0, Math.round(initialX));
+      initialY = Math.max(0, Math.round(initialY));
+      
+      dancingLiana.style.left = `${initialX}px`;
+      dancingLiana.style.top = `${initialY}px`;
+      dancingLiana.style.display = "block";
+      dancingLiana.style.visibility = "visible";
+      dancingLiana.style.opacity = "0.85";
+    };
+    
+    // Set initial position immediately
+    setInitialPosition();
+    
+    // Also set a position after a short delay as backup to ensure it's set
+    setTimeout(() => {
+      const currentLeft = dancingLiana.style.left;
+      const currentTop = dancingLiana.style.top;
+      if (!currentLeft || currentLeft === "" || currentTop === "" || !currentTop) {
+        setInitialPosition();
+      }
+    }, 200);
+  }
+
+  stopLianaDancingAnimation() {
+    if (this.lianaDanceInterval) {
+      clearInterval(this.lianaDanceInterval);
+      this.lianaDanceInterval = null;
+    }
+  }
+
+  startRuslanDancingAnimation() {
+    // Clear any existing interval first
+    if (this.ruslanDanceInterval) {
+      clearInterval(this.ruslanDanceInterval);
+      this.ruslanDanceInterval = null;
+    }
+    
+    const dancingRuslan = document.getElementById("dancing-ruslan");
+    const dancingPerson = document.getElementById("dancing-person");
+    const dancingKatrine = document.getElementById("dancing-katrine");
+    const dancingLiana = document.getElementById("dancing-liana");
+    const danceSlider = document.getElementById("dance-slider");
+    
+    if (!dancingRuslan || !danceSlider) return;
+    
+    // Person dimensions (reduced by 20%, further reduced on mobile)
+    const isMobile = window.innerWidth <= 768;
+    const personWidth = isMobile ? 120 : 160;
+    const personHeight = isMobile ? 180 : 240;
+    
+    // Helper function to check overlap with all other dancers
+    const checkOverlap = (x, y, otherDancers) => {
+      // Ensure otherDancers is an array
+      const dancersArray = Array.isArray(otherDancers) ? otherDancers : [otherDancers].filter(d => d);
+      
+      for (const otherPerson of dancersArray) {
+        if (!otherPerson) continue;
+        const otherRect = otherPerson.getBoundingClientRect();
+        const sliderRect = danceSlider.getBoundingClientRect();
+        const otherX = otherRect.left - sliderRect.left;
+        const otherY = otherRect.top - sliderRect.top;
+        
+        // Check if rectangles overlap
+        if (!(x + personWidth < otherX || 
+              otherX + personWidth < x || 
+              y + personHeight < otherY || 
+              otherY + personHeight < y)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    
+    // Random position movement - ensure person stays within screen bounds and doesn't overlap
+    this.ruslanDanceInterval = setInterval(() => {
+      const sliderRect = danceSlider.getBoundingClientRect();
+      const maxX = sliderRect.width - personWidth;
+      const maxY = sliderRect.height - personHeight;
+      
+      let attempts = 0;
+      let randomX, randomY;
+      const otherDancers = [dancingPerson, dancingKatrine, dancingLiana];
+      do {
+        randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+        randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+        attempts++;
+      } while (checkOverlap(randomX, randomY, otherDancers) && attempts < 50);
+      
+      dancingRuslan.style.left = `${randomX}px`;
+      dancingRuslan.style.top = `${randomY}px`;
+    }, 5500); // Different timing (not synchronized)
+    
+    // Set initial position
+    const sliderRect = danceSlider.getBoundingClientRect();
+    const maxX = sliderRect.width - personWidth;
+    const maxY = sliderRect.height - personHeight;
+    let initialX, initialY;
+    let attempts = 0;
+    const otherDancers = [dancingPerson, dancingKatrine, dancingLiana];
+    do {
+      initialX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      initialY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+      attempts++;
+    } while (checkOverlap(initialX, initialY, otherDancers) && attempts < 50);
+    dancingRuslan.style.left = `${initialX}px`;
+    dancingRuslan.style.top = `${initialY}px`;
+  }
+
+  stopRuslanDancingAnimation() {
+    if (this.ruslanDanceInterval) {
+      clearInterval(this.ruslanDanceInterval);
+      this.ruslanDanceInterval = null;
     }
   }
 

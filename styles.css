@@ -2713,7 +2713,6 @@ body {
 .radio-station-item:hover {
   border-color: #667eea;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-  /* transform: scale(1.02); */
 }
 
 .radio-station-item.playing {
@@ -3080,6 +3079,87 @@ body {
   background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
 }
 
+/* Liana Specific Styles */
+.dancing-liana {
+  z-index: 12;
+  opacity: 0.85;
+  display: block !important;
+  position: absolute !important;
+  visibility: visible !important;
+  width: 160px;
+  height: 240px;
+}
+
+.dancing-liana .dance-torso-liana {
+  background: linear-gradient(135deg, #a8e6cf 0%, #7fcdbb 100%);
+}
+
+.dancing-liana .dance-leg {
+  background: linear-gradient(135deg, #a8e6cf 0%, #7fcdbb 100%);
+}
+
+.dancing-liana .dance-foot {
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+}
+
+.dance-face-liana {
+  object-position: center 0%;
+  transform: scale(2.8);
+}
+
+/* Ruslan Specific Styles */
+.dancing-ruslan {
+  z-index: 13;
+  opacity: 0.85;
+}
+
+.dancing-ruslan .dance-torso-ruslan {
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+}
+
+.dancing-ruslan .dance-leg {
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+}
+
+.dancing-ruslan .dance-foot {
+  background: linear-gradient(135deg, #424242 0%, #212121 100%);
+}
+
+.dance-face-ruslan {
+  object-position: center 30%;
+  transform: scale(2);
+}
+
+.dance-star {
+  top: 25%;
+  left: 50%;
+  animation: starFloat 2.2s ease-in-out infinite;
+}
+
+.dance-music {
+  top: 50%;
+  left: 50%;
+  animation: musicFloat 2.3s ease-in-out infinite;
+}
+
+@keyframes starFloat {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px) rotate(180deg) scale(1.2);
+  }
+}
+
+@keyframes musicFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-6px) scale(1.1);
+  }
+}
+
 /* Decorations */
 .dance-decoration {
   position: absolute;
@@ -3216,6 +3296,51 @@ body {
     padding: 12px 20px;
     min-width: 48px;
     min-height: 48px;
+  }
+
+  /* Make dancers smaller on mobile */
+  .dancing-person {
+    width: 120px !important; /* Reduced from 160px */
+    height: 180px !important; /* Reduced from 240px */
+    transform: scale(0.75);
+  }
+
+  .dance-head {
+    width: 48px !important; /* Reduced from 64px */
+    height: 48px !important;
+  }
+
+  .dance-torso {
+    width: 60px !important; /* Reduced from 80px */
+    height: 72px !important; /* Reduced from 96px */
+  }
+
+  .dance-arms {
+    width: 120px !important; /* Reduced from 160px */
+    top: 54px !important; /* Adjusted for smaller head */
+  }
+
+  .dance-arm {
+    width: 12px !important; /* Reduced from 16px */
+    height: 48px !important; /* Reduced from 64px */
+  }
+
+  .dance-legs {
+    width: 72px !important; /* Reduced from 96px */
+  }
+
+  .dance-leg {
+    width: 15px !important; /* Reduced from 20px */
+    height: 60px !important; /* Reduced from 80px */
+  }
+
+  .dance-foot {
+    width: 21px !important; /* Reduced from 28px */
+    height: 12px !important; /* Reduced from 16px */
+  }
+
+  .dance-decoration {
+    font-size: 1rem !important; /* Reduced from 1.5rem */
   }
 }
 
