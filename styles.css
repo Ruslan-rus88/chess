@@ -169,6 +169,46 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.undo-button,
+.redo-button,
+.resume-button {
+  padding: 12px 24px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.undo-button:hover:not(:disabled),
+.redo-button:hover:not(:disabled),
+.resume-button:hover:not(:disabled) {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.undo-button:disabled,
+.redo-button:disabled,
+.resume-button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.undo-button:disabled:hover,
+.redo-button:disabled:hover,
+.resume-button:disabled:hover {
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+}
+
 .button-group {
   position: relative;
   display: flex;
@@ -2673,7 +2713,7 @@ body {
 .radio-station-item:hover {
   border-color: #667eea;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
-  transform: scale(1.02);
+  /* transform: scale(1.02); */
 }
 
 .radio-station-item.playing {

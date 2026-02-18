@@ -7,6 +7,13 @@ class ChessGame {
     this.moveHistory = [];
     this.gameOver = false;
     this.capturedPieces = { white: [], black: [] };
+    
+    // Undo/Redo functionality
+    this.boardHistory = []; // Store board states for undo/redo
+    this.capturedPiecesHistory = []; // Store captured pieces states
+    this.currentPlayerHistory = []; // Store current player states
+    this.historyIndex = -1; // Current position in history (-1 means at latest move)
+    this.isUndoMode = false; // Whether we're in undo mode (not at latest move)
 
     // Replay mode
     this.replayMode = false;
@@ -644,6 +651,9 @@ class ChessGame {
   }
 
   makeMove(fromRow, fromCol, toRow, toCol) {
+    // Save board state before making the move (for undo)
+    this.saveBoardStateBeforeMove();
+    
     const piece = this.board[fromRow][fromCol];
     const capturedPiece = this.board[toRow][toCol];
 
@@ -686,6 +696,7 @@ class ChessGame {
       piece: piece,
       capturedPiece: capturedPiece,
     });
+    
 
     // Update the display
     this.createBoard();
@@ -1085,6 +1096,152 @@ class ChessGame {
     this.updateCapturedPieces();
     this.updatePlaygroundVisibility();
     this.updateCurrentPlayerDisplay();
+    
+    // Reset undo/redo history
+    this.boardHistory = [];
+    this.capturedPiecesHistory = [];
+    this.currentPlayerHistory = [];
+    this.historyIndex = -1;
+    this.isUndoMode = false;
+    this.updateUndoRedoButtons();
+    
+    // Save initial board state
+    this.saveBoardState();
+  }
+  
+  // Save current board state for undo/redo
+  saveBoardState() {
+    // If we're not at the latest position and make a new move, truncate history
+    // This handles both undo mode and resume scenarios
+    if (this.historyIndex < this.boardHistory.length - 1) {
+      this.boardHistory = this.boardHistory.slice(0, this.historyIndex + 1);
+      this.capturedPiecesHistory = this.capturedPiecesHistory.slice(0, this.historyIndex + 1);
+      this.currentPlayerHistory = this.currentPlayerHistory.slice(0, this.historyIndex + 1);
+    }
+    
+    // Deep copy board state
+    const boardCopy = this.board.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    
+    // Deep copy captured pieces
+    const capturedCopy = {
+      white: this.capturedPieces.white.map((p) => ({ ...p })),
+      black: this.capturedPieces.black.map((p) => ({ ...p })),
+    };
+    
+    this.boardHistory.push(boardCopy);
+    this.capturedPiecesHistory.push(capturedCopy);
+    this.currentPlayerHistory.push(this.currentPlayer);
+    
+    this.historyIndex = this.boardHistory.length - 1;
+    this.isUndoMode = false;
+    this.updateUndoRedoButtons();
+  }
+  
+  // Save board state before making a move (for undo)
+  saveBoardStateBeforeMove() {
+    // Only save if not in undo mode (to avoid saving duplicate states)
+    if (!this.isUndoMode) {
+      this.saveBoardState();
+    }
+  }
+  
+  // Undo last move
+  undoMove() {
+    if (this.historyIndex <= 0) return; // Can't undo from initial state
+    
+    this.historyIndex--;
+    this.restoreBoardState();
+    this.isUndoMode = true;
+    this.updateUndoRedoButtons();
+  }
+  
+  // Redo undone move
+  redoMove() {
+    if (this.historyIndex >= this.boardHistory.length - 1) return; // Already at latest
+    
+    this.historyIndex++;
+    this.restoreBoardState();
+    this.updateUndoRedoButtons();
+    
+    // If we're back at the latest move, exit undo mode
+    if (this.historyIndex === this.boardHistory.length - 1) {
+      this.isUndoMode = false;
+    }
+  }
+  
+  // Resume game from current position
+  resumeGame() {
+    // Exit undo mode and continue from currently displayed position
+    // Don't change historyIndex - stay at current position
+    this.isUndoMode = false;
+    this.updateUndoRedoButtons();
+    
+    // When the next move is made, saveBoardState will truncate history
+    // from this point forward, so the game continues from here
+  }
+  
+  // Restore board state from history
+  restoreBoardState() {
+    if (this.historyIndex < 0 || this.historyIndex >= this.boardHistory.length) return;
+    
+    // Restore board
+    const savedBoard = this.boardHistory[this.historyIndex];
+    this.board = savedBoard.map((row) =>
+      row.map((cell) => (cell ? { ...cell } : null))
+    );
+    
+    // Restore captured pieces
+    const savedCaptured = this.capturedPiecesHistory[this.historyIndex];
+    this.capturedPieces = {
+      white: savedCaptured.white.map((p) => ({ ...p })),
+      black: savedCaptured.black.map((p) => ({ ...p })),
+    };
+    
+    // Restore current player
+    this.currentPlayer = this.currentPlayerHistory[this.historyIndex];
+    
+    // Update display
+    this.createBoard();
+    this.updateDisplay();
+    this.updateCapturedPieces();
+    this.deselectSquare();
+  }
+  
+  // Update undo/redo/resume button states
+  updateUndoRedoButtons() {
+    const undoBtn = document.getElementById("undo-btn");
+    const redoBtn = document.getElementById("redo-btn");
+    const resumeBtn = document.getElementById("resume-btn");
+    
+    if (!undoBtn || !redoBtn || !resumeBtn) return;
+    
+    // Show/hide buttons based on whether game is active
+    if (this.gameStarted) {
+      undoBtn.style.display = "inline-block";
+      redoBtn.style.display = "inline-block";
+    } else {
+      undoBtn.style.display = "none";
+      redoBtn.style.display = "none";
+      resumeBtn.style.display = "none";
+      return; // Don't update states if buttons are hidden
+    }
+    
+    // Enable/disable undo (can undo if not at initial state)
+    undoBtn.disabled = this.historyIndex <= 0;
+    
+    // Enable/disable redo (can redo if not at latest move)
+    redoBtn.disabled = this.historyIndex >= this.boardHistory.length - 1;
+    
+    // Show/hide resume button (only show when in undo mode and not at latest)
+    // Resume allows continuing from current position, not jumping to latest
+    if (this.isUndoMode && this.historyIndex < this.boardHistory.length - 1) {
+      resumeBtn.style.display = "inline-block";
+      resumeBtn.disabled = false;
+    } else {
+      resumeBtn.style.display = "none";
+    }
   }
 
   setupEventListeners() {
@@ -1094,6 +1251,19 @@ class ChessGame {
 
     document.getElementById("new-game-btn").addEventListener("click", () => {
       this.resetGame();
+    });
+    
+    // Undo/Redo/Resume buttons
+    document.getElementById("undo-btn").addEventListener("click", () => {
+      this.undoMove();
+    });
+    
+    document.getElementById("redo-btn").addEventListener("click", () => {
+      this.redoMove();
+    });
+    
+    document.getElementById("resume-btn").addEventListener("click", () => {
+      this.resumeGame();
     });
 
     document.getElementById("replay-btn").addEventListener("click", () => {
@@ -1586,9 +1756,19 @@ class ChessGame {
     this.gameStarted = true;
     // Store initial board state for replay
     this.storeInitialBoardState();
+    
+    // Initialize undo/redo history with initial state
+    this.boardHistory = [];
+    this.capturedPiecesHistory = [];
+    this.currentPlayerHistory = [];
+    this.historyIndex = -1;
+    this.isUndoMode = false;
+    this.saveBoardState(); // Save initial state
+    
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
     this.updatePlaygroundVisibility();
+    this.updateUndoRedoButtons();
 
     // If PC starts, make first move
     if (

@@ -357,7 +357,15 @@ class RadioPlayer {
   showDance() {
     const danceSlider = document.getElementById("dance-slider");
     
+    // Stop any existing animations first to prevent conflicts
+    this.stopDancingAnimation();
+    this.stopKatrineDancingAnimation();
+    this.stopMelodies();
+    
     danceSlider.style.display = "flex";
+    
+    // Force a reflow to ensure display change is applied
+    danceSlider.offsetHeight;
     
     // Start dancing animation (position changes) for both dancers
     this.startDancingAnimation();
@@ -372,18 +380,42 @@ class RadioPlayer {
 
   closeDance() {
     const danceSlider = document.getElementById("dance-slider");
-    danceSlider.style.display = "none";
     
-    // Stop animations
+    // Stop all animations first
     this.stopDancingAnimation();
     this.stopKatrineDancingAnimation();
     this.stopMelodies();
+    
+    // Hide the slider
+    danceSlider.style.display = "none";
+    
+    // Reset dancer positions to prevent animation glitches
+    const dancingPerson = document.getElementById("dancing-person");
+    const dancingKatrine = document.getElementById("dancing-katrine");
+    
+    if (dancingPerson) {
+      dancingPerson.style.left = "";
+      dancingPerson.style.top = "";
+    }
+    
+    if (dancingKatrine) {
+      dancingKatrine.style.left = "";
+      dancingKatrine.style.top = "";
+    }
   }
 
   startDancingAnimation() {
+    // Clear any existing interval first
+    if (this.danceInterval) {
+      clearInterval(this.danceInterval);
+      this.danceInterval = null;
+    }
+    
     const dancingPerson = document.getElementById("dancing-person");
     const dancingKatrine = document.getElementById("dancing-katrine");
     const danceSlider = document.getElementById("dance-slider");
+    
+    if (!dancingPerson || !danceSlider) return;
     
     // Person dimensions (reduced by 20%)
     const personWidth = 160;
@@ -445,9 +477,17 @@ class RadioPlayer {
   }
 
   startKatrineDancingAnimation() {
+    // Clear any existing interval first
+    if (this.katrineDanceInterval) {
+      clearInterval(this.katrineDanceInterval);
+      this.katrineDanceInterval = null;
+    }
+    
     const dancingKatrine = document.getElementById("dancing-katrine");
     const dancingPerson = document.getElementById("dancing-person");
     const danceSlider = document.getElementById("dance-slider");
+    
+    if (!dancingKatrine || !danceSlider) return;
     
     // Person dimensions (reduced by 20%)
     const personWidth = 160;
@@ -509,7 +549,15 @@ class RadioPlayer {
   }
 
   startMelodies() {
+    // Clear any existing interval first
+    if (this.melodyInterval) {
+      clearInterval(this.melodyInterval);
+      this.melodyInterval = null;
+    }
+    
     const melodiesContainer = document.getElementById("dance-melodies");
+    if (!melodiesContainer) return;
+    
     const musicalNotes = ["♪", "♫", "♬", "♩", "♭", "♮", "♯", "𝄞", "𝄢", "🎵", "🎶"];
     
     // Create melodies periodically
