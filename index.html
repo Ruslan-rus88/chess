@@ -811,6 +811,11 @@
             <div class="game-name">XO Game</div>
             <div class="game-description">Tic-Tac-Toe</div>
           </div>
+          <div class="game-option" id="memory-game-option">
+            <div class="game-icon">🃏</div>
+            <div class="game-name">Memory</div>
+            <div class="game-description">Match the Pairs!</div>
+          </div>
         </div>
       </div>
     </div>
@@ -927,10 +932,94 @@
   </div>
 
 
+  <!-- Memory Game Modal -->
+  <div class="modal" id="memory-game-modal" style="display: none">
+    <div class="modal-content memory-modal-content">
+      <div class="modal-header">
+        <h2>🃏 Memory Game</h2>
+        <button id="close-memory-modal" class="modal-close-btn">✕</button>
+      </div>
+      <div class="modal-body memory-modal-body">
+
+        <!-- Level Selection Screen -->
+        <div id="memory-level-selection">
+          <p class="memory-intro">Find all matching pairs!</p>
+          <div class="memory-level-buttons">
+            <button id="memory-easy-btn" class="memory-level-btn">
+              <div class="memory-level-icon">😊</div>
+              <div class="memory-level-name">Easy</div>
+              <div class="memory-level-desc">3 pairs · 6 cards</div>
+            </button>
+            <button id="memory-hard-btn" class="memory-level-btn">
+              <div class="memory-level-icon">🔥</div>
+              <div class="memory-level-name">Hard</div>
+              <div class="memory-level-desc">6 pairs · 12 cards</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="memory-loading" style="display: none">
+          <div class="memory-loading-wrap">
+            <div class="memory-spinner">🃏</div>
+            <p>Loading mystery character…</p>
+          </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="memory-game-area" style="display: none">
+          <div class="memory-hud">
+            <div class="memory-hud-stat">
+              <span class="memory-hud-label">Level</span>
+              <span id="memory-level-display">Easy</span>
+            </div>
+            <div class="memory-hud-stat">
+              <span class="memory-hud-label">⏱ Time</span>
+              <span id="memory-timer">0:00</span>
+            </div>
+            <div class="memory-hud-stat">
+              <span class="memory-hud-label">Moves</span>
+              <span id="memory-attempts">0</span>
+            </div>
+            <div class="memory-hud-stat">
+              <span class="memory-hud-label">Matched</span>
+              <span id="memory-matched">0 / 0</span>
+            </div>
+            <button id="memory-back-btn" class="memory-back-btn">← Menu</button>
+          </div>
+          <div class="memory-board" id="memory-board"></div>
+        </div>
+
+        <!-- Win Screen -->
+        <div id="memory-win-screen" style="display: none">
+          <div class="memory-win-wrap">
+            <div class="memory-win-trophy">🏆</div>
+            <h3 class="memory-win-title">You Won!</h3>
+            <div class="memory-win-badge" id="memory-win-level">🟢 Easy</div>
+            <div class="memory-win-stats">
+              <div class="memory-win-stat">
+                <span class="memory-win-stat-label">Moves</span>
+                <strong id="memory-win-attempts">0</strong>
+              </div>
+              <div class="memory-win-stat">
+                <span class="memory-win-stat-label">Time</span>
+                <strong id="memory-win-time">0:00</strong>
+              </div>
+            </div>
+            <button id="memory-play-again-btn" class="start-game-button">🔄 Play Again</button>
+            <button id="memory-change-level-btn" class="modal-button memory-change-level-btn">Change Level</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <script src="js/languages.js"></script>
   <script src="js/voice-recognition.js"></script>
   <script src="js/utils/sound-manager.js"></script>
   <script src="js/radio-player.js"></script>
+  <script src="js/memory-game.js"></script>
   <script src="script.js"></script>
 </body>
 

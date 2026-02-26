@@ -3867,6 +3867,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const game = new ChessGame();
   window.chessGameInstance = game; // Make accessible for language manager
   const xoGame = new XOGame();
+  const memoryGame = new MemoryGame();
   const radioPlayer = new RadioPlayer();
   
   // Update UI texts on initial load
