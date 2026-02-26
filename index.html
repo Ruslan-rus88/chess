@@ -1178,6 +1178,11 @@
               <div class="game-name">Memory</div>
               <div class="game-description">Match the Pairs!</div>
             </div>
+            <div class="game-option" id="space-war-option">
+              <div class="game-icon">🚀</div>
+              <div class="game-name">Space War</div>
+              <div class="game-description">Shoot the invaders!</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1358,6 +1363,101 @@
       </div>
     </div>
 
+    <!-- Space War Modal -->
+    <div class="modal" id="space-war-modal" style="display: none">
+      <div class="modal-content sw-modal-content">
+        <div class="modal-header sw-modal-header">
+          <h2>🚀 Space War</h2>
+          <button id="close-space-war-modal" class="modal-close-btn">✕</button>
+        </div>
+
+        <!-- Canvas Wrapper -->
+        <div id="sw-canvas-wrap" class="sw-canvas-wrap">
+          <canvas id="sw-canvas"></canvas>
+
+          <!-- HUD (shown during gameplay) -->
+          <div id="sw-overlay" class="sw-overlay" style="display: none">
+            <div class="sw-hud">
+              <div class="sw-hud-item">
+                <span class="sw-hud-label">SCORE</span>
+                <span id="sw-score" class="sw-hud-value">0</span>
+              </div>
+              <div class="sw-hud-item">
+                <span class="sw-hud-label">LEVEL</span>
+                <span id="sw-level" class="sw-hud-value">1</span>
+              </div>
+              <div class="sw-hud-item sw-hud-lives">
+                <span id="sw-lives">❤️❤️❤️</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Start screen -->
+          <div id="sw-start-screen" class="sw-screen sw-start-screen">
+            <div class="sw-logo">🚀</div>
+            <h2 class="sw-title">SPACE WAR</h2>
+            <p class="sw-subtitle">Defend the galaxy!</p>
+            <div class="sw-controls-hint">
+              <div class="sw-hint-row">
+                🎮 <strong>Move:</strong> Arrow keys / WASD
+              </div>
+              <div class="sw-hint-row">
+                💥 <strong>Shoot:</strong> Space / Enter
+              </div>
+              <div class="sw-hint-row">
+                📱 <strong>Mobile:</strong> Drag to move · Tap to shoot
+              </div>
+            </div>
+            <button id="sw-start-btn" class="sw-btn sw-btn-primary">
+              ▶ START GAME
+            </button>
+          </div>
+
+          <!-- Game Over screen -->
+          <div
+            id="sw-gameover-screen"
+            class="sw-screen sw-gameover-screen"
+            style="display: none"
+          >
+            <div class="sw-gameover-icon">💥</div>
+            <h2 class="sw-title sw-gameover-title">GAME OVER</h2>
+            <div class="sw-final-stats">
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Score</span>
+                <span id="sw-final-score" class="sw-stat-val">0</span>
+              </div>
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Best</span>
+                <span id="sw-final-hi" class="sw-stat-val sw-hi-val">0</span>
+              </div>
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Level</span>
+                <span id="sw-final-level" class="sw-stat-val">1</span>
+              </div>
+            </div>
+            <div class="sw-over-btns">
+              <button id="sw-restart-btn" class="sw-btn sw-btn-primary">
+                🔄 Play Again
+              </button>
+              <button id="sw-menu-btn" class="sw-btn sw-btn-secondary">
+                🏠 Menu
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile shoot button (shown only on touch devices) -->
+          <button
+            id="sw-mobile-shoot"
+            class="sw-mobile-shoot"
+            aria-label="Shoot"
+          >
+            💥
+          </button>
+        </div>
+        <!-- /sw-canvas-wrap -->
+      </div>
+    </div>
+
     <!-- Memory Game Modal -->
     <div class="modal" id="memory-game-modal" style="display: none">
       <div class="modal-content memory-modal-content">
@@ -1453,6 +1553,7 @@
     <script src="js/utils/sound-manager.js"></script>
     <script src="js/radio-player.js"></script>
     <script src="js/memory-game.js"></script>
+    <script src="js/space-war.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

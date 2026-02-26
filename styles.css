@@ -4044,3 +4044,347 @@ body {
     min-width: 130px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SPACE WAR GAME
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Modal shell ──────────────────────────────────────────────── */
+.sw-modal-content {
+  width: 98vw;
+  max-width: 860px;
+  height: 94vh;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: #020816;
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  box-shadow:
+    0 0 60px rgba(0, 150, 255, 0.3),
+    0 0 120px rgba(80, 0, 200, 0.2);
+  overflow: hidden;
+}
+
+.sw-modal-header {
+  background: linear-gradient(90deg, #0a0f2e 0%, #06091c 100%);
+  border-bottom: 1px solid rgba(0, 200, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.sw-modal-header h2 {
+  color: #00e5ff;
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.7);
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.1em;
+}
+
+/* ── Canvas wrapper – fills remaining height ──────────────────── */
+.sw-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #020816;
+}
+
+#sw-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ── HUD overlay ──────────────────────────────────────────────── */
+.sw-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sw-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 8, 22, 0.85) 0%,
+    transparent 100%
+  );
+  font-family: "Courier New", monospace;
+}
+
+.sw-hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sw-hud-label {
+  font-size: 0.6em;
+  letter-spacing: 0.12em;
+  color: rgba(0, 229, 255, 0.6);
+  text-transform: uppercase;
+}
+
+.sw-hud-value {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #00e5ff;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
+  min-width: 2ch;
+  text-align: center;
+}
+
+.sw-hud-lives {
+  font-size: 1.1em;
+  letter-spacing: 2px;
+}
+
+/* ── Shared screen overlay ────────────────────────────────────── */
+.sw-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 8, 22, 0.88);
+  backdrop-filter: blur(4px);
+  gap: 0.8rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* ── Start screen ─────────────────────────────────────────────── */
+.sw-logo {
+  font-size: 4.5em;
+  animation: sw-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.8));
+}
+
+@keyframes sw-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(4deg);
+  }
+}
+
+.sw-title {
+  font-family: "Courier New", monospace;
+  font-size: clamp(2em, 6vw, 3.2em);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: transparent;
+  background: linear-gradient(90deg, #00e5ff 0%, #7c3aed 50%, #ff2277 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: none;
+  margin: 0;
+  animation: sw-title-glow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes sw-title-glow {
+  from {
+    filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
+  }
+  to {
+    filter: drop-shadow(0 0 22px rgba(255, 34, 119, 0.6));
+  }
+}
+
+.sw-subtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 1em;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.sw-controls-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: rgba(0, 229, 255, 0.06);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  margin: 0.4rem 0 0.8rem;
+  max-width: 340px;
+  width: 100%;
+}
+
+.sw-hint-row {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: left;
+}
+
+/* ── Game Over screen ─────────────────────────────────────────── */
+.sw-gameover-icon {
+  font-size: 4em;
+  animation: sw-shake 0.6s ease forwards;
+}
+
+@keyframes sw-shake {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-12deg) scale(1.15);
+  }
+  40% {
+    transform: rotate(12deg);
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+  80% {
+    transform: rotate(6deg);
+  }
+}
+
+.sw-gameover-title {
+  color: #ff2277 !important;
+  filter: drop-shadow(0 0 18px rgba(255, 34, 119, 0.7));
+}
+
+.sw-final-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1rem 2rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.sw-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Courier New", monospace;
+}
+
+.sw-stat-label {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sw-stat-val {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #00e5ff;
+}
+
+.sw-hi-val {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.sw-over-btns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.sw-btn {
+  border: none;
+  border-radius: 30px;
+  padding: 0.7rem 2rem;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    transform 0.18s,
+    box-shadow 0.18s;
+}
+
+.sw-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+}
+
+.sw-btn-primary {
+  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(0, 114, 255, 0.45);
+}
+
+.sw-btn-primary:hover {
+  box-shadow: 0 10px 30px rgba(0, 114, 255, 0.65);
+}
+
+.sw-btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sw-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Mobile shoot button ──────────────────────────────────────── */
+.sw-mobile-shoot {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 35%,
+    rgba(0, 229, 255, 0.9),
+    rgba(0, 80, 200, 0.7)
+  );
+  border: 2px solid rgba(0, 229, 255, 0.5);
+  font-size: 1.9em;
+  cursor: pointer;
+  display: none; /* shown on touch devices via JS */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 10;
+  transition: transform 0.1s;
+}
+
+.sw-mobile-shoot:active {
+  transform: scale(0.9);
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .sw-modal-content {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .sw-hud-value {
+    font-size: 1em;
+  }
+
+  .sw-controls-hint {
+    display: none;
+  }
+}

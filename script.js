@@ -3983,6 +3983,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.chessGameInstance = game; // Make accessible for language manager
   const xoGame = new XOGame();
   const memoryGame = new MemoryGame();
+  const spaceWarGame = new SpaceWarGame();
   const radioPlayer = new RadioPlayer();
 
   // Update UI texts on initial load
