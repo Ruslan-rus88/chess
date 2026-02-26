@@ -1,491 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Game -- ROMAN --</title>
+    <link rel="icon" type="image/jpeg" href="assets/fav-icon.jpg" />
+    <link rel="shortcut icon" type="image/jpeg" href="assets/fav-icon.jpg" />
+    <link rel="apple-touch-icon" href="assets/fav-icon.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chess Game -- ROMAN --</title>
-  <link rel="icon" type="image/jpeg" href="assets/fav-icon.jpg" />
-  <link rel="shortcut icon" type="image/jpeg" href="assets/fav-icon.jpg" />
-  <link rel="apple-touch-icon" href="assets/fav-icon.jpg" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-
-<body>
-  <div class="game-container">
-    <div class="game-header">
-      <h1>♛ Super Roman ♛</h1>
-      <div class="header-buttons">
-        <button id="radio-toggle" class="radio-icon-btn" title="Radio Player">
-          📻
-        </button>
-        <button id="more-games-btn" class="more-games-btn" title="More Games">
-          🎮
-        </button>
-      </div>
-      <div class="tabs">
-        <button class="tab-button active" data-tab="game">Game</button>
-        <button class="tab-button" data-tab="lessons">Lessons</button>
-        <button class="tab-button" data-tab="mission">Mission</button>
-      </div>
-      <div class="game-info">
-        <div class="current-player-info">
-          <span>Current Player:</span>
-          <div class="current-player-display">
-            <img id="current-player-img" src="" alt="" style="display: none" />
-            <span id="current-player">White</span>
+  <body>
+    <div class="game-container">
+      <div class="game-header">
+        <h1>♛ Super Roman ♛</h1>
+        <div class="header-buttons">
+          <button id="radio-toggle" class="radio-icon-btn" title="Radio Player">
+            📻
+          </button>
+          <button id="more-games-btn" class="more-games-btn" title="More Games">
+            🎮
+          </button>
+        </div>
+        <div class="tabs">
+          <button class="tab-button active" data-tab="game">Game</button>
+          <button class="tab-button" data-tab="lessons">Lessons</button>
+          <button class="tab-button" data-tab="mission">Mission</button>
+        </div>
+        <div class="game-info">
+          <div class="current-player-info">
+            <span>Current Player:</span>
+            <div class="current-player-display">
+              <img
+                id="current-player-img"
+                src=""
+                alt=""
+                style="display: none"
+              />
+              <span id="current-player">White</span>
+            </div>
+          </div>
+          <div class="button-group">
+            <button
+              id="undo-btn"
+              class="undo-button"
+              title="Undo"
+              style="display: none"
+            >
+              ⏪ Undo
+            </button>
+            <button
+              id="redo-btn"
+              class="redo-button"
+              title="Redo"
+              style="display: none"
+            >
+              ⏩ Redo
+            </button>
+            <button
+              id="resume-btn"
+              class="resume-button"
+              title="Resume Game"
+              style="display: none"
+            >
+              ▶ Resume
+            </button>
+            <button id="reset-btn" class="reset-button">🎮 New Game</button>
+            <button
+              id="settings-toggle"
+              class="settings-toggle-btn"
+              title="Settings"
+            >
+              ⚙
+            </button>
           </div>
         </div>
-        <div class="button-group">
-          <button id="undo-btn" class="undo-button" title="Undo" style="display: none;">⏪ Undo</button>
-          <button id="redo-btn" class="redo-button" title="Redo" style="display: none;">⏩ Redo</button>
-          <button id="resume-btn" class="resume-button" title="Resume Game" style="display: none;">▶ Resume</button>
-          <button id="reset-btn" class="reset-button">🎮 New Game</button>
-          <button id="settings-toggle" class="settings-toggle-btn" title="Settings">⚙</button>
-        </div>
       </div>
-    </div>
 
-    <div class="tab-content" id="game-tab">
-      <div class="player-selection">
-        <h3>Select Players</h3>
-        <div class="game-mode-selection">
-          <div class="radio-group">
-            <label class="radio-label">
-              <input type="radio" name="game-mode" value="one-player" id="mode-one-player" checked />
-              <span>One Player vs PC</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="game-mode" value="two-players" id="mode-two-players" />
-              <span>2 Players</span>
-            </label>
-          </div>
-        </div>
-        <div class="one-player-setup" id="one-player-setup">
-          <div class="player-side-selection">
-            <h4>Select Your Side</h4>
+      <div class="tab-content" id="game-tab">
+        <div class="player-selection">
+          <h3>Select Players</h3>
+          <div class="game-mode-selection">
             <div class="radio-group">
               <label class="radio-label">
-                <input type="radio" name="player-side" value="white" id="player-side-white" checked />
-                <span>White</span>
+                <input
+                  type="radio"
+                  name="game-mode"
+                  value="one-player"
+                  id="mode-one-player"
+                  checked
+                />
+                <span>One Player vs PC</span>
               </label>
               <label class="radio-label">
-                <input type="radio" name="player-side" value="black" id="player-side-black" />
-                <span>Black</span>
+                <input
+                  type="radio"
+                  name="game-mode"
+                  value="two-players"
+                  id="mode-two-players"
+                />
+                <span>2 Players</span>
               </label>
             </div>
           </div>
-          <div class="single-player-container">
-            <div class="player-setup">
-              <h4 id="one-player-title">Your Player (White)</h4>
-              <div class="player-options" id="one-player-options">
-                <div class="player-option" data-player="ruslan" data-color="one-player">
-                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                  <span>Ruslan</span>
-                </div>
-                <div class="player-option" data-player="roman" data-color="one-player">
-                  <img src="assets/images/roman.jpg" alt="Roman" />
-                  <span>Roman</span>
-                </div>
-                <div class="player-option" data-player="katrine" data-color="one-player">
-                  <img src="assets/images/katrine.jpg" alt="Katrine" />
-                  <span>Katrine</span>
-                </div>
-                <div class="player-option" data-player="liana" data-color="one-player">
-                  <img src="assets/images/liana.jpeg" alt="Liana" />
-                  <span>Liana</span>
-                </div>
-                <div class="player-option" data-player="peppa" data-color="one-player">
-                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                  <span>Peppa Pig</span>
-                </div>
-                <div class="player-option" data-player="booba" data-color="one-player">
-                  <img src="assets/images/booba.jpeg" alt="Booba" />
-                  <span>Booba</span>
-                </div>
-              </div>
-              <div class="selected-player" id="one-player-selected">
-                <img id="one-player-img" src="" alt="" style="display: none" />
-                <span id="one-player-name">Select Your Player</span>
+          <div class="one-player-setup" id="one-player-setup">
+            <div class="player-side-selection">
+              <h4>Select Your Side</h4>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input
+                    type="radio"
+                    name="player-side"
+                    value="white"
+                    id="player-side-white"
+                    checked
+                  />
+                  <span>White</span>
+                </label>
+                <label class="radio-label">
+                  <input
+                    type="radio"
+                    name="player-side"
+                    value="black"
+                    id="player-side-black"
+                  />
+                  <span>Black</span>
+                </label>
               </div>
             </div>
-            <div class="vs-divider">VS</div>
-            <div class="player-setup">
-              <h4>PC (Computer)</h4>
-              <div class="selected-player pc-player">
-                <span id="pc-player-name">Computer</span>
+            <div class="single-player-container">
+              <div class="player-setup">
+                <h4 id="one-player-title">Your Player (White)</h4>
+                <div class="player-options" id="one-player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-color="one-player"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="one-player-selected">
+                  <img
+                    id="one-player-img"
+                    src=""
+                    alt=""
+                    style="display: none"
+                  />
+                  <span id="one-player-name">Select Your Player</span>
+                </div>
+              </div>
+              <div class="vs-divider">VS</div>
+              <div class="player-setup">
+                <h4>PC (Computer)</h4>
+                <div class="selected-player pc-player">
+                  <span id="pc-player-name">Computer</span>
+                </div>
               </div>
             </div>
           </div>
+          <div
+            class="two-players-setup"
+            id="two-players-setup"
+            style="display: none"
+          >
+            <div class="players-container">
+              <div class="player-setup">
+                <h4>White Player</h4>
+                <div class="player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-color="white"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-color="white"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-color="white"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-color="white"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-color="white"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-color="white"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="white-player">
+                  <img
+                    id="white-player-img"
+                    src=""
+                    alt=""
+                    style="display: none"
+                  />
+                  <span id="white-player-name">Select White Player</span>
+                </div>
+              </div>
+
+              <div class="vs-divider">VS</div>
+
+              <div class="player-setup">
+                <h4>Black Player</h4>
+                <div class="player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-color="black"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-color="black"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-color="black"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-color="black"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-color="black"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-color="black"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="black-player">
+                  <img
+                    id="black-player-img"
+                    src=""
+                    alt=""
+                    style="display: none"
+                  />
+                  <span id="black-player-name">Select Black Player</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            id="start-game-btn"
+            class="start-game-button"
+            style="display: none"
+          >
+            Start Game
+          </button>
         </div>
-        <div class="two-players-setup" id="two-players-setup" style="display: none">
-          <div class="players-container">
-            <div class="player-setup">
-              <h4>White Player</h4>
-              <div class="player-options">
-                <div class="player-option" data-player="ruslan" data-color="white">
-                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                  <span>Ruslan</span>
-                </div>
-                <div class="player-option" data-player="roman" data-color="white">
-                  <img src="assets/images/roman.jpg" alt="Roman" />
-                  <span>Roman</span>
-                </div>
-                <div class="player-option" data-player="katrine" data-color="white">
-                  <img src="assets/images/katrine.jpg" alt="Katrine" />
-                  <span>Katrine</span>
-                </div>
-                <div class="player-option" data-player="liana" data-color="white">
-                  <img src="assets/images/liana.jpeg" alt="Liana" />
-                  <span>Liana</span>
-                </div>
-                <div class="player-option" data-player="peppa" data-color="white">
-                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                  <span>Peppa Pig</span>
-                </div>
-                <div class="player-option" data-player="booba" data-color="white">
-                  <img src="assets/images/booba.jpeg" alt="Booba" />
-                  <span>Booba</span>
-                </div>
-              </div>
-              <div class="selected-player" id="white-player">
-                <img id="white-player-img" src="" alt="" style="display: none" />
-                <span id="white-player-name">Select White Player</span>
-              </div>
-            </div>
 
-            <div class="vs-divider">VS</div>
-
-            <div class="player-setup">
-              <h4>Black Player</h4>
-              <div class="player-options">
-                <div class="player-option" data-player="ruslan" data-color="black">
-                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                  <span>Ruslan</span>
-                </div>
-                <div class="player-option" data-player="roman" data-color="black">
-                  <img src="assets/images/roman.jpg" alt="Roman" />
-                  <span>Roman</span>
-                </div>
-                <div class="player-option" data-player="katrine" data-color="black">
-                  <img src="assets/images/katrine.jpg" alt="Katrine" />
-                  <span>Katrine</span>
-                </div>
-                <div class="player-option" data-player="liana" data-color="black">
-                  <img src="assets/images/liana.jpeg" alt="Liana" />
-                  <span>Liana</span>
-                </div>
-                <div class="player-option" data-player="peppa" data-color="black">
-                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                  <span>Peppa Pig</span>
-                </div>
-                <div class="player-option" data-player="booba" data-color="black">
-                  <img src="assets/images/booba.jpeg" alt="Booba" />
-                  <span>Booba</span>
-                </div>
-              </div>
-              <div class="selected-player" id="black-player">
-                <img id="black-player-img" src="" alt="" style="display: none" />
-                <span id="black-player-name">Select Black Player</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button id="start-game-btn" class="start-game-button" style="display: none">
-          Start Game
-        </button>
-      </div>
-
-      <div class="chess-container" style="display: none">
-        <div class="board-labels left-labels">
-          <div class="rank-label">8</div>
-          <div class="rank-label">7</div>
-          <div class="rank-label">6</div>
-          <div class="rank-label">5</div>
-          <div class="rank-label">4</div>
-          <div class="rank-label">3</div>
-          <div class="rank-label">2</div>
-          <div class="rank-label">1</div>
-        </div>
-
-        <div class="chess-board-container">
-          <div class="chess-board" id="chess-board">
-            <!-- Chess squares will be generated by JavaScript -->
-          </div>
-          <div class="file-labels">
-            <div class="file-label">a</div>
-            <div class="file-label">b</div>
-            <div class="file-label">c</div>
-            <div class="file-label">d</div>
-            <div class="file-label">e</div>
-            <div class="file-label">f</div>
-            <div class="file-label">g</div>
-            <div class="file-label">h</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="captured-pieces" style="display: none">
-        <div class="captured-white">
-          <h3>Captured White Pieces</h3>
-          <div id="captured-white" class="pieces-container"></div>
-        </div>
-        <div class="captured-black">
-          <h3>Captured Black Pieces</h3>
-          <div id="captured-black" class="pieces-container"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="lessons-tab" style="display: none">
-      <div class="lessons-container">
-        <div class="lessons-header">
-          <div class="lessons-title">
-            <h2>Chess Lessons</h2>
-            <h3>Learn Piece Movements</h3>
-          </div>
-          <div class="lessons-roman-container">
-            <img src="assets/images/roman.jpg" alt="Roman" class="lessons-roman-img" id="lessons-instructor-img" />
-            <select id="lessons-instructor-select" class="lessons-instructor-select">
-              <option value="roman">Roman</option>
-              <option value="ruslan">Ruslan</option>
-              <option value="booba">Booba</option>
-              <option value="katrine">Katrine</option>
-              <option value="liana">Liana</option>
-              <option value="peppa">Peppa</option>
-            </select>
-            <div class="roman-speech-bubble" id="roman-speech-bubble">
-              <div class="speech-bubble-content" id="speech-bubble-content"></div>
-              <div class="speech-bubble-dots" id="speech-bubble-dots" style="display: none;">...</div>
-            </div>
-          </div>
-        </div>
-        <div class="lessons-content">
-          <div class="piece-selector">
-            <h3>Select a Piece</h3>
-            <div class="piece-options">
-              <div class="lesson-piece-option" data-piece="king" data-color="white">
-                <div class="lesson-piece white-piece">♔</div>
-                <span>King (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="queen" data-color="white">
-                <div class="lesson-piece white-piece">♕</div>
-                <span>Queen (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="rook" data-color="white">
-                <div class="lesson-piece white-piece">♖</div>
-                <span>Rook (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="bishop" data-color="white">
-                <div class="lesson-piece white-piece">♗</div>
-                <span>Bishop (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="knight" data-color="white">
-                <div class="lesson-piece white-piece">♘</div>
-                <span>Knight (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="pawn" data-color="white">
-                <div class="lesson-piece white-piece">♙</div>
-                <span>Pawn (White)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="king" data-color="black">
-                <div class="lesson-piece black-piece">♚</div>
-                <span>King (Black)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="queen" data-color="black">
-                <div class="lesson-piece black-piece">♛</div>
-                <span>Queen (Black)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="rook" data-color="black">
-                <div class="lesson-piece black-piece">♜</div>
-                <span>Rook (Black)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="bishop" data-color="black">
-                <div class="lesson-piece black-piece">♝</div>
-                <span>Bishop (Black)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="knight" data-color="black">
-                <div class="lesson-piece black-piece">♞</div>
-                <span>Knight (Black)</span>
-              </div>
-              <div class="lesson-piece-option" data-piece="pawn" data-color="black">
-                <div class="lesson-piece black-piece">♟</div>
-                <span>Pawn (Black)</span>
-              </div>
-            </div>
-            <button id="clear-lesson-board" class="clear-board-button">
-              Clear Board
-            </button>
-            <button id="remove-selected-piece" class="remove-piece-button">
-              Remove Selected Piece
-            </button>
-            <button id="random-board-fill" class="random-board-button">
-              Random Board Fill
-            </button>
-          </div>
-          <div class="lessons-board-container">
-            <div class="chess-container">
-              <div class="board-labels left-labels">
-                <div class="rank-label">8</div>
-                <div class="rank-label">7</div>
-                <div class="rank-label">6</div>
-                <div class="rank-label">5</div>
-                <div class="rank-label">4</div>
-                <div class="rank-label">3</div>
-                <div class="rank-label">2</div>
-                <div class="rank-label">1</div>
-              </div>
-
-              <div class="chess-board-container">
-                <div class="chess-board" id="lessons-board">
-                  <!-- Chess squares will be generated by JavaScript -->
-                </div>
-                <div class="file-labels">
-                  <div class="file-label">a</div>
-                  <div class="file-label">b</div>
-                  <div class="file-label">c</div>
-                  <div class="file-label">d</div>
-                  <div class="file-label">e</div>
-                  <div class="file-label">f</div>
-                  <div class="file-label">g</div>
-                  <div class="file-label">h</div>
-                </div>
-              </div>
-            </div>
-            <div class="lesson-instructions">
-              <p id="lesson-instruction-1">1. Select a piece from the options above</p>
-              <p id="lesson-instruction-2">2. Click on any square on the board to place the piece</p>
-              <p id="lesson-instruction-3">3. Click on the piece to see all available moves</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mission Tab -->
-    <div class="tab-content" id="mission-tab" style="display: none">
-      <div class="mission-selection" id="mission-selection">
-        <h3>Select Player and Piece for Mission Mode</h3>
-        <div class="mission-setup">
-          <div class="mission-player-section">
-            <h4>Select Player</h4>
-            <div class="mission-player-options">
-              <div class="mission-player-option" data-player="ruslan">
-                <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                <span>Ruslan</span>
-              </div>
-              <div class="mission-player-option" data-player="roman">
-                <img src="assets/images/roman.jpg" alt="Roman" />
-                <span>Roman</span>
-              </div>
-              <div class="mission-player-option" data-player="katrine">
-                <img src="assets/images/katrine.jpg" alt="Katrine" />
-                <span>Katrine</span>
-              </div>
-              <div class="mission-player-option" data-player="liana">
-                <img src="assets/images/liana.jpeg" alt="Liana" />
-                <span>Liana</span>
-              </div>
-              <div class="mission-player-option" data-player="peppa">
-                <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                <span>Peppa Pig</span>
-              </div>
-              <div class="mission-player-option" data-player="booba">
-                <img src="assets/images/booba.jpeg" alt="Booba" />
-                <span>Booba</span>
-              </div>
-            </div>
-            <div class="selected-mission-player" id="selected-mission-player">
-              <img id="selected-mission-player-img" src="" alt="" style="display: none" />
-              <span id="selected-mission-player-name">Select Player</span>
-            </div>
-          </div>
-
-          <div class="mission-difficulty-section">
-            <h4>Select Difficulty</h4>
-            <div class="mission-difficulty-options">
-              <div class="mission-difficulty-option" data-difficulty="easy">
-                <div class="difficulty-icon">🌟</div>
-                <span>Easy</span>
-                <small>Level × 20s</small>
-              </div>
-              <div class="mission-difficulty-option" data-difficulty="medium">
-                <div class="difficulty-icon">⚡</div>
-                <span>Medium</span>
-                <small>Level × 10s</small>
-              </div>
-              <div class="mission-difficulty-option" data-difficulty="hard">
-                <div class="difficulty-icon">👑</div>
-                <span>Hard</span>
-                <small>Level × 5s</small>
-              </div>
-            </div>
-            <div class="selected-mission-difficulty" id="selected-mission-difficulty">
-              <span>Select Difficulty</span>
-            </div>
-          </div>
-
-          <div class="mission-piece-section">
-            <h4>Select Your Piece</h4>
-            <div class="mission-piece-options">
-              <div class="mission-piece-option" data-piece="king" data-color="white">
-                <div class="mission-piece white-piece">♔</div>
-                <span>King</span>
-              </div>
-              <div class="mission-piece-option" data-piece="queen" data-color="white">
-                <div class="mission-piece white-piece">♕</div>
-                <span>Queen</span>
-              </div>
-              <div class="mission-piece-option" data-piece="rook" data-color="white">
-                <div class="mission-piece white-piece">♖</div>
-                <span>Rook</span>
-              </div>
-              <div class="mission-piece-option" data-piece="bishop" data-color="white">
-                <div class="mission-piece white-piece">♗</div>
-                <span>Bishop</span>
-              </div>
-              <div class="mission-piece-option" data-piece="knight" data-color="white">
-                <div class="mission-piece white-piece">♘</div>
-                <span>Knight</span>
-              </div>
-            </div>
-            <div class="selected-mission-piece" id="selected-mission-piece">
-              <span>Select Piece</span>
-            </div>
-          </div>
-        </div>
-        <button id="start-mission-btn" class="start-mission-button" style="display: none">
-          Start Mission
-        </button>
-      </div>
-
-      <div class="mission-game-area" id="mission-game-area" style="display: none">
-        <div class="mission-info">
-          <h3 id="mission-title">Mission 1</h3>
-          <p id="mission-description">
-            Capture all opponent pieces to complete the mission!
-          </p>
-          <div class="mission-timer-container">
-            <svg class="mission-timer-svg" viewBox="0 0 100 100">
-              <circle class="mission-timer-bg" cx="50" cy="50" r="45"></circle>
-              <circle class="mission-timer-circle" id="mission-timer-circle" cx="50" cy="50" r="45"></circle>
-            </svg>
-            <div class="mission-timer-text">
-              <span id="mission-timer">0:00</span>
-            </div>
-          </div>
-          <div class="mission-stats">
-            <span>Opponent pieces remaining:
-              <strong id="opponent-pieces-count">1</strong></span>
-          </div>
-          <div class="mission-controls">
-            <button id="hint-btn" class="hint-button">💡 Hint</button>
-            <button id="reset-mission-btn" class="reset-mission-button">
-              🔄 Reset Mission
-            </button>
-          </div>
-        </div>
-        <div class="chess-container">
+        <div class="chess-container" style="display: none">
           <div class="board-labels left-labels">
             <div class="rank-label">8</div>
             <div class="rank-label">7</div>
@@ -498,7 +357,7 @@
           </div>
 
           <div class="chess-board-container">
-            <div class="chess-board" id="mission-board">
+            <div class="chess-board" id="chess-board">
               <!-- Chess squares will be generated by JavaScript -->
             </div>
             <div class="file-labels">
@@ -513,514 +372,1087 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Mission Completion Modal -->
-  <div class="modal" id="mission-completion-modal" style="display: none">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="mission-completion-title">Mission Completed!</h2>
-        <button class="modal-close-btn"
-          onclick="document.getElementById('mission-completion-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <img id="mission-winner-img" class="winner-image" src="" alt="" style="display: none" />
-        <p id="mission-completion-message"></p>
-        <button id="next-mission-btn" class="modal-button">Next Mission</button>
-        <button id="mission-menu-btn" class="modal-button" style="background: #6c757d; margin-top: 10px">
-          Back to Menu
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- All Missions Completed Modal -->
-  <div class="modal" id="all-missions-completed-modal" style="display: none">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>🎉 Congratulations! 🎉</h2>
-        <button class="modal-close-btn"
-          onclick="document.getElementById('all-missions-completed-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <img id="all-missions-winner-img" class="winner-image" src="" alt="" style="display: none" />
-        <p>You have completed all 10 missions!</p>
-        <button id="back-to-mission-menu-btn" class="modal-button">
-          Back to Menu
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mission Failure Modal -->
-  <div class="modal" id="mission-failure-modal" style="display: none">
-    <div class="modal-content mission-failure-content">
-      <div class="modal-header">
-        <h2>Mission Failed!</h2>
-        <button class="modal-close-btn"
-          onclick="document.getElementById('mission-failure-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <img id="mission-failure-player-img" class="winner-image" src="" alt="" style="display: none" />
-        <p id="mission-failure-message">Time's up!</p>
-        <button id="retry-mission-btn" class="modal-button">
-          Try Again
-        </button>
-        <button id="mission-failure-menu-btn" class="modal-button" style="background: #6c757d; margin-top: 10px">
-          Back to Menu
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings Modal -->
-  <div class="modal" id="settings-modal" style="display: none">
-    <div class="modal-content settings-modal-content">
-      <div class="settings-modal-header">
-        <h2>⚙ Settings</h2>
-        <button id="settings-close" class="settings-close-btn">✕</button>
-      </div>
-      <div class="settings-modal-body">
-        <div class="setting-group">
-          <label for="language-select" id="language-label">Language</label>
-          <select id="language-select" class="setting-select">
-            <option value="en">English</option>
-            <option value="ru">Русский (Russian)</option>
-            <option value="es">Español (Spanish)</option>
-            <option value="ar">العربية (Arabic)</option>
-          </select>
-        </div>
-        <div class="setting-group">
-          <label for="piece-style" id="piece-style-label">Piece Style</label>
-          <select id="piece-style" class="setting-select">
-            <option value="classic">Classic</option>
-          </select>
-        </div>
-        <div class="setting-group">
-          <label for="color-theme" id="color-theme-label">Color Theme</label>
-          <select id="color-theme" class="setting-select">
-            <option value="traditional">Traditional</option>
-            <option value="blue">Blue & Gold</option>
-            <option value="green">Green & Cream</option>
-            <option value="purple">Purple & Silver</option>
-            <option value="red">Red & White</option>
-          </select>
-        </div>
-        <div class="setting-group">
-          <label for="board-style" id="board-style-label">Board Style</label>
-          <select id="board-style" class="setting-select">
-            <option value="wood">Wood</option>
-            <option value="marble">Marble</option>
-            <option value="neon">Neon</option>
-            <option value="classic">Classic</option>
-          </select>
-        </div>
-        <div class="setting-group">
-          <label>
-            <input type="checkbox" id="enable-voice-commands" />
-            <span id="enable-voice-commands-label">Enable Voice Commands</span>
-          </label>
-          <small id="voice-command-instructions"
-            style="display: block; margin-top: 0.5rem; color: #666; font-size: 0.875rem;">
-            Say chess moves like 'e2 to e4' or 'pawn e2 to e4'
-          </small>
-        </div>
-      </div>
-      <div class="settings-modal-footer">
-        <button id="settings-close-btn" class="modal-button">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="game-over-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="game-over-title">Game Over</h2>
-        <button class="modal-close-btn"
-          onclick="document.getElementById('game-over-modal').style.display='none'">✕</button>
-      </div>
-      <div class="modal-body">
-        <img id="game-over-winner-img" class="winner-image" src="" alt="" style="display: none" />
-        <p id="game-over-message"></p>
-        <button id="new-game-btn" class="modal-button">Start New Game</button>
-        <button id="replay-btn" class="modal-button" style="background: #17a2b8; margin-top: 10px">
-          Replay
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Radio Player Slider -->
-  <div class="radio-slider" id="radio-slider">
-    <div class="radio-slider-header">
-      <h3>🎵 Radio Player</h3>
-      <button id="radio-close" class="radio-close-btn">✕</button>
-    </div>
-    <div class="radio-slider-content">
-      <div class="radio-section">
-        <h4>Free Radio Stations</h4>
-        <div class="radio-search-box">
-          <input type="text" id="radio-search-input" placeholder="Search radio stations..."
-            class="radio-search-input" />
-          <button id="radio-search-btn" class="radio-search-btn">🔍</button>
-        </div>
-        <div class="radio-stations-list" id="radio-stations-list">
-          <div class="radio-loading">Loading stations...</div>
-        </div>
-      </div>
-    </div>
-    <div class="radio-player-controls" id="radio-player-controls" style="display: none">
-      <div class="now-playing">
-        <span id="now-playing-text">Now Playing: </span>
-        <span id="current-station-name">-</span>
-      </div>
-      <div class="player-buttons">
-        <button id="radio-play-pause" class="player-btn">⏸</button>
-        <button id="radio-stop" class="player-btn">⏹</button>
-        <button id="radio-dance" class="player-btn">💃</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dance Slider -->
-  <div class="dance-slider" id="dance-slider" style="display: none">
-    <div class="dance-text" id="dance-text">Super ROMAN</div>
-    <div class="dance-melodies" id="dance-melodies"></div>
-    <div class="dancing-person" id="dancing-person">
-      <div class="dance-head">
-        <img src="assets/images/roman.jpg" alt="Roman" class="dance-face" />
-      </div>
-      <div class="dance-torso">
-        <div class="dance-decoration dance-car">🚗</div>
-      </div>
-      <div class="dance-arms">
-        <div class="dance-arm dance-arm-left"></div>
-        <div class="dance-arm dance-arm-right"></div>
-      </div>
-      <div class="dance-legs">
-        <div class="dance-leg dance-leg-left">
-          <div class="dance-foot"></div>
-        </div>
-        <div class="dance-leg dance-leg-right">
-          <div class="dance-foot"></div>
-        </div>
-      </div>
-    </div>
-    <div class="dancing-person dancing-katrine" id="dancing-katrine">
-      <div class="dance-head">
-        <img src="assets/images/katrine.jpg" alt="Katrine" class="dance-face dance-face-katrine" />
-      </div>
-      <div class="dance-torso dance-torso-dress">
-        <div class="dance-decoration dance-flower">🌸</div>
-      </div>
-      <div class="dance-arms">
-        <div class="dance-arm dance-arm-left"></div>
-        <div class="dance-arm dance-arm-right"></div>
-      </div>
-      <div class="dance-legs">
-        <div class="dance-leg dance-leg-left">
-          <div class="dance-foot"></div>
-        </div>
-        <div class="dance-leg dance-leg-right">
-          <div class="dance-foot"></div>
-        </div>
-      </div>
-    </div>
-    <div class="dancing-person dancing-liana" id="dancing-liana">
-      <div class="dance-head">
-        <img src="assets/images/liana.jpeg" alt="Liana" class="dance-face dance-face-liana" />
-      </div>
-      <div class="dance-torso dance-torso-liana">
-        <div class="dance-decoration dance-star">⭐</div>
-      </div>
-      <div class="dance-arms">
-        <div class="dance-arm dance-arm-left"></div>
-        <div class="dance-arm dance-arm-right"></div>
-      </div>
-      <div class="dance-legs">
-        <div class="dance-leg dance-leg-left">
-          <div class="dance-foot"></div>
-        </div>
-        <div class="dance-leg dance-leg-right">
-          <div class="dance-foot"></div>
-        </div>
-      </div>
-    </div>
-    <div class="dancing-person dancing-ruslan" id="dancing-ruslan">
-      <div class="dance-head">
-        <img src="assets/images/ruslan.jpeg" alt="Ruslan" class="dance-face dance-face-ruslan" />
-      </div>
-      <div class="dance-torso dance-torso-ruslan">
-        <div class="dance-decoration dance-music">🎵</div>
-      </div>
-      <div class="dance-arms">
-        <div class="dance-arm dance-arm-left"></div>
-        <div class="dance-arm dance-arm-right"></div>
-      </div>
-      <div class="dance-legs">
-        <div class="dance-leg dance-leg-left">
-          <div class="dance-foot"></div>
-        </div>
-        <div class="dance-leg dance-leg-right">
-          <div class="dance-foot"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Replay Controls -->
-  <div class="replay-controls" id="replay-controls" style="display: none">
-    <div class="replay-controls-content">
-      <h3>Replay Mode</h3>
-      <div class="replay-buttons">
-        <button id="replay-prev-btn" class="replay-control-btn">
-          ⏮ Previous
-        </button>
-        <button id="replay-stop-btn" class="replay-control-btn">
-          ⏸ Stop
-        </button>
-        <button id="replay-play-btn" class="replay-control-btn">
-          ▶ Play
-        </button>
-        <button id="replay-next-btn" class="replay-control-btn">
-          Next ⏭
-        </button>
-      </div>
-      <div class="replay-info">
-        <span id="replay-move-info">Move 0 / 0</span>
-      </div>
-      <button id="exit-replay-btn" class="replay-exit-btn">
-        Exit Replay
-      </button>
-    </div>
-  </div>
-
-  <!-- More Games Selection Modal -->
-  <div class="modal" id="more-games-modal" style="display: none">
-    <div class="modal-content games-modal-content">
-      <div class="modal-header">
-        <h2>🎮 More Games</h2>
-        <button id="close-games-modal" class="modal-close-btn">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="games-list">
-          <div class="game-option" id="xo-game-option">
-            <div class="game-icon">⭕❌</div>
-            <div class="game-name">XO Game</div>
-            <div class="game-description">Tic-Tac-Toe</div>
+        <div class="captured-pieces" style="display: none">
+          <div class="captured-white">
+            <h3>Captured White Pieces</h3>
+            <div id="captured-white" class="pieces-container"></div>
           </div>
-          <div class="game-option" id="memory-game-option">
-            <div class="game-icon">🃏</div>
-            <div class="game-name">Memory</div>
-            <div class="game-description">Match the Pairs!</div>
+          <div class="captured-black">
+            <h3>Captured Black Pieces</h3>
+            <div id="captured-black" class="pieces-container"></div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- XO Game Modal -->
-  <div class="modal" id="xo-game-modal" style="display: none">
-    <div class="modal-content xo-modal-content">
-      <div class="modal-header">
-        <h2>⭕❌ XO Game</h2>
-        <button id="close-xo-modal" class="modal-close-btn">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="xo-game-setup" id="xo-game-setup">
-          <h3>Select Game Mode</h3>
-          <div class="xo-game-mode-selection">
-            <label class="radio-label">
-              <input type="radio" name="xo-game-mode" value="vs-computer" id="xo-mode-vs-computer" checked />
-              <span>VS Computer</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="xo-game-mode" value="two-players" id="xo-mode-two-players" />
-              <span>2 Players</span>
-            </label>
+      <div class="tab-content" id="lessons-tab" style="display: none">
+        <div class="lessons-container">
+          <div class="lessons-header">
+            <div class="lessons-title">
+              <h2>Chess Lessons</h2>
+              <h3>Learn Piece Movements</h3>
+            </div>
+            <div class="lessons-roman-container">
+              <img
+                src="assets/images/roman.jpg"
+                alt="Roman"
+                class="lessons-roman-img"
+                id="lessons-instructor-img"
+              />
+              <select
+                id="lessons-instructor-select"
+                class="lessons-instructor-select"
+              >
+                <option value="roman">Roman</option>
+                <option value="ruslan">Ruslan</option>
+                <option value="booba">Booba</option>
+                <option value="katrine">Katrine</option>
+                <option value="liana">Liana</option>
+                <option value="peppa">Peppa</option>
+              </select>
+              <div class="roman-speech-bubble" id="roman-speech-bubble">
+                <div
+                  class="speech-bubble-content"
+                  id="speech-bubble-content"
+                ></div>
+                <div
+                  class="speech-bubble-dots"
+                  id="speech-bubble-dots"
+                  style="display: none"
+                >
+                  ...
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="xo-player-selection" id="xo-player-selection">
-            <div class="xo-player-setup">
-              <h4>Player X</h4>
-              <div class="player-options">
-                <div class="player-option" data-player="ruslan" data-xo-color="x">
+          <div class="lessons-content">
+            <div class="piece-selector">
+              <h3>Select a Piece</h3>
+              <div class="piece-options">
+                <div
+                  class="lesson-piece-option"
+                  data-piece="king"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♔</div>
+                  <span>King (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="queen"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♕</div>
+                  <span>Queen (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="rook"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♖</div>
+                  <span>Rook (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="bishop"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♗</div>
+                  <span>Bishop (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="knight"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♘</div>
+                  <span>Knight (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="pawn"
+                  data-color="white"
+                >
+                  <div class="lesson-piece white-piece">♙</div>
+                  <span>Pawn (White)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="king"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♚</div>
+                  <span>King (Black)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="queen"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♛</div>
+                  <span>Queen (Black)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="rook"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♜</div>
+                  <span>Rook (Black)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="bishop"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♝</div>
+                  <span>Bishop (Black)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="knight"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♞</div>
+                  <span>Knight (Black)</span>
+                </div>
+                <div
+                  class="lesson-piece-option"
+                  data-piece="pawn"
+                  data-color="black"
+                >
+                  <div class="lesson-piece black-piece">♟</div>
+                  <span>Pawn (Black)</span>
+                </div>
+              </div>
+              <button id="clear-lesson-board" class="clear-board-button">
+                Clear Board
+              </button>
+              <button id="remove-selected-piece" class="remove-piece-button">
+                Remove Selected Piece
+              </button>
+              <button id="random-board-fill" class="random-board-button">
+                Random Board Fill
+              </button>
+            </div>
+            <div class="lessons-board-container">
+              <div class="chess-container">
+                <div class="board-labels left-labels">
+                  <div class="rank-label">8</div>
+                  <div class="rank-label">7</div>
+                  <div class="rank-label">6</div>
+                  <div class="rank-label">5</div>
+                  <div class="rank-label">4</div>
+                  <div class="rank-label">3</div>
+                  <div class="rank-label">2</div>
+                  <div class="rank-label">1</div>
+                </div>
+
+                <div class="chess-board-container">
+                  <div class="chess-board" id="lessons-board">
+                    <!-- Chess squares will be generated by JavaScript -->
+                  </div>
+                  <div class="file-labels">
+                    <div class="file-label">a</div>
+                    <div class="file-label">b</div>
+                    <div class="file-label">c</div>
+                    <div class="file-label">d</div>
+                    <div class="file-label">e</div>
+                    <div class="file-label">f</div>
+                    <div class="file-label">g</div>
+                    <div class="file-label">h</div>
+                  </div>
+                </div>
+              </div>
+              <div class="lesson-instructions">
+                <p id="lesson-instruction-1">
+                  1. Select a piece from the options above
+                </p>
+                <p id="lesson-instruction-2">
+                  2. Click on any square on the board to place the piece
+                </p>
+                <p id="lesson-instruction-3">
+                  3. Click on the piece to see all available moves
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mission Tab -->
+      <div class="tab-content" id="mission-tab" style="display: none">
+        <div class="mission-selection" id="mission-selection">
+          <h3>Select Player and Piece for Mission Mode</h3>
+          <div class="mission-setup">
+            <div class="mission-player-section">
+              <h4>Select Player</h4>
+              <div class="mission-player-options">
+                <div class="mission-player-option" data-player="ruslan">
                   <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
                   <span>Ruslan</span>
                 </div>
-                <div class="player-option" data-player="roman" data-xo-color="x">
+                <div class="mission-player-option" data-player="roman">
                   <img src="assets/images/roman.jpg" alt="Roman" />
                   <span>Roman</span>
                 </div>
-                <div class="player-option" data-player="katrine" data-xo-color="x">
+                <div class="mission-player-option" data-player="katrine">
                   <img src="assets/images/katrine.jpg" alt="Katrine" />
                   <span>Katrine</span>
                 </div>
-                <div class="player-option" data-player="liana" data-xo-color="x">
+                <div class="mission-player-option" data-player="liana">
                   <img src="assets/images/liana.jpeg" alt="Liana" />
                   <span>Liana</span>
                 </div>
-                <div class="player-option" data-player="peppa" data-xo-color="x">
+                <div class="mission-player-option" data-player="peppa">
                   <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
                   <span>Peppa Pig</span>
                 </div>
-                <div class="player-option" data-player="booba" data-xo-color="x">
+                <div class="mission-player-option" data-player="booba">
                   <img src="assets/images/booba.jpeg" alt="Booba" />
                   <span>Booba</span>
                 </div>
               </div>
-              <div class="selected-player" id="xo-x-player">
-                <span>Select Player X</span>
+              <div class="selected-mission-player" id="selected-mission-player">
+                <img
+                  id="selected-mission-player-img"
+                  src=""
+                  alt=""
+                  style="display: none"
+                />
+                <span id="selected-mission-player-name">Select Player</span>
               </div>
             </div>
-            <div class="vs-divider">VS</div>
-            <div class="xo-player-setup">
-              <h4>Player O</h4>
-              <div class="player-options" id="xo-o-player-options">
-                <div class="player-option" data-player="ruslan" data-xo-color="o">
-                  <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
-                  <span>Ruslan</span>
+
+            <div class="mission-difficulty-section">
+              <h4>Select Difficulty</h4>
+              <div class="mission-difficulty-options">
+                <div class="mission-difficulty-option" data-difficulty="easy">
+                  <div class="difficulty-icon">🌟</div>
+                  <span>Easy</span>
+                  <small>Level × 20s</small>
                 </div>
-                <div class="player-option" data-player="roman" data-xo-color="o">
-                  <img src="assets/images/roman.jpg" alt="Roman" />
-                  <span>Roman</span>
+                <div class="mission-difficulty-option" data-difficulty="medium">
+                  <div class="difficulty-icon">⚡</div>
+                  <span>Medium</span>
+                  <small>Level × 10s</small>
                 </div>
-                <div class="player-option" data-player="katrine" data-xo-color="o">
-                  <img src="assets/images/katrine.jpg" alt="Katrine" />
-                  <span>Katrine</span>
-                </div>
-                <div class="player-option" data-player="liana" data-xo-color="o">
-                  <img src="assets/images/liana.jpeg" alt="Liana" />
-                  <span>Liana</span>
-                </div>
-                <div class="player-option" data-player="peppa" data-xo-color="o">
-                  <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
-                  <span>Peppa Pig</span>
-                </div>
-                <div class="player-option" data-player="booba" data-xo-color="o">
-                  <img src="assets/images/booba.jpeg" alt="Booba" />
-                  <span>Booba</span>
+                <div class="mission-difficulty-option" data-difficulty="hard">
+                  <div class="difficulty-icon">👑</div>
+                  <span>Hard</span>
+                  <small>Level × 5s</small>
                 </div>
               </div>
-              <div class="selected-player" id="xo-o-player">
-                <span id="xo-o-player-text">Select Player O</span>
+              <div
+                class="selected-mission-difficulty"
+                id="selected-mission-difficulty"
+              >
+                <span>Select Difficulty</span>
+              </div>
+            </div>
+
+            <div class="mission-piece-section">
+              <h4>Select Your Piece</h4>
+              <div class="mission-piece-options">
+                <div
+                  class="mission-piece-option"
+                  data-piece="king"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♔</div>
+                  <span>King</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="queen"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♕</div>
+                  <span>Queen</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="rook"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♖</div>
+                  <span>Rook</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="bishop"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♗</div>
+                  <span>Bishop</span>
+                </div>
+                <div
+                  class="mission-piece-option"
+                  data-piece="knight"
+                  data-color="white"
+                >
+                  <div class="mission-piece white-piece">♘</div>
+                  <span>Knight</span>
+                </div>
+              </div>
+              <div class="selected-mission-piece" id="selected-mission-piece">
+                <span>Select Piece</span>
               </div>
             </div>
           </div>
-          <button id="start-xo-game-btn" class="start-game-button" style="display: none">
-            Start XO Game
+          <button
+            id="start-mission-btn"
+            class="start-mission-button"
+            style="display: none"
+          >
+            Start Mission
           </button>
         </div>
-        <div class="xo-game-area" id="xo-game-area" style="display: none">
-          <div class="xo-game-info">
-            <div class="xo-current-player">
-              <span>Current Player: </span>
-              <span id="xo-current-player-name">X</span>
+
+        <div
+          class="mission-game-area"
+          id="mission-game-area"
+          style="display: none"
+        >
+          <div class="mission-info">
+            <h3 id="mission-title">Mission 1</h3>
+            <p id="mission-description">
+              Capture all opponent pieces to complete the mission!
+            </p>
+            <div class="mission-timer-container">
+              <svg class="mission-timer-svg" viewBox="0 0 100 100">
+                <circle
+                  class="mission-timer-bg"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+                <circle
+                  class="mission-timer-circle"
+                  id="mission-timer-circle"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                ></circle>
+              </svg>
+              <div class="mission-timer-text">
+                <span id="mission-timer">0:00</span>
+              </div>
             </div>
-            <button id="xo-reset-btn" class="reset-button">🔄 New Game</button>
-          </div>
-          <div class="xo-board-container">
-            <div class="xo-board" id="xo-board">
-              <!-- XO board cells will be generated by JavaScript -->
+            <div class="mission-stats">
+              <span
+                >Opponent pieces remaining:
+                <strong id="opponent-pieces-count">1</strong></span
+              >
+            </div>
+            <div class="mission-controls">
+              <button id="hint-btn" class="hint-button">💡 Hint</button>
+              <button id="reset-mission-btn" class="reset-mission-button">
+                🔄 Reset Mission
+              </button>
             </div>
           </div>
-          <div class="xo-game-status" id="xo-game-status"></div>
+          <div class="chess-container">
+            <div class="board-labels left-labels">
+              <div class="rank-label">8</div>
+              <div class="rank-label">7</div>
+              <div class="rank-label">6</div>
+              <div class="rank-label">5</div>
+              <div class="rank-label">4</div>
+              <div class="rank-label">3</div>
+              <div class="rank-label">2</div>
+              <div class="rank-label">1</div>
+            </div>
+
+            <div class="chess-board-container">
+              <div class="chess-board" id="mission-board">
+                <!-- Chess squares will be generated by JavaScript -->
+              </div>
+              <div class="file-labels">
+                <div class="file-label">a</div>
+                <div class="file-label">b</div>
+                <div class="file-label">c</div>
+                <div class="file-label">d</div>
+                <div class="file-label">e</div>
+                <div class="file-label">f</div>
+                <div class="file-label">g</div>
+                <div class="file-label">h</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-
-  <!-- Memory Game Modal -->
-  <div class="modal" id="memory-game-modal" style="display: none">
-    <div class="modal-content memory-modal-content">
-      <div class="modal-header">
-        <h2>🃏 Memory Game</h2>
-        <button id="close-memory-modal" class="modal-close-btn">✕</button>
-      </div>
-      <div class="modal-body memory-modal-body">
-
-        <!-- Level Selection Screen -->
-        <div id="memory-level-selection">
-          <p class="memory-intro">Find all matching pairs!</p>
-          <div class="memory-level-buttons">
-            <button id="memory-easy-btn" class="memory-level-btn">
-              <div class="memory-level-icon">😊</div>
-              <div class="memory-level-name">Easy</div>
-              <div class="memory-level-desc">3 pairs · 6 cards</div>
-            </button>
-            <button id="memory-hard-btn" class="memory-level-btn">
-              <div class="memory-level-icon">🔥</div>
-              <div class="memory-level-name">Hard</div>
-              <div class="memory-level-desc">6 pairs · 12 cards</div>
-            </button>
-          </div>
+    <!-- Mission Completion Modal -->
+    <div class="modal" id="mission-completion-modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="mission-completion-title">Mission Completed!</h2>
+          <button
+            class="modal-close-btn"
+            onclick="
+              document.getElementById(
+                'mission-completion-modal',
+              ).style.display = 'none'
+            "
+          >
+            ✕
+          </button>
         </div>
-
-        <!-- Loading Screen -->
-        <div id="memory-loading" style="display: none">
-          <div class="memory-loading-wrap">
-            <div class="memory-spinner">🃏</div>
-            <p>Loading mystery character…</p>
-          </div>
+        <div class="modal-body">
+          <img
+            id="mission-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="mission-completion-message"></p>
+          <button id="next-mission-btn" class="modal-button">
+            Next Mission
+          </button>
+          <button
+            id="mission-menu-btn"
+            class="modal-button"
+            style="background: #6c757d; margin-top: 10px"
+          >
+            Back to Menu
+          </button>
         </div>
-
-        <!-- Game Area -->
-        <div id="memory-game-area" style="display: none">
-          <div class="memory-hud">
-            <div class="memory-hud-stat">
-              <span class="memory-hud-label">Level</span>
-              <span id="memory-level-display">Easy</span>
-            </div>
-            <div class="memory-hud-stat">
-              <span class="memory-hud-label">⏱ Time</span>
-              <span id="memory-timer">0:00</span>
-            </div>
-            <div class="memory-hud-stat">
-              <span class="memory-hud-label">Moves</span>
-              <span id="memory-attempts">0</span>
-            </div>
-            <div class="memory-hud-stat">
-              <span class="memory-hud-label">Matched</span>
-              <span id="memory-matched">0 / 0</span>
-            </div>
-            <button id="memory-back-btn" class="memory-back-btn">← Menu</button>
-          </div>
-          <div class="memory-board" id="memory-board"></div>
-        </div>
-
-        <!-- Win Screen -->
-        <div id="memory-win-screen" style="display: none">
-          <div class="memory-win-wrap">
-            <div class="memory-win-trophy">🏆</div>
-            <h3 class="memory-win-title">You Won!</h3>
-            <div class="memory-win-badge" id="memory-win-level">🟢 Easy</div>
-            <div class="memory-win-stats">
-              <div class="memory-win-stat">
-                <span class="memory-win-stat-label">Moves</span>
-                <strong id="memory-win-attempts">0</strong>
-              </div>
-              <div class="memory-win-stat">
-                <span class="memory-win-stat-label">Time</span>
-                <strong id="memory-win-time">0:00</strong>
-              </div>
-            </div>
-            <button id="memory-play-again-btn" class="start-game-button">🔄 Play Again</button>
-            <button id="memory-change-level-btn" class="modal-button memory-change-level-btn">Change Level</button>
-          </div>
-        </div>
-
       </div>
     </div>
-  </div>
 
-  <script src="js/languages.js"></script>
-  <script src="js/voice-recognition.js"></script>
-  <script src="js/utils/sound-manager.js"></script>
-  <script src="js/radio-player.js"></script>
-  <script src="js/memory-game.js"></script>
-  <script src="script.js"></script>
-</body>
+    <!-- All Missions Completed Modal -->
+    <div class="modal" id="all-missions-completed-modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🎉 Congratulations! 🎉</h2>
+          <button
+            class="modal-close-btn"
+            onclick="
+              document.getElementById(
+                'all-missions-completed-modal',
+              ).style.display = 'none'
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="all-missions-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p>You have completed all 10 missions!</p>
+          <button id="back-to-mission-menu-btn" class="modal-button">
+            Back to Menu
+          </button>
+        </div>
+      </div>
+    </div>
 
+    <!-- Mission Failure Modal -->
+    <div class="modal" id="mission-failure-modal" style="display: none">
+      <div class="modal-content mission-failure-content">
+        <div class="modal-header">
+          <h2>Mission Failed!</h2>
+          <button
+            class="modal-close-btn"
+            onclick="
+              document.getElementById('mission-failure-modal').style.display =
+                'none'
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="mission-failure-player-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="mission-failure-message">Time's up!</p>
+          <button id="retry-mission-btn" class="modal-button">Try Again</button>
+          <button
+            id="mission-failure-menu-btn"
+            class="modal-button"
+            style="background: #6c757d; margin-top: 10px"
+          >
+            Back to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal" style="display: none">
+      <div class="modal-content settings-modal-content">
+        <div class="settings-modal-header">
+          <h2>⚙ Settings</h2>
+          <button id="settings-close" class="settings-close-btn">✕</button>
+        </div>
+        <div class="settings-modal-body">
+          <div class="setting-group">
+            <label for="language-select" id="language-label">Language</label>
+            <select id="language-select" class="setting-select">
+              <option value="en">English</option>
+              <option value="ru">Русский (Russian)</option>
+              <option value="es">Español (Spanish)</option>
+              <option value="ar">العربية (Arabic)</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="piece-style" id="piece-style-label">Piece Style</label>
+            <select id="piece-style" class="setting-select">
+              <option value="classic">Classic</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="color-theme" id="color-theme-label">Color Theme</label>
+            <select id="color-theme" class="setting-select">
+              <option value="traditional">Traditional</option>
+              <option value="blue">Blue & Gold</option>
+              <option value="green">Green & Cream</option>
+              <option value="purple">Purple & Silver</option>
+              <option value="red">Red & White</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="board-style" id="board-style-label">Board Style</label>
+            <select id="board-style" class="setting-select">
+              <option value="wood">Wood</option>
+              <option value="marble">Marble</option>
+              <option value="neon">Neon</option>
+              <option value="classic">Classic</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label>
+              <input type="checkbox" id="enable-voice-commands" />
+              <span id="enable-voice-commands-label"
+                >Enable Voice Commands</span
+              >
+            </label>
+            <small
+              id="voice-command-instructions"
+              style="
+                display: block;
+                margin-top: 0.5rem;
+                color: #666;
+                font-size: 0.875rem;
+              "
+            >
+              Say chess moves like 'e2 to e4' or 'pawn e2 to e4'
+            </small>
+          </div>
+        </div>
+        <div class="settings-modal-footer">
+          <button id="settings-close-btn" class="modal-button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="game-over-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="game-over-title">Game Over</h2>
+          <button
+            class="modal-close-btn"
+            onclick="
+              document.getElementById('game-over-modal').style.display = 'none'
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <img
+            id="game-over-winner-img"
+            class="winner-image"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <p id="game-over-message"></p>
+          <button id="new-game-btn" class="modal-button">Start New Game</button>
+          <button
+            id="replay-btn"
+            class="modal-button"
+            style="background: #17a2b8; margin-top: 10px"
+          >
+            Replay
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Radio Player Slider -->
+    <div class="radio-slider" id="radio-slider">
+      <div class="radio-slider-header">
+        <h3>🎵 Radio Player</h3>
+        <button id="radio-close" class="radio-close-btn">✕</button>
+      </div>
+      <div class="radio-slider-content">
+        <div class="radio-section">
+          <h4>Free Radio Stations</h4>
+          <div class="radio-search-box">
+            <input
+              type="text"
+              id="radio-search-input"
+              placeholder="Search radio stations..."
+              class="radio-search-input"
+            />
+            <button id="radio-search-btn" class="radio-search-btn">🔍</button>
+          </div>
+          <div class="radio-stations-list" id="radio-stations-list">
+            <div class="radio-loading">Loading stations...</div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="radio-player-controls"
+        id="radio-player-controls"
+        style="display: none"
+      >
+        <div class="now-playing">
+          <span id="now-playing-text">Now Playing: </span>
+          <span id="current-station-name">-</span>
+        </div>
+        <div class="player-buttons">
+          <button id="radio-play-pause" class="player-btn">⏸</button>
+          <button id="radio-stop" class="player-btn">⏹</button>
+          <button id="radio-dance" class="player-btn">💃</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dance Slider -->
+    <div class="dance-slider" id="dance-slider" style="display: none">
+      <div class="dance-text" id="dance-text">Super ROMAN</div>
+      <div class="dance-melodies" id="dance-melodies"></div>
+      <div class="dancing-person" id="dancing-person">
+        <div class="dance-head">
+          <img src="assets/images/roman.jpg" alt="Roman" class="dance-face" />
+        </div>
+        <div class="dance-torso">
+          <div class="dance-decoration dance-car">🚗</div>
+        </div>
+        <div class="dance-arms">
+          <div class="dance-arm dance-arm-left"></div>
+          <div class="dance-arm dance-arm-right"></div>
+        </div>
+        <div class="dance-legs">
+          <div class="dance-leg dance-leg-left">
+            <div class="dance-foot"></div>
+          </div>
+          <div class="dance-leg dance-leg-right">
+            <div class="dance-foot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dancing-person dancing-katrine" id="dancing-katrine">
+        <div class="dance-head">
+          <img
+            src="assets/images/katrine.jpg"
+            alt="Katrine"
+            class="dance-face dance-face-katrine"
+          />
+        </div>
+        <div class="dance-torso dance-torso-dress">
+          <div class="dance-decoration dance-flower">🌸</div>
+        </div>
+        <div class="dance-arms">
+          <div class="dance-arm dance-arm-left"></div>
+          <div class="dance-arm dance-arm-right"></div>
+        </div>
+        <div class="dance-legs">
+          <div class="dance-leg dance-leg-left">
+            <div class="dance-foot"></div>
+          </div>
+          <div class="dance-leg dance-leg-right">
+            <div class="dance-foot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dancing-person dancing-liana" id="dancing-liana">
+        <div class="dance-head">
+          <img
+            src="assets/images/liana.jpeg"
+            alt="Liana"
+            class="dance-face dance-face-liana"
+          />
+        </div>
+        <div class="dance-torso dance-torso-liana">
+          <div class="dance-decoration dance-star">⭐</div>
+        </div>
+        <div class="dance-arms">
+          <div class="dance-arm dance-arm-left"></div>
+          <div class="dance-arm dance-arm-right"></div>
+        </div>
+        <div class="dance-legs">
+          <div class="dance-leg dance-leg-left">
+            <div class="dance-foot"></div>
+          </div>
+          <div class="dance-leg dance-leg-right">
+            <div class="dance-foot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dancing-person dancing-ruslan" id="dancing-ruslan">
+        <div class="dance-head">
+          <img
+            src="assets/images/ruslan.jpeg"
+            alt="Ruslan"
+            class="dance-face dance-face-ruslan"
+          />
+        </div>
+        <div class="dance-torso dance-torso-ruslan">
+          <div class="dance-decoration dance-music">🎵</div>
+        </div>
+        <div class="dance-arms">
+          <div class="dance-arm dance-arm-left"></div>
+          <div class="dance-arm dance-arm-right"></div>
+        </div>
+        <div class="dance-legs">
+          <div class="dance-leg dance-leg-left">
+            <div class="dance-foot"></div>
+          </div>
+          <div class="dance-leg dance-leg-right">
+            <div class="dance-foot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Replay Controls -->
+    <div class="replay-controls" id="replay-controls" style="display: none">
+      <div class="replay-controls-content">
+        <h3>Replay Mode</h3>
+        <div class="replay-buttons">
+          <button id="replay-prev-btn" class="replay-control-btn">
+            ⏮ Previous
+          </button>
+          <button id="replay-stop-btn" class="replay-control-btn">
+            ⏸ Stop
+          </button>
+          <button id="replay-play-btn" class="replay-control-btn">
+            ▶ Play
+          </button>
+          <button id="replay-next-btn" class="replay-control-btn">
+            Next ⏭
+          </button>
+        </div>
+        <div class="replay-info">
+          <span id="replay-move-info">Move 0 / 0</span>
+        </div>
+        <button id="exit-replay-btn" class="replay-exit-btn">
+          Exit Replay
+        </button>
+      </div>
+    </div>
+
+    <!-- More Games Selection Modal -->
+    <div class="modal" id="more-games-modal" style="display: none">
+      <div class="modal-content games-modal-content">
+        <div class="modal-header">
+          <h2>🎮 More Games</h2>
+          <button id="close-games-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="games-list">
+            <div class="game-option" id="xo-game-option">
+              <div class="game-icon">⭕❌</div>
+              <div class="game-name">XO Game</div>
+              <div class="game-description">Tic-Tac-Toe</div>
+            </div>
+            <div class="game-option" id="memory-game-option">
+              <div class="game-icon">🃏</div>
+              <div class="game-name">Memory</div>
+              <div class="game-description">Match the Pairs!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- XO Game Modal -->
+    <div class="modal" id="xo-game-modal" style="display: none">
+      <div class="modal-content xo-modal-content">
+        <div class="modal-header">
+          <h2>⭕❌ XO Game</h2>
+          <button id="close-xo-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="xo-game-setup" id="xo-game-setup">
+            <h3>Select Game Mode</h3>
+            <div class="xo-game-mode-selection">
+              <label class="radio-label">
+                <input
+                  type="radio"
+                  name="xo-game-mode"
+                  value="vs-computer"
+                  id="xo-mode-vs-computer"
+                  checked
+                />
+                <span>VS Computer</span>
+              </label>
+              <label class="radio-label">
+                <input
+                  type="radio"
+                  name="xo-game-mode"
+                  value="two-players"
+                  id="xo-mode-two-players"
+                />
+                <span>2 Players</span>
+              </label>
+            </div>
+            <div class="xo-player-selection" id="xo-player-selection">
+              <div class="xo-player-setup">
+                <h4>Player X</h4>
+                <div class="player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-xo-color="x"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="xo-x-player">
+                  <span>Select Player X</span>
+                </div>
+              </div>
+              <div class="vs-divider">VS</div>
+              <div class="xo-player-setup">
+                <h4>Player O</h4>
+                <div class="player-options" id="xo-o-player-options">
+                  <div
+                    class="player-option"
+                    data-player="ruslan"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/ruslan.jpeg" alt="Ruslan" />
+                    <span>Ruslan</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="roman"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/roman.jpg" alt="Roman" />
+                    <span>Roman</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="katrine"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/katrine.jpg" alt="Katrine" />
+                    <span>Katrine</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="liana"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/liana.jpeg" alt="Liana" />
+                    <span>Liana</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="peppa"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/peppa.jpeg" alt="Peppa Pig" />
+                    <span>Peppa Pig</span>
+                  </div>
+                  <div
+                    class="player-option"
+                    data-player="booba"
+                    data-xo-color="o"
+                  >
+                    <img src="assets/images/booba.jpeg" alt="Booba" />
+                    <span>Booba</span>
+                  </div>
+                </div>
+                <div class="selected-player" id="xo-o-player">
+                  <span id="xo-o-player-text">Select Player O</span>
+                </div>
+              </div>
+            </div>
+            <button
+              id="start-xo-game-btn"
+              class="start-game-button"
+              style="display: none"
+            >
+              Start XO Game
+            </button>
+          </div>
+          <div class="xo-game-area" id="xo-game-area" style="display: none">
+            <div class="xo-game-info">
+              <div class="xo-current-player">
+                <span>Current Player: </span>
+                <span id="xo-current-player-name">X</span>
+              </div>
+              <button id="xo-reset-btn" class="reset-button">
+                🔄 New Game
+              </button>
+            </div>
+            <div class="xo-board-container">
+              <div class="xo-board" id="xo-board">
+                <!-- XO board cells will be generated by JavaScript -->
+              </div>
+            </div>
+            <div class="xo-game-status" id="xo-game-status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Memory Game Modal -->
+    <div class="modal" id="memory-game-modal" style="display: none">
+      <div class="modal-content memory-modal-content">
+        <div class="modal-header">
+          <h2>🃏 Memory Game</h2>
+          <button id="close-memory-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body memory-modal-body">
+          <!-- Level Selection Screen -->
+          <div id="memory-level-selection">
+            <p class="memory-intro">Find all matching pairs!</p>
+            <div class="memory-level-buttons">
+              <button id="memory-easy-btn" class="memory-level-btn">
+                <div class="memory-level-icon">😊</div>
+                <div class="memory-level-name">Easy</div>
+                <div class="memory-level-desc">3 pairs · 6 cards</div>
+              </button>
+              <button id="memory-hard-btn" class="memory-level-btn">
+                <div class="memory-level-icon">🔥</div>
+                <div class="memory-level-name">Hard</div>
+                <div class="memory-level-desc">6 pairs · 12 cards</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading Screen -->
+          <div id="memory-loading" style="display: none">
+            <div class="memory-loading-wrap">
+              <div class="memory-spinner">🃏</div>
+              <p>Loading mystery character…</p>
+            </div>
+          </div>
+
+          <!-- Game Area -->
+          <div id="memory-game-area" style="display: none">
+            <div class="memory-hud">
+              <div class="memory-hud-stat">
+                <span class="memory-hud-label">Level</span>
+                <span id="memory-level-display">Easy</span>
+              </div>
+              <div class="memory-hud-stat">
+                <span class="memory-hud-label">⏱ Time</span>
+                <span id="memory-timer">0:00</span>
+              </div>
+              <div class="memory-hud-stat">
+                <span class="memory-hud-label">Moves</span>
+                <span id="memory-attempts">0</span>
+              </div>
+              <div class="memory-hud-stat">
+                <span class="memory-hud-label">Matched</span>
+                <span id="memory-matched">0 / 0</span>
+              </div>
+              <button id="memory-back-btn" class="memory-back-btn">
+                ← Menu
+              </button>
+            </div>
+            <div class="memory-board" id="memory-board"></div>
+          </div>
+
+          <!-- Win Screen -->
+          <div id="memory-win-screen" style="display: none">
+            <div class="memory-win-wrap">
+              <div class="memory-win-trophy">🏆</div>
+              <h3 class="memory-win-title">You Won!</h3>
+              <div class="memory-win-badge" id="memory-win-level">🟢 Easy</div>
+              <div class="memory-win-stats">
+                <div class="memory-win-stat">
+                  <span class="memory-win-stat-label">Moves</span>
+                  <strong id="memory-win-attempts">0</strong>
+                </div>
+                <div class="memory-win-stat">
+                  <span class="memory-win-stat-label">Time</span>
+                  <strong id="memory-win-time">0:00</strong>
+                </div>
+              </div>
+              <button id="memory-play-again-btn" class="start-game-button">
+                🔄 Play Again
+              </button>
+              <button
+                id="memory-change-level-btn"
+                class="modal-button memory-change-level-btn"
+              >
+                Change Level
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/languages.js"></script>
+    <script src="js/voice-recognition.js"></script>
+    <script src="js/utils/sound-manager.js"></script>
+    <script src="js/radio-player.js"></script>
+    <script src="js/memory-game.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

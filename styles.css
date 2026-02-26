@@ -536,9 +536,13 @@ body {
   display: inline-block;
   transform-style: preserve-3d;
   /* Enhanced 3D effect using multiple shadows and transforms */
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
-    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
-    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.9),
+    1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6),
+    3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3),
+    5px 5px 9px rgba(0, 0, 0, 0.2),
     0 0 12px rgba(0, 0, 0, 0.15);
   transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
@@ -596,8 +600,11 @@ body {
   opacity: 0.7;
   /* Apply 3D effect to captured pieces too */
   transform-style: preserve-3d;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
-    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4);
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.9),
+    1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6),
+    3px 3px 5px rgba(0, 0, 0, 0.4);
   transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
   display: inline-block;
   filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
@@ -1344,7 +1351,9 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.5);
-  transition: border-color 0.3s ease, border-style 0.3s ease,
+  transition:
+    border-color 0.3s ease,
+    border-style 0.3s ease,
     background 0.3s ease;
 }
 
@@ -1783,9 +1792,13 @@ body {
   display: inline-block;
   transform-style: preserve-3d;
   /* Enhanced 3D effect using multiple shadows and transforms - same as regular pieces */
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.9), 1px 1px 1px rgba(0, 0, 0, 0.8),
-    2px 2px 3px rgba(0, 0, 0, 0.6), 3px 3px 5px rgba(0, 0, 0, 0.4),
-    4px 4px 7px rgba(0, 0, 0, 0.3), 5px 5px 9px rgba(0, 0, 0, 0.2),
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.9),
+    1px 1px 1px rgba(0, 0, 0, 0.8),
+    2px 2px 3px rgba(0, 0, 0, 0.6),
+    3px 3px 5px rgba(0, 0, 0, 0.4),
+    4px 4px 7px rgba(0, 0, 0, 0.3),
+    5px 5px 9px rgba(0, 0, 0, 0.2),
     0 0 12px rgba(0, 0, 0, 0.15);
   transform: translateZ(2px) rotateX(8deg) rotateY(-2deg);
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4))
@@ -2079,7 +2092,9 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.5);
-  transition: border-color 0.3s ease, border-style 0.3s ease,
+  transition:
+    border-color 0.3s ease,
+    border-style 0.3s ease,
     background 0.3s ease;
 }
 
@@ -2181,7 +2196,9 @@ body {
   stroke-linecap: round;
   stroke-dasharray: 282.74;
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.5s linear, stroke 0.3s ease;
+  transition:
+    stroke-dashoffset 0.5s linear,
+    stroke 0.3s ease;
   filter: drop-shadow(0 0 4px rgba(40, 167, 69, 0.5));
 }
 
@@ -2815,10 +2832,12 @@ body {
   pointer-events: none;
   z-index: 1;
   white-space: nowrap;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.8),
     0 0 40px rgba(255, 215, 0, 0.6),
     0 0 60px rgba(255, 255, 255, 0.4);
-  animation: textMove 30s linear infinite,
+  animation:
+    textMove 30s linear infinite,
     textColor 8s ease-in-out infinite,
     textSize 6s ease-in-out infinite;
   will-change: left, top, color, font-size;
@@ -2873,7 +2892,8 @@ body {
 }
 
 @keyframes textSize {
-  0%, 100% {
+  0%,
+  100% {
     font-size: clamp(4rem, 8vw, 8rem);
   }
   50% {
@@ -2938,7 +2958,9 @@ body {
   height: 240px; /* Reduced by 20% from 300px */
   user-select: none;
   pointer-events: none;
-  transition: left 4s ease, top 4s ease;
+  transition:
+    left 4s ease,
+    top 4s ease;
   animation: bodyBounce 1.6s ease-in-out infinite;
   transform-origin: center bottom;
   z-index: 10;
@@ -3143,7 +3165,8 @@ body {
 }
 
 @keyframes starFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
   }
   50% {
@@ -3152,7 +3175,8 @@ body {
 }
 
 @keyframes musicFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) translateY(0) scale(1);
   }
   50% {
@@ -3182,7 +3206,8 @@ body {
 }
 
 @keyframes decorationFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) translateY(0);
   }
   50% {
@@ -3191,7 +3216,8 @@ body {
 }
 
 @keyframes flowerFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0) rotate(0deg);
   }
   50% {
@@ -3201,7 +3227,8 @@ body {
 
 /* Animations */
 @keyframes bodyBounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(-5deg);
   }
   50% {
@@ -3210,7 +3237,8 @@ body {
 }
 
 @keyframes headBounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(-3deg);
   }
   50% {
@@ -3219,7 +3247,8 @@ body {
 }
 
 @keyframes torsoSway {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(-8deg);
   }
   50% {
@@ -3228,7 +3257,8 @@ body {
 }
 
 @keyframes armWaveLeft {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(-30deg);
   }
   50% {
@@ -3237,7 +3267,8 @@ body {
 }
 
 @keyframes armWaveRight {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(30deg);
   }
   50% {
@@ -3246,7 +3277,8 @@ body {
 }
 
 @keyframes legKickLeft {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(-15deg);
   }
   50% {
@@ -3255,7 +3287,8 @@ body {
 }
 
 @keyframes legKickRight {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(15deg);
   }
   50% {
@@ -3608,7 +3641,7 @@ body {
 }
 
 .memory-intro {
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1em;
   margin-bottom: 2rem;
 }
@@ -3621,8 +3654,8 @@ body {
 }
 
 .memory-level-btn {
-  background: rgba(255,255,255,0.15);
-  border: 3px solid rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   padding: 2rem 2.5rem;
   color: #fff;
@@ -3633,10 +3666,10 @@ body {
 }
 
 .memory-level-btn:hover {
-  background: rgba(255,255,255,0.28);
+  background: rgba(255, 255, 255, 0.28);
   border-color: #ffd700;
   transform: translateY(-6px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 
 .memory-level-icon {
@@ -3673,8 +3706,12 @@ body {
 }
 
 @keyframes memory-spin {
-  0%   { transform: rotateY(0deg);   }
-  100% { transform: rotateY(360deg); }
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
 }
 
 /* ── HUD bar ──────────────────────────────────────────────────── */
@@ -3683,7 +3720,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.8rem 1.5rem;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 0.7rem 1.2rem;
   margin-bottom: 1.4rem;
@@ -3702,8 +3739,8 @@ body {
 .memory-hud-label {
   font-size: 0.72em;
   text-transform: uppercase;
-  letter-spacing: .04em;
-  color: rgba(255,255,255,0.65);
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .memory-hud-stat span:last-child {
@@ -3713,19 +3750,21 @@ body {
 }
 
 .memory-back-btn {
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.35);
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.35);
   border-radius: 20px;
   color: #fff;
   font-size: 0.9em;
   padding: 0.4rem 1rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   white-space: nowrap;
 }
 
 .memory-back-btn:hover {
-  background: rgba(255,255,255,0.32);
+  background: rgba(255, 255, 255, 0.32);
   transform: translateY(-2px);
 }
 
@@ -3757,12 +3796,12 @@ body {
 }
 
 .memory-board-easy .memory-card {
-  width:  140px;
+  width: 140px;
   height: 182px;
 }
 
 .memory-board-hard .memory-card {
-  width:  125px;
+  width: 125px;
   height: 163px;
 }
 
@@ -3777,7 +3816,7 @@ body {
 }
 
 .memory-card.flipped .memory-card-inner,
-.memory-card.matched  .memory-card-inner {
+.memory-card.matched .memory-card-inner {
   transform: rotateY(180deg);
 }
 
@@ -3799,13 +3838,13 @@ body {
 /* ── Back face (mystery side, shown by default) ───────────────── */
 .memory-card-back-face {
   background: linear-gradient(145deg, #3a0d7e 0%, #1a0540 100%);
-  border: 3px solid rgba(255,255,255,0.25);
-  box-shadow: inset 0 0 18px rgba(255,255,255,0.08);
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.08);
 }
 
 .memory-card-back-icon {
   font-size: 3.5em;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   animation: none;
   transition: transform 0.2s;
 }
@@ -3816,8 +3855,9 @@ body {
 
 .memory-card:not(.flipped):not(.matched):hover .memory-card-back-face {
   border-color: #ffd700;
-  box-shadow: inset 0 0 18px rgba(255,215,0,0.15),
-              0 0 16px rgba(255,215,0,0.2);
+  box-shadow:
+    inset 0 0 18px rgba(255, 215, 0, 0.15),
+    0 0 16px rgba(255, 215, 0, 0.2);
 }
 
 /* ── Front face (character side, shown when flipped) ─────────── */
@@ -3825,7 +3865,7 @@ body {
   transform: rotateY(180deg);
   background: #fff;
   border: 3px solid #ffd700;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .memory-card-front-face img {
@@ -3856,9 +3896,16 @@ body {
 }
 
 @keyframes memory-match-pop {
-  0%   { transform: scale(1);    }
-  40%  { transform: scale(1.12); }
-  100% { transform: scale(1);    opacity: 0.38; }
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.38;
+  }
 }
 
 .memory-card.matched .memory-card-front-face {
@@ -3867,7 +3914,7 @@ body {
 }
 
 .memory-card.matched .memory-card-front-face::after {
-  content: '✅';
+  content: "✅";
   position: absolute;
   top: 4px;
   right: 6px;
@@ -3884,12 +3931,18 @@ body {
 
 .memory-win-wrap {
   text-align: center;
-  animation: memory-win-enter 0.5s cubic-bezier(0.22,1,0.36,1);
+  animation: memory-win-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes memory-win-enter {
-  from { opacity: 0; transform: scale(0.7) translateY(30px); }
-  to   { opacity: 1; transform: scale(1)   translateY(0);    }
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .memory-win-trophy {
@@ -3903,13 +3956,13 @@ body {
   color: #ffd700;
   font-size: 2.4em;
   margin: 0.2rem 0 0.8rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .memory-win-badge {
   display: inline-block;
-  background: rgba(255,255,255,0.18);
-  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.18);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   padding: 0.25rem 1.2rem;
   color: #fff;
@@ -3929,16 +3982,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 0.6rem 1.4rem;
 }
 
 .memory-win-stat-label {
   font-size: 0.78em;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: 0.05em;
   margin-bottom: 0.2rem;
 }
 
@@ -3950,12 +4003,12 @@ body {
 .memory-change-level-btn {
   display: block;
   margin: 0.8rem auto 0;
-  background: rgba(255,255,255,0.15) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   color: #fff !important;
 }
 
 .memory-change-level-btn:hover {
-  background: rgba(255,255,255,0.28) !important;
+  background: rgba(255, 255, 255, 0.28) !important;
   color: #fff !important;
 }
 
@@ -3973,7 +4026,7 @@ body {
 
   .memory-board-easy .memory-card,
   .memory-board-hard .memory-card {
-    width:  auto;
+    width: auto;
     height: auto;
     aspect-ratio: 3 / 4;
   }

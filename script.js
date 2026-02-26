@@ -7,7 +7,7 @@ class ChessGame {
     this.moveHistory = [];
     this.gameOver = false;
     this.capturedPieces = { white: [], black: [] };
-    
+
     // Undo/Redo functionality
     this.boardHistory = []; // Store board states for undo/redo
     this.capturedPiecesHistory = []; // Store captured pieces states
@@ -234,7 +234,7 @@ class ChessGame {
           this.selectedSquare.row,
           this.selectedSquare.col,
           row,
-          col
+          col,
         )
       ) {
         // Make the move
@@ -242,7 +242,7 @@ class ChessGame {
           this.selectedSquare.row,
           this.selectedSquare.col,
           row,
-          col
+          col,
         );
         this.deselectSquare();
         this.switchPlayer();
@@ -269,7 +269,7 @@ class ChessGame {
 
     this.selectedSquare = { row, col };
     const square = document.querySelector(
-      `[data-row="${row}"][data-col="${col}"]`
+      `[data-row="${row}"][data-col="${col}"]`,
     );
     square.classList.add("selected");
 
@@ -285,7 +285,7 @@ class ChessGame {
   deselectSquare() {
     if (this.selectedSquare) {
       const square = document.querySelector(
-        `[data-row="${this.selectedSquare.row}"][data-col="${this.selectedSquare.col}"]`
+        `[data-row="${this.selectedSquare.row}"][data-col="${this.selectedSquare.col}"]`,
       );
       square.classList.remove("selected");
       this.selectedSquare = null;
@@ -306,7 +306,7 @@ class ChessGame {
         // Only highlight moves that are valid and don't leave king in check
         if (this.isValidMove(row, col, r, c)) {
           const square = document.querySelector(
-            `[data-row="${r}"][data-col="${c}"]`
+            `[data-row="${r}"][data-col="${c}"]`,
           );
           if (square) {
             const targetPiece = this.board[r][c];
@@ -549,7 +549,16 @@ class ChessGame {
       for (let c = 0; c < 8; c++) {
         const piece = board[r][c];
         if (piece && piece.color === opponentColor) {
-          if (this.canPieceAttackSquare(piece, r, c, kingPos.row, kingPos.col, board)) {
+          if (
+            this.canPieceAttackSquare(
+              piece,
+              r,
+              c,
+              kingPos.row,
+              kingPos.col,
+              board,
+            )
+          ) {
             attackingPieces.push({ piece, row: r, col: c });
           }
         }
@@ -584,7 +593,7 @@ class ChessGame {
 
     // Create a copy of the board to simulate the move
     const boardCopy = this.board.map((row) =>
-      row.map((col) => (col ? { ...col } : null))
+      row.map((col) => (col ? { ...col } : null)),
     );
 
     // Simulate the move
@@ -601,7 +610,7 @@ class ChessGame {
     if (!piece) return false;
 
     const color = piece.color;
-    
+
     // If king is not in check, any move that doesn't leave it in check is valid
     if (!this.isKingInCheck(color)) {
       return !this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol);
@@ -609,7 +618,7 @@ class ChessGame {
 
     // King is in check - find all attacking pieces
     const attackingPieces = this.getAttackingPieces(color);
-    
+
     // If multiple pieces are attacking, only the king can move
     if (attackingPieces.length > 1) {
       if (piece.type === "king") {
@@ -636,11 +645,22 @@ class ChessGame {
 
     // Case 3: Blocking the check (only works for line attacks: rook, bishop, queen)
     const attackerPiece = attacker.piece;
-    if (attackerPiece.type === "rook" || attackerPiece.type === "bishop" || attackerPiece.type === "queen") {
+    if (
+      attackerPiece.type === "rook" ||
+      attackerPiece.type === "bishop" ||
+      attackerPiece.type === "queen"
+    ) {
       // Check if the move is on the line between the attacker and the king
-      const blockingSquares = this.getSquaresBetween(attacker.row, attacker.col, kingPos.row, kingPos.col);
-      const isOnBlockingLine = blockingSquares.some(sq => sq.row === toRow && sq.col === toCol);
-      
+      const blockingSquares = this.getSquaresBetween(
+        attacker.row,
+        attacker.col,
+        kingPos.row,
+        kingPos.col,
+      );
+      const isOnBlockingLine = blockingSquares.some(
+        (sq) => sq.row === toRow && sq.col === toCol,
+      );
+
       if (isOnBlockingLine) {
         return !this.wouldMoveLeaveKingInCheck(fromRow, fromCol, toRow, toCol);
       }
@@ -653,7 +673,7 @@ class ChessGame {
   makeMove(fromRow, fromCol, toRow, toCol) {
     // Save board state before making the move (for undo)
     this.saveBoardStateBeforeMove();
-    
+
     const piece = this.board[fromRow][fromCol];
     const capturedPiece = this.board[toRow][toCol];
 
@@ -684,7 +704,7 @@ class ChessGame {
         // Promote pawn to queen
         this.board[toRow][toCol] = {
           type: "queen",
-          color: piece.color
+          color: piece.color,
         };
       }
     }
@@ -696,7 +716,6 @@ class ChessGame {
       piece: piece,
       capturedPiece: capturedPiece,
     });
-    
 
     // Update the display
     this.createBoard();
@@ -714,16 +733,16 @@ class ChessGame {
   storeInitialBoardState() {
     // Deep copy the initial board state
     this.initialBoardState = this.board.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
   }
 
   highlightLastMove(fromRow, fromCol, toRow, toCol) {
     const fromSquare = document.querySelector(
-      `[data-row="${fromRow}"][data-col="${fromCol}"]`
+      `[data-row="${fromRow}"][data-col="${fromCol}"]`,
     );
     const toSquare = document.querySelector(
-      `[data-row="${toRow}"][data-col="${toCol}"]`
+      `[data-row="${toRow}"][data-col="${toCol}"]`,
     );
 
     fromSquare.classList.add("last-move");
@@ -781,7 +800,7 @@ class ChessGame {
         randomMove.from.row,
         randomMove.from.col,
         randomMove.to.row,
-        randomMove.to.col
+        randomMove.to.col,
       );
       this.switchPlayer();
       this.checkGameState();
@@ -844,149 +863,206 @@ class ChessGame {
   }
 
   updateAllUITexts() {
-    if (typeof languageManager === 'undefined') return;
-    
+    if (typeof languageManager === "undefined") return;
+
     // Header
-    const title = document.querySelector('.game-header h1');
-    if (title) title.textContent = languageManager.get('title');
-    
+    const title = document.querySelector(".game-header h1");
+    if (title) title.textContent = languageManager.get("title");
+
     // Current player label
-    const currentPlayerLabel = document.querySelector('.current-player-info span');
-    if (currentPlayerLabel && currentPlayerLabel.textContent.includes('Current Player')) {
-      currentPlayerLabel.textContent = languageManager.get('currentPlayer');
+    const currentPlayerLabel = document.querySelector(
+      ".current-player-info span",
+    );
+    if (
+      currentPlayerLabel &&
+      currentPlayerLabel.textContent.includes("Current Player")
+    ) {
+      currentPlayerLabel.textContent = languageManager.get("currentPlayer");
     }
-    
+
     // Buttons
-    const resetBtn = document.getElementById('reset-btn');
-    if (resetBtn) resetBtn.textContent = languageManager.get('newGame');
-    
-    const startGameBtn = document.getElementById('start-game-btn');
-    if (startGameBtn) startGameBtn.textContent = languageManager.get('startGame');
-    
+    const resetBtn = document.getElementById("reset-btn");
+    if (resetBtn) resetBtn.textContent = languageManager.get("newGame");
+
+    const startGameBtn = document.getElementById("start-game-btn");
+    if (startGameBtn)
+      startGameBtn.textContent = languageManager.get("startGame");
+
     // Tabs
-    const tabs = document.querySelectorAll('.tab-button');
-    tabs.forEach(tab => {
+    const tabs = document.querySelectorAll(".tab-button");
+    tabs.forEach((tab) => {
       const tabName = tab.dataset.tab;
-      if (tabName === 'game') tab.textContent = languageManager.get('game');
-      if (tabName === 'lessons') tab.textContent = languageManager.get('lessons');
-      if (tabName === 'mission') tab.textContent = languageManager.get('mission');
+      if (tabName === "game") tab.textContent = languageManager.get("game");
+      if (tabName === "lessons")
+        tab.textContent = languageManager.get("lessons");
+      if (tabName === "mission")
+        tab.textContent = languageManager.get("mission");
     });
-    
+
     // Player selection
-    const selectPlayers = document.querySelector('.player-selection h3');
-    if (selectPlayers) selectPlayers.textContent = languageManager.get('selectPlayers');
-    
-    const onePlayerLabel = document.querySelector('label[for="mode-one-player"] span');
-    if (onePlayerLabel) onePlayerLabel.textContent = languageManager.get('onePlayerVsPC');
-    
-    const twoPlayersLabel = document.querySelector('label[for="mode-two-players"] span');
-    if (twoPlayersLabel) twoPlayersLabel.textContent = languageManager.get('twoPlayers');
-    
-    const selectYourSide = document.querySelector('.player-side-selection h4');
-    if (selectYourSide) selectYourSide.textContent = languageManager.get('selectYourSide');
-    
-    const whiteLabel = document.querySelector('label[for="player-side-white"] span');
-    if (whiteLabel) whiteLabel.textContent = languageManager.get('white');
-    
-    const blackLabel = document.querySelector('label[for="player-side-black"] span');
-    if (blackLabel) blackLabel.textContent = languageManager.get('black');
-    
-    const pcPlayerName = document.getElementById('pc-player-name');
-    if (pcPlayerName) pcPlayerName.textContent = languageManager.get('computer');
-    
+    const selectPlayers = document.querySelector(".player-selection h3");
+    if (selectPlayers)
+      selectPlayers.textContent = languageManager.get("selectPlayers");
+
+    const onePlayerLabel = document.querySelector(
+      'label[for="mode-one-player"] span',
+    );
+    if (onePlayerLabel)
+      onePlayerLabel.textContent = languageManager.get("onePlayerVsPC");
+
+    const twoPlayersLabel = document.querySelector(
+      'label[for="mode-two-players"] span',
+    );
+    if (twoPlayersLabel)
+      twoPlayersLabel.textContent = languageManager.get("twoPlayers");
+
+    const selectYourSide = document.querySelector(".player-side-selection h4");
+    if (selectYourSide)
+      selectYourSide.textContent = languageManager.get("selectYourSide");
+
+    const whiteLabel = document.querySelector(
+      'label[for="player-side-white"] span',
+    );
+    if (whiteLabel) whiteLabel.textContent = languageManager.get("white");
+
+    const blackLabel = document.querySelector(
+      'label[for="player-side-black"] span',
+    );
+    if (blackLabel) blackLabel.textContent = languageManager.get("black");
+
+    const pcPlayerName = document.getElementById("pc-player-name");
+    if (pcPlayerName)
+      pcPlayerName.textContent = languageManager.get("computer");
+
     // Captured pieces
-    const capturedWhite = document.querySelector('.captured-white h3');
-    if (capturedWhite) capturedWhite.textContent = languageManager.get('capturedWhitePieces');
-    
-    const capturedBlack = document.querySelector('.captured-black h3');
-    if (capturedBlack) capturedBlack.textContent = languageManager.get('capturedBlackPieces');
-    
+    const capturedWhite = document.querySelector(".captured-white h3");
+    if (capturedWhite)
+      capturedWhite.textContent = languageManager.get("capturedWhitePieces");
+
+    const capturedBlack = document.querySelector(".captured-black h3");
+    if (capturedBlack)
+      capturedBlack.textContent = languageManager.get("capturedBlackPieces");
+
     // Lessons
-    const lessonsTitle = document.querySelector('.lessons-title h2');
-    if (lessonsTitle) lessonsTitle.textContent = languageManager.get('chessLessons');
-    
-    const learnMovements = document.querySelector('.lessons-title h3');
-    if (learnMovements) learnMovements.textContent = languageManager.get('learnPieceMovements');
-    
-    const selectPiece = document.querySelector('.piece-selector h3');
-    if (selectPiece) selectPiece.textContent = languageManager.get('selectAPiece');
-    
-    const clearBoardBtn = document.getElementById('clear-lesson-board');
-    if (clearBoardBtn) clearBoardBtn.textContent = languageManager.get('clearBoard');
-    
-    const removePieceBtn = document.getElementById('remove-selected-piece');
-    if (removePieceBtn) removePieceBtn.textContent = languageManager.get('removeSelectedPiece');
-    
-    const randomBoardBtn = document.getElementById('random-board-fill');
-    if (randomBoardBtn) randomBoardBtn.textContent = languageManager.get('randomBoardFill');
-    
+    const lessonsTitle = document.querySelector(".lessons-title h2");
+    if (lessonsTitle)
+      lessonsTitle.textContent = languageManager.get("chessLessons");
+
+    const learnMovements = document.querySelector(".lessons-title h3");
+    if (learnMovements)
+      learnMovements.textContent = languageManager.get("learnPieceMovements");
+
+    const selectPiece = document.querySelector(".piece-selector h3");
+    if (selectPiece)
+      selectPiece.textContent = languageManager.get("selectAPiece");
+
+    const clearBoardBtn = document.getElementById("clear-lesson-board");
+    if (clearBoardBtn)
+      clearBoardBtn.textContent = languageManager.get("clearBoard");
+
+    const removePieceBtn = document.getElementById("remove-selected-piece");
+    if (removePieceBtn)
+      removePieceBtn.textContent = languageManager.get("removeSelectedPiece");
+
+    const randomBoardBtn = document.getElementById("random-board-fill");
+    if (randomBoardBtn)
+      randomBoardBtn.textContent = languageManager.get("randomBoardFill");
+
     // Lesson instructions
-    const lessonInstruction1 = document.getElementById('lesson-instruction-1');
-    if (lessonInstruction1) lessonInstruction1.textContent = languageManager.get('lessonInstructions1');
-    
-    const lessonInstruction2 = document.getElementById('lesson-instruction-2');
-    if (lessonInstruction2) lessonInstruction2.textContent = languageManager.get('lessonInstructions2');
-    
-    const lessonInstruction3 = document.getElementById('lesson-instruction-3');
-    if (lessonInstruction3) lessonInstruction3.textContent = languageManager.get('lessonInstructions3');
-    
+    const lessonInstruction1 = document.getElementById("lesson-instruction-1");
+    if (lessonInstruction1)
+      lessonInstruction1.textContent = languageManager.get(
+        "lessonInstructions1",
+      );
+
+    const lessonInstruction2 = document.getElementById("lesson-instruction-2");
+    if (lessonInstruction2)
+      lessonInstruction2.textContent = languageManager.get(
+        "lessonInstructions2",
+      );
+
+    const lessonInstruction3 = document.getElementById("lesson-instruction-3");
+    if (lessonInstruction3)
+      lessonInstruction3.textContent = languageManager.get(
+        "lessonInstructions3",
+      );
+
     // Mission
-    const missionSelectTitle = document.querySelector('#mission-selection h3');
-    if (missionSelectTitle) missionSelectTitle.textContent = languageManager.get('selectPlayerAndPiece');
-    
-    const startMissionBtn = document.getElementById('start-mission-btn');
-    if (startMissionBtn) startMissionBtn.textContent = languageManager.get('startMission');
-    
+    const missionSelectTitle = document.querySelector("#mission-selection h3");
+    if (missionSelectTitle)
+      missionSelectTitle.textContent = languageManager.get(
+        "selectPlayerAndPiece",
+      );
+
+    const startMissionBtn = document.getElementById("start-mission-btn");
+    if (startMissionBtn)
+      startMissionBtn.textContent = languageManager.get("startMission");
+
     // Settings modal
     this.updateSettingsModalTexts();
-    
+
     // Game over modal
-    const newGameBtn = document.getElementById('new-game-btn');
-    if (newGameBtn) newGameBtn.textContent = languageManager.get('newGame');
-    
-    const replayBtn = document.getElementById('replay-btn');
-    if (replayBtn) replayBtn.textContent = languageManager.get('replay');
-    
+    const newGameBtn = document.getElementById("new-game-btn");
+    if (newGameBtn) newGameBtn.textContent = languageManager.get("newGame");
+
+    const replayBtn = document.getElementById("replay-btn");
+    if (replayBtn) replayBtn.textContent = languageManager.get("replay");
+
     // Replay controls
-    const replayPrevBtn = document.getElementById('replay-prev-btn');
-    if (replayPrevBtn) replayPrevBtn.textContent = languageManager.get('previous');
-    
-    const replayStopBtn = document.getElementById('replay-stop-btn');
-    if (replayStopBtn) replayStopBtn.textContent = languageManager.get('stop');
-    
-    const replayPlayBtn = document.getElementById('replay-play-btn');
-    if (replayPlayBtn) replayPlayBtn.textContent = languageManager.get('play');
-    
-    const replayNextBtn = document.getElementById('replay-next-btn');
-    if (replayNextBtn) replayNextBtn.textContent = languageManager.get('next');
-    
-    const exitReplayBtn = document.getElementById('exit-replay-btn');
-    if (exitReplayBtn) exitReplayBtn.textContent = languageManager.get('exitReplay');
+    const replayPrevBtn = document.getElementById("replay-prev-btn");
+    if (replayPrevBtn)
+      replayPrevBtn.textContent = languageManager.get("previous");
+
+    const replayStopBtn = document.getElementById("replay-stop-btn");
+    if (replayStopBtn) replayStopBtn.textContent = languageManager.get("stop");
+
+    const replayPlayBtn = document.getElementById("replay-play-btn");
+    if (replayPlayBtn) replayPlayBtn.textContent = languageManager.get("play");
+
+    const replayNextBtn = document.getElementById("replay-next-btn");
+    if (replayNextBtn) replayNextBtn.textContent = languageManager.get("next");
+
+    const exitReplayBtn = document.getElementById("exit-replay-btn");
+    if (exitReplayBtn)
+      exitReplayBtn.textContent = languageManager.get("exitReplay");
   }
 
   updateSettingsModalTexts() {
-    if (typeof languageManager === 'undefined') return;
-    
-    const languageLabel = document.getElementById('language-label');
-    if (languageLabel) languageLabel.textContent = languageManager.get('language');
-    
-    const pieceStyleLabel = document.getElementById('piece-style-label');
-    if (pieceStyleLabel) pieceStyleLabel.textContent = languageManager.get('pieceStyle');
-    
-    const colorThemeLabel = document.getElementById('color-theme-label');
-    if (colorThemeLabel) colorThemeLabel.textContent = languageManager.get('colorTheme');
-    
-    const boardStyleLabel = document.getElementById('board-style-label');
-    if (boardStyleLabel) boardStyleLabel.textContent = languageManager.get('boardStyle');
-    
-    const enableVoiceLabel = document.getElementById('enable-voice-commands-label');
-    if (enableVoiceLabel) enableVoiceLabel.textContent = languageManager.get('enableVoiceCommands');
-    
-    const voiceInstructions = document.getElementById('voice-command-instructions');
-    if (voiceInstructions) voiceInstructions.textContent = languageManager.get('voiceCommandInstructions');
-    
-    const settingsCloseBtn = document.getElementById('settings-close-btn');
-    if (settingsCloseBtn) settingsCloseBtn.textContent = languageManager.get('close');
+    if (typeof languageManager === "undefined") return;
+
+    const languageLabel = document.getElementById("language-label");
+    if (languageLabel)
+      languageLabel.textContent = languageManager.get("language");
+
+    const pieceStyleLabel = document.getElementById("piece-style-label");
+    if (pieceStyleLabel)
+      pieceStyleLabel.textContent = languageManager.get("pieceStyle");
+
+    const colorThemeLabel = document.getElementById("color-theme-label");
+    if (colorThemeLabel)
+      colorThemeLabel.textContent = languageManager.get("colorTheme");
+
+    const boardStyleLabel = document.getElementById("board-style-label");
+    if (boardStyleLabel)
+      boardStyleLabel.textContent = languageManager.get("boardStyle");
+
+    const enableVoiceLabel = document.getElementById(
+      "enable-voice-commands-label",
+    );
+    if (enableVoiceLabel)
+      enableVoiceLabel.textContent = languageManager.get("enableVoiceCommands");
+
+    const voiceInstructions = document.getElementById(
+      "voice-command-instructions",
+    );
+    if (voiceInstructions)
+      voiceInstructions.textContent = languageManager.get(
+        "voiceCommandInstructions",
+      );
+
+    const settingsCloseBtn = document.getElementById("settings-close-btn");
+    if (settingsCloseBtn)
+      settingsCloseBtn.textContent = languageManager.get("close");
   }
 
   updateUITexts() {
@@ -1017,12 +1093,12 @@ class ChessGame {
     const winnerName = this.players[winnerColor].name;
     const winnerImage = this.players[winnerColor].image;
 
-    const winsText = typeof languageManager !== 'undefined' 
-      ? languageManager.get('wins') 
-      : 'Wins! 🎉';
-    document.getElementById(
-      "game-over-title"
-    ).textContent = `${winnerName} ${winsText}`;
+    const winsText =
+      typeof languageManager !== "undefined"
+        ? languageManager.get("wins")
+        : "Wins! 🎉";
+    document.getElementById("game-over-title").textContent =
+      `${winnerName} ${winsText}`;
 
     const winnerImg = document.getElementById("game-over-winner-img");
     if (winnerImage) {
@@ -1065,7 +1141,7 @@ class ChessGame {
       // Reset two-player selections
       document
         .querySelectorAll(
-          '.player-option[data-color="white"], .player-option[data-color="black"]'
+          '.player-option[data-color="white"], .player-option[data-color="black"]',
         )
         .forEach((option) => {
           option.classList.remove("selected");
@@ -1096,7 +1172,7 @@ class ChessGame {
     this.updateCapturedPieces();
     this.updatePlaygroundVisibility();
     this.updateCurrentPlayerDisplay();
-    
+
     // Reset undo/redo history
     this.boardHistory = [];
     this.capturedPiecesHistory = [];
@@ -1104,41 +1180,47 @@ class ChessGame {
     this.historyIndex = -1;
     this.isUndoMode = false;
     this.updateUndoRedoButtons();
-    
+
     // Save initial board state
     this.saveBoardState();
   }
-  
+
   // Save current board state for undo/redo
   saveBoardState() {
     // If we're not at the latest position and make a new move, truncate history
     // This handles both undo mode and resume scenarios
     if (this.historyIndex < this.boardHistory.length - 1) {
       this.boardHistory = this.boardHistory.slice(0, this.historyIndex + 1);
-      this.capturedPiecesHistory = this.capturedPiecesHistory.slice(0, this.historyIndex + 1);
-      this.currentPlayerHistory = this.currentPlayerHistory.slice(0, this.historyIndex + 1);
+      this.capturedPiecesHistory = this.capturedPiecesHistory.slice(
+        0,
+        this.historyIndex + 1,
+      );
+      this.currentPlayerHistory = this.currentPlayerHistory.slice(
+        0,
+        this.historyIndex + 1,
+      );
     }
-    
+
     // Deep copy board state
     const boardCopy = this.board.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
-    
+
     // Deep copy captured pieces
     const capturedCopy = {
       white: this.capturedPieces.white.map((p) => ({ ...p })),
       black: this.capturedPieces.black.map((p) => ({ ...p })),
     };
-    
+
     this.boardHistory.push(boardCopy);
     this.capturedPiecesHistory.push(capturedCopy);
     this.currentPlayerHistory.push(this.currentPlayer);
-    
+
     this.historyIndex = this.boardHistory.length - 1;
     this.isUndoMode = false;
     this.updateUndoRedoButtons();
   }
-  
+
   // Save board state before making a move (for undo)
   saveBoardStateBeforeMove() {
     // Only save if not in undo mode (to avoid saving duplicate states)
@@ -1146,77 +1228,78 @@ class ChessGame {
       this.saveBoardState();
     }
   }
-  
+
   // Undo last move
   undoMove() {
     if (this.historyIndex <= 0) return; // Can't undo from initial state
-    
+
     this.historyIndex--;
     this.restoreBoardState();
     this.isUndoMode = true;
     this.updateUndoRedoButtons();
   }
-  
+
   // Redo undone move
   redoMove() {
     if (this.historyIndex >= this.boardHistory.length - 1) return; // Already at latest
-    
+
     this.historyIndex++;
     this.restoreBoardState();
     this.updateUndoRedoButtons();
-    
+
     // If we're back at the latest move, exit undo mode
     if (this.historyIndex === this.boardHistory.length - 1) {
       this.isUndoMode = false;
     }
   }
-  
+
   // Resume game from current position
   resumeGame() {
     // Exit undo mode and continue from currently displayed position
     // Don't change historyIndex - stay at current position
     this.isUndoMode = false;
     this.updateUndoRedoButtons();
-    
+
     // When the next move is made, saveBoardState will truncate history
     // from this point forward, so the game continues from here
   }
-  
+
   // Restore board state from history
   restoreBoardState() {
-    if (this.historyIndex < 0 || this.historyIndex >= this.boardHistory.length) return;
-    
+    if (this.historyIndex < 0 || this.historyIndex >= this.boardHistory.length)
+      return;
+
     // Restore board
     const savedBoard = this.boardHistory[this.historyIndex];
     this.board = savedBoard.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
-    
+
     // Restore captured pieces
     const savedCaptured = this.capturedPiecesHistory[this.historyIndex];
     this.capturedPieces = {
       white: savedCaptured.white.map((p) => ({ ...p })),
       black: savedCaptured.black.map((p) => ({ ...p })),
     };
-    
+
     // Restore current player
     this.currentPlayer = this.currentPlayerHistory[this.historyIndex];
-    
+
     // Update display
     this.createBoard();
     this.updateDisplay();
     this.updateCapturedPieces();
     this.deselectSquare();
   }
-  
+
   // Update undo/redo/resume button states
   updateUndoRedoButtons() {
     const undoBtn = document.getElementById("undo-btn");
     const redoBtn = document.getElementById("redo-btn");
     const resumeBtn = document.getElementById("resume-btn");
-    
+
     if (!undoBtn || !redoBtn || !resumeBtn) return;
-    
+
     // Show/hide buttons based on whether game is active
     if (this.gameStarted) {
       undoBtn.style.display = "inline-block";
@@ -1227,13 +1310,13 @@ class ChessGame {
       resumeBtn.style.display = "none";
       return; // Don't update states if buttons are hidden
     }
-    
+
     // Enable/disable undo (can undo if not at initial state)
     undoBtn.disabled = this.historyIndex <= 0;
-    
+
     // Enable/disable redo (can redo if not at latest move)
     redoBtn.disabled = this.historyIndex >= this.boardHistory.length - 1;
-    
+
     // Show/hide resume button (only show when in undo mode and not at latest)
     // Resume allows continuing from current position, not jumping to latest
     if (this.isUndoMode && this.historyIndex < this.boardHistory.length - 1) {
@@ -1252,16 +1335,16 @@ class ChessGame {
     document.getElementById("new-game-btn").addEventListener("click", () => {
       this.resetGame();
     });
-    
+
     // Undo/Redo/Resume buttons
     document.getElementById("undo-btn").addEventListener("click", () => {
       this.undoMove();
     });
-    
+
     document.getElementById("redo-btn").addEventListener("click", () => {
       this.redoMove();
     });
-    
+
     document.getElementById("resume-btn").addEventListener("click", () => {
       this.resumeGame();
     });
@@ -1355,7 +1438,9 @@ class ChessGame {
     }
 
     // Voice commands checkbox
-    const enableVoiceCommands = document.getElementById("enable-voice-commands");
+    const enableVoiceCommands = document.getElementById(
+      "enable-voice-commands",
+    );
     if (enableVoiceCommands) {
       enableVoiceCommands.addEventListener("change", (e) => {
         if (e.target.checked) {
@@ -1448,7 +1533,7 @@ class ChessGame {
   setupPlayerSelection() {
     // Only select player options for chess game (not XO game which uses data-xo-color)
     const playerOptions = document.querySelectorAll(
-      ".player-option[data-color]:not([data-xo-color])"
+      ".player-option[data-color]:not([data-xo-color])",
     );
     const startGameBtn = document.getElementById("start-game-btn");
 
@@ -1478,7 +1563,7 @@ class ChessGame {
 
     // Player side radio buttons (for one-player mode)
     const playerSideRadios = document.querySelectorAll(
-      'input[name="player-side"]'
+      'input[name="player-side"]',
     );
     playerSideRadios.forEach((radio) => {
       // Update checked class on load
@@ -1646,10 +1731,10 @@ class ChessGame {
     // Update selected player display
     const selectedPlayerEl = document.getElementById(`${playerColor}-player`);
     const selectedPlayerImg = document.getElementById(
-      `${playerColor}-player-img`
+      `${playerColor}-player-img`,
     );
     const selectedPlayerName = document.getElementById(
-      `${playerColor}-player-name`
+      `${playerColor}-player-name`,
     );
 
     selectedPlayerEl.classList.add("has-player");
@@ -1756,7 +1841,7 @@ class ChessGame {
     this.gameStarted = true;
     // Store initial board state for replay
     this.storeInitialBoardState();
-    
+
     // Initialize undo/redo history with initial state
     this.boardHistory = [];
     this.capturedPiecesHistory = [];
@@ -1764,7 +1849,7 @@ class ChessGame {
     this.historyIndex = -1;
     this.isUndoMode = false;
     this.saveBoardState(); // Save initial state
-    
+
     document.querySelector(".player-selection").style.display = "none";
     this.updateCurrentPlayerDisplay();
     this.updatePlaygroundVisibility();
@@ -1876,7 +1961,7 @@ class ChessGame {
 
         // Hide current player info in Lessons and Mission tabs, or if game not started
         const currentPlayerInfo = document.querySelector(
-          ".current-player-info"
+          ".current-player-info",
         );
         if (currentPlayerInfo) {
           if (targetTab === "game" && this.gameStarted) {
@@ -1894,11 +1979,17 @@ class ChessGame {
           // Show welcome message when mission tab is opened for the first time
           // Use a small delay to ensure tab is visible
           setTimeout(() => {
-            const missionPlayerEl = document.getElementById("selected-mission-player");
-            if (missionPlayerEl && !missionPlayerEl.classList.contains("has-player")) {
-              const message = typeof languageManager !== 'undefined' 
-                ? languageManager.get('welcomeToMissionMode')
-                : "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.";
+            const missionPlayerEl = document.getElementById(
+              "selected-mission-player",
+            );
+            if (
+              missionPlayerEl &&
+              !missionPlayerEl.classList.contains("has-player")
+            ) {
+              const message =
+                typeof languageManager !== "undefined"
+                  ? languageManager.get("welcomeToMissionMode")
+                  : "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.";
               this.showRomanMessage(message);
             }
           }, 100);
@@ -1930,7 +2021,7 @@ class ChessGame {
         }
 
         square.addEventListener("click", (e) =>
-          this.handleLessonsSquareClick(e)
+          this.handleLessonsSquareClick(e),
         );
         boardElement.appendChild(square);
       }
@@ -1940,7 +2031,7 @@ class ChessGame {
   setupLessons() {
     // Initialize instructor dropdown
     const instructorSelect = document.getElementById(
-      "lessons-instructor-select"
+      "lessons-instructor-select",
     );
     const instructorImg = document.getElementById("lessons-instructor-img");
 
@@ -1970,16 +2061,37 @@ class ChessGame {
 
         // Show reactive message with translated piece name
         const pieceNames = {
-          king: typeof languageManager !== 'undefined' ? languageManager.get('king') : "King",
-          queen: typeof languageManager !== 'undefined' ? languageManager.get('queen') : "Queen",
-          rook: typeof languageManager !== 'undefined' ? languageManager.get('rook') : "Rook",
-          bishop: typeof languageManager !== 'undefined' ? languageManager.get('bishop') : "Bishop",
-          knight: typeof languageManager !== 'undefined' ? languageManager.get('knight') : "Knight",
-          pawn: typeof languageManager !== 'undefined' ? languageManager.get('pawn') : "Pawn",
+          king:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("king")
+              : "King",
+          queen:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("queen")
+              : "Queen",
+          rook:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("rook")
+              : "Rook",
+          bishop:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("bishop")
+              : "Bishop",
+          knight:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("knight")
+              : "Knight",
+          pawn:
+            typeof languageManager !== "undefined"
+              ? languageManager.get("pawn")
+              : "Pawn",
         };
-        const message = typeof languageManager !== 'undefined' 
-          ? languageManager.get('lessonPieceSelected').replace('{piece}', pieceNames[pieceType])
-          : `Great! Now click on the board to place the ${pieceNames[pieceType]}.`;
+        const message =
+          typeof languageManager !== "undefined"
+            ? languageManager
+                .get("lessonPieceSelected")
+                .replace("{piece}", pieceNames[pieceType])
+            : `Great! Now click on the board to place the ${pieceNames[pieceType]}.`;
         this.showRomanMessage(message);
       });
     });
@@ -1994,9 +2106,10 @@ class ChessGame {
         this.createLessonsBoard();
         pieceOptions.forEach((opt) => opt.classList.remove("selected"));
         this.updateRemovePieceButton();
-        const message = typeof languageManager !== 'undefined' 
-          ? languageManager.get('lessonBoardCleared')
-          : "Board cleared! Ready to start fresh.";
+        const message =
+          typeof languageManager !== "undefined"
+            ? languageManager.get("lessonBoardCleared")
+            : "Board cleared! Ready to start fresh.";
         this.showRomanMessage(message);
       });
     }
@@ -2022,9 +2135,10 @@ class ChessGame {
     if (randomBoardButton) {
       randomBoardButton.addEventListener("click", () => {
         this.fillRandomPieces();
-        const message = typeof languageManager !== 'undefined' 
-          ? languageManager.get('lessonRandomPiecesAdded')
-          : "Random pieces added! Click on any piece to explore its moves.";
+        const message =
+          typeof languageManager !== "undefined"
+            ? languageManager.get("lessonRandomPiecesAdded")
+            : "Random pieces added! Click on any piece to explore its moves.";
         this.showRomanMessage(message);
       });
     }
@@ -2094,7 +2208,7 @@ class ChessGame {
           // Build the text from the beginning each time to ensure correctness
           contentEl.textContent = message.substring(
             0,
-            this.currentTypingIndex + 1
+            this.currentTypingIndex + 1,
           );
           this.currentTypingIndex++;
         } else {
@@ -2138,16 +2252,17 @@ class ChessGame {
     const utterance = new SpeechSynthesisUtterance(message);
 
     // Get current language code
-    const langCode = typeof languageManager !== 'undefined' 
-      ? languageManager.getLanguageCode() 
-      : 'en';
+    const langCode =
+      typeof languageManager !== "undefined"
+        ? languageManager.getLanguageCode()
+        : "en";
     const languageMap = {
-      'en': 'en-US',
-      'ru': 'ru-RU',
-      'es': 'es-ES',
-      'ar': 'ar-SA'
+      en: "en-US",
+      ru: "ru-RU",
+      es: "es-ES",
+      ar: "ar-SA",
     };
-    const speechLang = languageMap[langCode] || 'en-US';
+    const speechLang = languageMap[langCode] || "en-US";
     utterance.lang = speechLang;
 
     // Configure voice settings based on instructor
@@ -2175,7 +2290,7 @@ class ChessGame {
     const voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
       let selectedVoice = null;
-      const langPrefix = speechLang.split('-')[0];
+      const langPrefix = speechLang.split("-")[0];
 
       if (instructor === "katrine") {
         // Prefer female voices for lady
@@ -2186,10 +2301,10 @@ class ChessGame {
               (voice.name.toLowerCase().includes("female") ||
                 voice.name.toLowerCase().includes("woman") ||
                 voice.name.toLowerCase().includes("zira") ||
-                voice.name.toLowerCase().includes("samantha"))
+                voice.name.toLowerCase().includes("samantha")),
           ) ||
           voices.find(
-            (voice) => voice.lang.startsWith(langPrefix) && voice.localService
+            (voice) => voice.lang.startsWith(langPrefix) && voice.localService,
           );
       } else if (instructor === "liana" || instructor === "peppa") {
         // Prefer higher-pitched voices for young girls
@@ -2199,13 +2314,13 @@ class ChessGame {
               voice.lang.startsWith(langPrefix) &&
               (voice.name.toLowerCase().includes("child") ||
                 voice.name.toLowerCase().includes("young") ||
-                voice.name.toLowerCase().includes("kid"))
+                voice.name.toLowerCase().includes("kid")),
           ) ||
           voices.find(
             (voice) =>
               voice.lang.startsWith(langPrefix) &&
               (voice.name.toLowerCase().includes("female") ||
-                voice.name.toLowerCase().includes("woman"))
+                voice.name.toLowerCase().includes("woman")),
           );
       }
 
@@ -2213,7 +2328,7 @@ class ChessGame {
       if (!selectedVoice) {
         selectedVoice =
           voices.find(
-            (voice) => voice.lang.startsWith(langPrefix) && voice.localService
+            (voice) => voice.lang.startsWith(langPrefix) && voice.localService,
           ) ||
           voices.find((voice) => voice.lang.startsWith(langPrefix)) ||
           voices[0];
@@ -2286,7 +2401,7 @@ class ChessGame {
       this.showRomanMessage(
         `Click on the highlighted squares to see where this ${
           pieceNames[piece.type]
-        } can move!`
+        } can move!`,
       );
     } else if (this.selectedPieceForLesson) {
       // Place the selected piece from the selector on the board
@@ -2297,9 +2412,9 @@ class ChessGame {
         .querySelectorAll(".lesson-piece-option")
         .forEach((opt) => opt.classList.remove("selected"));
       this.showRomanMessage(
-        typeof languageManager !== 'undefined' 
-          ? languageManager.get('lessonClickPieceForMoves')
-          : "Perfect! Now click on the piece to see its possible moves."
+        typeof languageManager !== "undefined"
+          ? languageManager.get("lessonClickPieceForMoves")
+          : "Perfect! Now click on the piece to see its possible moves.",
       );
     }
   }
@@ -2310,7 +2425,7 @@ class ChessGame {
 
     this.lessonsSelectedSquare = { row, col };
     const square = document.querySelector(
-      `#lessons-board [data-row="${row}"][data-col="${col}"]`
+      `#lessons-board [data-row="${row}"][data-col="${col}"]`,
     );
     if (square) {
       square.classList.add("selected");
@@ -2326,7 +2441,7 @@ class ChessGame {
   deselectLessonsSquare() {
     if (this.lessonsSelectedSquare) {
       const square = document.querySelector(
-        `#lessons-board [data-row="${this.lessonsSelectedSquare.row}"][data-col="${this.lessonsSelectedSquare.col}"]`
+        `#lessons-board [data-row="${this.lessonsSelectedSquare.row}"][data-col="${this.lessonsSelectedSquare.col}"]`,
       );
       if (square) {
         square.classList.remove("selected");
@@ -2370,7 +2485,7 @@ class ChessGame {
     // Get up to 10 random empty squares
     const squaresToFill = emptySquares.slice(
       0,
-      Math.min(10, emptySquares.length)
+      Math.min(10, emptySquares.length),
     );
 
     // Piece types and colors
@@ -2399,7 +2514,7 @@ class ChessGame {
       for (let c = 0; c < 8; c++) {
         if (this.isValidLessonsMove(row, col, r, c)) {
           const square = document.querySelector(
-            `#lessons-board [data-row="${r}"][data-col="${c}"]`
+            `#lessons-board [data-row="${r}"][data-col="${c}"]`,
           );
           if (square) {
             const targetPiece = this.lessonsBoard[r][c];
@@ -2433,7 +2548,7 @@ class ChessGame {
       fromCol,
       toRow,
       toCol,
-      this.lessonsBoard
+      this.lessonsBoard,
     );
   }
 
@@ -2451,7 +2566,7 @@ class ChessGame {
           fromCol,
           toRow,
           toCol,
-          board
+          board,
         );
       case "rook":
         return (
@@ -2526,7 +2641,7 @@ class ChessGame {
   setupMission() {
     // Mission player selection
     const missionPlayerOptions = document.querySelectorAll(
-      ".mission-player-option"
+      ".mission-player-option",
     );
     missionPlayerOptions.forEach((option) => {
       option.addEventListener("click", () => {
@@ -2541,13 +2656,13 @@ class ChessGame {
         this.missionPlayer = { name: formattedName, image: playerImage };
 
         const selectedPlayerEl = document.getElementById(
-          "selected-mission-player"
+          "selected-mission-player",
         );
         const selectedPlayerImg = document.getElementById(
-          "selected-mission-player-img"
+          "selected-mission-player-img",
         );
         const selectedPlayerName = document.getElementById(
-          "selected-mission-player-name"
+          "selected-mission-player-name",
         );
 
         selectedPlayerEl.classList.add("has-player");
@@ -2562,7 +2677,7 @@ class ChessGame {
 
     // Mission piece selection
     const missionPieceOptions = document.querySelectorAll(
-      ".mission-piece-option"
+      ".mission-piece-option",
     );
     missionPieceOptions.forEach((option) => {
       option.addEventListener("click", () => {
@@ -2575,7 +2690,7 @@ class ChessGame {
         this.missionUserPiece = { type: pieceType, color: pieceColor };
 
         const selectedPieceEl = document.getElementById(
-          "selected-mission-piece"
+          "selected-mission-piece",
         );
         const pieceName =
           pieceType.charAt(0).toUpperCase() + pieceType.slice(1);
@@ -2588,12 +2703,12 @@ class ChessGame {
 
     // Mission difficulty selection
     const missionDifficultyOptions = document.querySelectorAll(
-      ".mission-difficulty-option"
+      ".mission-difficulty-option",
     );
     missionDifficultyOptions.forEach((option) => {
       option.addEventListener("click", () => {
         missionDifficultyOptions.forEach((opt) =>
-          opt.classList.remove("selected")
+          opt.classList.remove("selected"),
         );
         option.classList.add("selected");
 
@@ -2601,7 +2716,7 @@ class ChessGame {
         this.missionDifficulty = difficulty;
 
         const selectedDifficultyEl = document.getElementById(
-          "selected-mission-difficulty"
+          "selected-mission-difficulty",
         );
         const difficultyName =
           difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
@@ -2640,7 +2755,7 @@ class ChessGame {
     }
 
     const backToMissionMenuBtn = document.getElementById(
-      "back-to-mission-menu-btn"
+      "back-to-mission-menu-btn",
     );
     if (backToMissionMenuBtn) {
       backToMissionMenuBtn.addEventListener("click", () => {
@@ -2658,7 +2773,7 @@ class ChessGame {
     }
 
     const missionFailureMenuBtn = document.getElementById(
-      "mission-failure-menu-btn"
+      "mission-failure-menu-btn",
     );
     if (missionFailureMenuBtn) {
       missionFailureMenuBtn.addEventListener("click", () => {
@@ -2789,9 +2904,8 @@ class ChessGame {
     }
 
     // Update mission info
-    document.getElementById(
-      "mission-title"
-    ).textContent = `Mission ${this.currentMission}`;
+    document.getElementById("mission-title").textContent =
+      `Mission ${this.currentMission}`;
     document.getElementById("mission-description").textContent =
       "Capture all opponent pieces to complete the mission!";
     this.updateOpponentPiecesCount();
@@ -2827,7 +2941,7 @@ class ChessGame {
         }
 
         square.addEventListener("click", (e) =>
-          this.handleMissionSquareClick(e)
+          this.handleMissionSquareClick(e),
         );
         boardElement.appendChild(square);
       }
@@ -2878,7 +2992,7 @@ class ChessGame {
         // Remove captured piece from opponent pieces list if it was one
         if (capturedPiece) {
           this.missionOpponentPieces = this.missionOpponentPieces.filter(
-            (op) => !(op.row === row && op.col === col)
+            (op) => !(op.row === row && op.col === col),
           );
         }
 
@@ -2901,7 +3015,7 @@ class ChessGame {
 
     this.missionSelectedSquare = { row, col };
     const square = document.querySelector(
-      `#mission-board [data-row="${row}"][data-col="${col}"]`
+      `#mission-board [data-row="${row}"][data-col="${col}"]`,
     );
     if (square) {
       square.classList.add("selected");
@@ -2914,7 +3028,7 @@ class ChessGame {
   deselectMissionSquare() {
     if (this.missionSelectedSquare) {
       const square = document.querySelector(
-        `#mission-board [data-row="${this.missionSelectedSquare.row}"][data-col="${this.missionSelectedSquare.col}"]`
+        `#mission-board [data-row="${this.missionSelectedSquare.row}"][data-col="${this.missionSelectedSquare.col}"]`,
       );
       if (square) {
         square.classList.remove("selected");
@@ -2933,7 +3047,7 @@ class ChessGame {
       for (let c = 0; c < 8; c++) {
         if (this.isValidMissionMove(row, col, r, c)) {
           const square = document.querySelector(
-            `#mission-board [data-row="${r}"][data-col="${c}"]`
+            `#mission-board [data-row="${r}"][data-col="${c}"]`,
           );
           if (square) {
             const targetPiece = this.missionBoard[r][c];
@@ -2975,7 +3089,7 @@ class ChessGame {
       fromCol,
       toRow,
       toCol,
-      this.missionBoard
+      this.missionBoard,
     );
   }
 
@@ -3127,7 +3241,7 @@ class ChessGame {
     // Highlight capturable pieces in yellow
     capturablePieces.forEach(({ row, col }) => {
       const square = document.querySelector(
-        `#mission-board [data-row="${row}"][data-col="${col}"]`
+        `#mission-board [data-row="${row}"][data-col="${col}"]`,
       );
       if (square) {
         square.classList.add("hint-capture");
@@ -3204,7 +3318,7 @@ class ChessGame {
     const totalTime = this.currentMission * timeMultiplier;
     const percentage = Math.max(
       0,
-      Math.min(100, (this.missionTimeRemaining / totalTime) * 100)
+      Math.min(100, (this.missionTimeRemaining / totalTime) * 100),
     );
 
     // Update circle progress (circumference = 2 * π * 45 ≈ 282.74)
@@ -3236,8 +3350,9 @@ class ChessGame {
   playTimeoutSound() {
     // Create a beep sound using Web Audio API
     try {
-      const audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
+      const audioContext = new (
+        window.AudioContext || window.webkitAudioContext
+      )();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -3250,7 +3365,7 @@ class ChessGame {
       gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.01,
-        audioContext.currentTime + 0.5
+        audioContext.currentTime + 0.5,
       );
 
       oscillator.start(audioContext.currentTime);
@@ -3298,13 +3413,13 @@ class ChessGame {
 
     // Reset board to initial state
     this.replayBoardState = this.initialBoardState.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
     this.replayCapturedPieces = { white: [], black: [] };
 
     // Apply board state
     this.board = this.replayBoardState.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
     this.capturedPieces = { white: [], black: [] };
 
@@ -3367,7 +3482,7 @@ class ChessGame {
 
     // Update board and captured pieces
     this.board = this.replayBoardState.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
     this.capturedPieces = {
       white: [...this.replayCapturedPieces.white],
@@ -3382,7 +3497,7 @@ class ChessGame {
       move.from.row,
       move.from.col,
       move.to.row,
-      move.to.col
+      move.to.col,
     );
     this.updateCapturedPieces();
     this.updateReplayInfo();
@@ -3401,7 +3516,7 @@ class ChessGame {
 
     // Reset to initial state
     this.replayBoardState = this.initialBoardState.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
     this.replayCapturedPieces = { white: [], black: [] };
 
@@ -3421,7 +3536,7 @@ class ChessGame {
 
     // Update board and captured pieces
     this.board = this.replayBoardState.map((row) =>
-      row.map((cell) => (cell ? { ...cell } : null))
+      row.map((cell) => (cell ? { ...cell } : null)),
     );
     this.capturedPieces = {
       white: [...this.replayCapturedPieces.white],
@@ -3436,7 +3551,7 @@ class ChessGame {
         lastMove.from.row,
         lastMove.from.col,
         lastMove.to.row,
-        lastMove.to.col
+        lastMove.to.col,
       );
     }
     this.updateCapturedPieces();
@@ -3620,7 +3735,7 @@ class XOGame {
     this.players[symbol] = { name: playerName, image: imageSrc };
 
     const playerElement = document.getElementById(
-      `xo-${symbol.toLowerCase()}-player`
+      `xo-${symbol.toLowerCase()}-player`,
     );
     playerElement.innerHTML = `
       <img src="${imageSrc}" alt="${playerName}" style="display: block; width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 8px; border: 2px solid #28a745;" />
@@ -3869,7 +3984,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const xoGame = new XOGame();
   const memoryGame = new MemoryGame();
   const radioPlayer = new RadioPlayer();
-  
+
   // Update UI texts on initial load
   game.updateAllUITexts();
 });
