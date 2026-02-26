@@ -1183,6 +1183,11 @@
               <div class="game-name">Space War</div>
               <div class="game-description">Shoot the invaders!</div>
             </div>
+            <div class="game-option" id="abc-game-option">
+              <div class="game-icon">🔤</div>
+              <div class="game-name">ABC Game</div>
+              <div class="game-description">Letter Combos!</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1548,12 +1553,84 @@
       </div>
     </div>
 
+    <!-- ABC Game Modal -->
+    <div class="modal" id="abc-game-modal" style="display: none">
+      <div class="modal-content abc-modal-content">
+        <div class="abc-modal-header">
+          <h2>🔤 ABC Game</h2>
+          <button id="close-abc-modal" class="modal-close-btn">✕</button>
+        </div>
+        <div class="abc-modal-body">
+          <!-- Start Screen -->
+          <div id="abc-start-screen" class="abc-screen">
+            <div class="abc-start-icon">🔤</div>
+            <h3 class="abc-start-title">ABC Game</h3>
+            <p class="abc-start-subtitle">
+              Combine the two letters and pick the right answer!
+            </p>
+            <div class="abc-best-display">
+              🏆 Best Streak: <span id="abc-best-score-display">0</span>
+            </div>
+            <button id="abc-start-btn" class="abc-btn-primary">▶ Start!</button>
+          </div>
+
+          <!-- Game Screen -->
+          <div id="abc-game-screen" class="abc-screen" style="display: none">
+            <div class="abc-score-bar">
+              <span class="abc-score-label">⭐ Score</span>
+              <span id="abc-score" class="abc-score-value">0</span>
+            </div>
+
+            <div class="abc-question">
+              <span id="abc-letter1" class="abc-letter abc-letter-pop">A</span>
+              <span class="abc-operator">+</span>
+              <span id="abc-letter2" class="abc-letter abc-letter-pop">B</span>
+              <span class="abc-operator">=</span>
+              <span class="abc-question-mark">?</span>
+            </div>
+
+            <div class="abc-options">
+              <button class="abc-option-btn">AB</button>
+              <button class="abc-option-btn">CD</button>
+              <button class="abc-option-btn">EF</button>
+            </div>
+
+            <!-- Lost Dialog overlay -->
+            <div
+              id="abc-lost-dialog"
+              class="abc-lost-dialog"
+              style="display: none"
+            >
+              <div class="abc-lost-box">
+                <div class="abc-lost-emoji">😢</div>
+                <div class="abc-lost-title">You have lost!</div>
+                <div class="abc-lost-subtitle">Try next time!</div>
+                <div class="abc-lost-stats">
+                  <div>Your Score: <strong id="abc-lost-score">0</strong></div>
+                  <div>Best: <strong id="abc-lost-best">0</strong></div>
+                </div>
+                <div class="abc-lost-actions">
+                  <button id="abc-play-again-btn" class="abc-btn-primary">
+                    🔄 Play Again
+                  </button>
+                  <button id="abc-menu-btn" class="abc-btn-secondary">
+                    🏠 Menu
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="js/languages.js"></script>
     <script src="js/voice-recognition.js"></script>
     <script src="js/utils/sound-manager.js"></script>
     <script src="js/radio-player.js"></script>
     <script src="js/memory-game.js"></script>
     <script src="js/space-war.js"></script>
+    <script src="js/abc-game.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

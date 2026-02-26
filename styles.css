@@ -4388,3 +4388,485 @@ body {
     display: none;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ABC GAME
+   ══════════════════════════════════════════════════════════════ */
+
+.abc-modal-content {
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 20px;
+  width: min(500px, 96vw);
+  max-height: 92dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 0 60px rgba(99, 102, 241, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  animation: abc-modal-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes abc-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.abc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.abc-modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.abc-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Screens ─────────────────────────────────────────────────── */
+
+.abc-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px 24px 36px;
+}
+
+/* ── Start Screen ────────────────────────────────────────────── */
+
+.abc-start-icon {
+  font-size: 4.5rem;
+  animation: abc-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes abc-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.abc-start-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.abc-start-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  text-align: center;
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.abc-best-display {
+  font-size: 1.05rem;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 999px;
+  padding: 8px 20px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+.abc-btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45);
+  letter-spacing: 0.03em;
+}
+
+.abc-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px rgba(99, 102, 241, 0.6);
+}
+.abc-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+}
+
+.abc-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+
+.abc-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+.abc-btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* ── Game Screen ─────────────────────────────────────────────── */
+
+.abc-score-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 8px 22px;
+  align-self: center;
+}
+
+.abc-score-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.abc-score-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fbbf24;
+  min-width: 2ch;
+  text-align: center;
+}
+
+/* ── Question display ────────────────────────────────────────── */
+
+.abc-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 28px 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.abc-letter {
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1;
+  display: inline-block;
+}
+
+#abc-letter1 {
+  color: #a78bfa;
+  text-shadow: 0 0 20px rgba(167, 139, 250, 0.7);
+}
+#abc-letter2 {
+  color: #60a5fa;
+  text-shadow: 0 0 20px rgba(96, 165, 250, 0.7);
+}
+
+.abc-operator {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+}
+
+.abc-question-mark {
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #34d399;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.7);
+  animation: abc-qm-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes abc-qm-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.12);
+  }
+}
+
+/* ── Letter pop-in animation ─────────────────────────────────── */
+
+@keyframes abc-letter-pop-anim {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.2) rotate(4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.abc-letter-pop {
+  animation: abc-letter-pop-anim 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Option Buttons ──────────────────────────────────────────── */
+
+.abc-options {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.abc-option-btn {
+  flex: 1 1 0;
+  min-width: 90px;
+  max-width: 140px;
+  padding: 20px 10px;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  transition:
+    transform 0.14s,
+    box-shadow 0.14s,
+    background 0.14s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Distinct colour per slot via nth-child */
+.abc-option-btn:nth-child(1) {
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.45);
+}
+.abc-option-btn:nth-child(2) {
+  background: linear-gradient(135deg, #0891b2, #0ea5e9);
+  box-shadow: 0 4px 18px rgba(8, 145, 178, 0.45);
+}
+.abc-option-btn:nth-child(3) {
+  background: linear-gradient(135deg, #059669, #10b981);
+  box-shadow: 0 4px 18px rgba(5, 150, 105, 0.45);
+}
+
+.abc-option-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  filter: brightness(1.15);
+}
+
+.abc-option-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ── Correct / Wrong states ──────────────────────────────────── */
+
+.abc-option-correct {
+  background: linear-gradient(135deg, #16a34a, #22c55e) !important;
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.7) !important;
+  animation: abc-correct-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  border-color: #bbf7d0 !important;
+}
+
+@keyframes abc-correct-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.abc-option-wrong {
+  background: linear-gradient(135deg, #b91c1c, #ef4444) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.7) !important;
+  animation: abc-shake 0.5s ease both;
+  border-color: #fecaca !important;
+}
+
+@keyframes abc-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-6px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* Reveal correct answer in gold when wrong is chosen */
+.abc-option-reveal {
+  background: linear-gradient(135deg, #b45309, #f59e0b) !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.6) !important;
+  border-color: #fde68a !important;
+}
+
+/* ── Lost Dialog ─────────────────────────────────────────────── */
+
+.abc-lost-dialog {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+.abc-lost-box {
+  background: linear-gradient(145deg, #1e1b4b, #312e81);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 24px;
+  padding: 36px 32px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 0 60px rgba(167, 139, 250, 0.3);
+}
+
+.abc-lost-box-in {
+  animation: abc-lost-box-anim 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes abc-lost-box-anim {
+  from {
+    opacity: 0;
+    transform: scale(0.6) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.abc-lost-emoji {
+  font-size: 3.5rem;
+  animation: abc-bounce 2s ease-in-out infinite;
+}
+
+.abc-lost-title {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #fca5a5;
+  letter-spacing: 0.02em;
+}
+
+.abc-lost-subtitle {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.abc-lost-stats {
+  display: flex;
+  gap: 24px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.abc-lost-stats strong {
+  color: #fbbf24;
+  font-size: 1.2rem;
+}
+
+.abc-lost-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* ── Game screen needs position:relative for dialog overlay ──── */
+#abc-game-screen {
+  position: relative;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .abc-modal-content {
+    width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .abc-letter {
+    font-size: 2.8rem;
+  }
+
+  .abc-question-mark {
+    font-size: 2.8rem;
+  }
+
+  .abc-operator {
+    font-size: 2rem;
+  }
+
+  .abc-option-btn {
+    font-size: 1.4rem;
+    padding: 16px 8px;
+  }
+}
