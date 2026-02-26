@@ -1498,6 +1498,28 @@ body {
     max-width: 95vw;
   }
 
+  .games-modal-content {
+    max-height: 85vh;
+  }
+
+  .games-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 15px 0;
+  }
+
+  .game-option {
+    padding: 20px 12px;
+  }
+
+  .game-icon {
+    font-size: 2.2em;
+  }
+
+  .game-name {
+    font-size: 1.1em;
+  }
+
   .modal-header {
     padding: 1.5rem;
   }
@@ -3383,6 +3405,15 @@ body {
   width: 90%;
   padding: 0;
   overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.games-modal-content .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
 }
 
 .games-list {
