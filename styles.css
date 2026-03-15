@@ -4900,3 +4900,550 @@ body {
     padding: 16px 8px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DRAGON REALMS
+   ══════════════════════════════════════════════════════════════ */
+
+.dr-modal-content {
+  width: 98vw;
+  max-width: 860px;
+  height: 94vh;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: #0a0820;
+  border: 1px solid rgba(255, 140, 0, 0.25);
+  box-shadow:
+    0 0 60px rgba(255, 100, 0, 0.3),
+    0 0 120px rgba(139, 0, 255, 0.2);
+  overflow: hidden;
+}
+
+.dr-modal-header {
+  background: linear-gradient(90deg, #1a0a2e 0%, #0a0820 100%);
+  border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1.25rem;
+}
+
+.dr-modal-header h2 {
+  color: #ff8c00;
+  text-shadow: 0 0 20px rgba(255, 140, 0, 0.7);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.1em;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* ── Canvas wrapper ──────────────────────────────────────────── */
+.dr-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #0a0820;
+}
+
+#dr-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ── HUD overlay ─────────────────────────────────────────────── */
+.dr-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dr-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 8, 32, 0.85) 0%,
+    transparent 100%
+  );
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  gap: 0.25rem;
+}
+
+.dr-hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dr-hud-label {
+  font-size: 0.55em;
+  letter-spacing: 0.12em;
+  color: rgba(255, 140, 0, 0.6);
+  text-transform: uppercase;
+}
+
+.dr-hud-value {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #ff8c00;
+  text-shadow: 0 0 12px rgba(255, 140, 0, 0.7);
+  min-width: 2ch;
+  text-align: center;
+}
+
+.dr-ability-ready {
+  color: #00ff88;
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.7);
+  animation: dr-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dr-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.dr-hud-lives {
+  font-size: 1em;
+  letter-spacing: 2px;
+}
+
+/* ── Shared screen overlay ───────────────────────────────────── */
+.dr-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(10, 8, 32, 0.92);
+  backdrop-filter: blur(4px);
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Start screen ────────────────────────────────────────────── */
+.dr-logo {
+  font-size: 3.5em;
+  animation: dr-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.8));
+}
+
+@keyframes dr-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-14px) rotate(4deg); }
+}
+
+.dr-title {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: clamp(1.5em, 5vw, 2.5em);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: transparent;
+  background: linear-gradient(90deg, #ff8c00 0%, #ff4500 40%, #da70d6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: none;
+  margin: 0;
+  animation: dr-title-glow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes dr-title-glow {
+  from { filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5)); }
+  to { filter: drop-shadow(0 0 22px rgba(218, 112, 214, 0.6)); }
+}
+
+.dr-subtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9em;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.dr-story-box {
+  background: rgba(255, 140, 0, 0.06);
+  border: 1px solid rgba(255, 140, 0, 0.18);
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem;
+  max-width: 420px;
+  width: 100%;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+
+/* ── Dragon selection ────────────────────────────────────────── */
+.dr-select-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9em;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.dr-dragon-select,
+.dr-mission-select {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.dr-dragon-options,
+.dr-mission-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dr-dragon-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.375rem 0.625rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 4rem;
+}
+
+.dr-dragon-btn:hover {
+  background: rgba(255, 140, 0, 0.12);
+  border-color: rgba(255, 140, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.dr-dragon-btn--selected {
+  background: rgba(255, 140, 0, 0.15);
+  border-color: #ff8c00;
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+}
+
+.dr-dragon-btn--locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.dr-dragon-emoji {
+  font-size: 1.5em;
+}
+
+.dr-dragon-label {
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.dr-lock-badge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  font-size: 0.75em;
+}
+
+/* ── Mission selection ───────────────────────────────────────── */
+.dr-mission-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8em;
+}
+
+.dr-mission-btn:hover {
+  background: rgba(0, 229, 255, 0.1);
+  border-color: rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.dr-mission-btn--selected {
+  background: rgba(0, 229, 255, 0.12);
+  border-color: #00e5ff;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+}
+
+.dr-mission-icon {
+  font-size: 1.2em;
+}
+
+.dr-mission-name {
+  font-weight: 600;
+}
+
+/* ── Stats bar ───────────────────────────────────────────────── */
+.dr-stats-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dr-stat-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Controls hint ───────────────────────────────────────────── */
+.dr-controls-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: rgba(255, 140, 0, 0.06);
+  border: 1px solid rgba(255, 140, 0, 0.18);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  max-width: 340px;
+  width: 100%;
+}
+
+.dr-hint-row {
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.dr-btn {
+  border: none;
+  border-radius: 1.875rem;
+  padding: 0.625rem 1.75rem;
+  font-size: 1em;
+  font-weight: bold;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.dr-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+}
+
+.dr-btn-primary {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff4500 100%);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(255, 69, 0, 0.45);
+}
+
+.dr-btn-primary:hover {
+  box-shadow: 0 10px 30px rgba(255, 69, 0, 0.65);
+}
+
+.dr-btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dr-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Game Over screen ────────────────────────────────────────── */
+.dr-gameover-screen {
+  justify-content: center;
+}
+
+.dr-gameover-icon {
+  font-size: 4em;
+  animation: dr-shake 0.6s ease forwards;
+}
+
+@keyframes dr-shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-12deg) scale(1.15); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(6deg); }
+}
+
+.dr-gameover-title {
+  color: #ff4500 !important;
+  filter: drop-shadow(0 0 18px rgba(255, 69, 0, 0.7));
+}
+
+.dr-final-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.875rem;
+  padding: 1rem 2rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.dr-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dr-stat-label {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dr-stat-val {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #ff8c00;
+}
+
+.dr-hi-val {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.dr-over-btns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ── Victory screen ──────────────────────────────────────────── */
+.dr-victory-screen {
+  justify-content: center;
+}
+
+.dr-victory-icon {
+  font-size: 4em;
+  animation: dr-float 2s ease-in-out infinite;
+}
+
+.dr-victory-title {
+  color: #ffd700 !important;
+  filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.7));
+}
+
+.dr-rewards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.dr-reward-chip {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 1.25rem;
+  padding: 0.375rem 1rem;
+  font-size: 1em;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* ── Mobile ability button ───────────────────────────────────── */
+.dr-mobile-ability {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 35%,
+    rgba(255, 140, 0, 0.9),
+    rgba(255, 69, 0, 0.7)
+  );
+  border: 2px solid rgba(255, 140, 0, 0.5);
+  font-size: 1.9em;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(255, 140, 0, 0.4);
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 10;
+  transition: transform 0.1s;
+}
+
+.dr-mobile-ability:active {
+  transform: scale(0.9);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .dr-modal-content {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .dr-hud-value {
+    font-size: 0.85em;
+  }
+
+  .dr-hud-label {
+    font-size: 0.45em;
+  }
+
+  .dr-controls-hint {
+    display: none;
+  }
+
+  .dr-logo {
+    font-size: 2.5em;
+  }
+
+  .dr-story-box {
+    font-size: 0.7em;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .dr-dragon-btn {
+    min-width: 3.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .dr-dragon-emoji {
+    font-size: 1.2em;
+  }
+
+  .dr-mission-btn {
+    font-size: 0.7em;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .dr-btn {
+    font-size: 0.9em;
+    padding: 0.5rem 1.25rem;
+  }
+}

@@ -1188,6 +1188,11 @@
               <div class="game-name">ABC Game</div>
               <div class="game-description">Letter Combos!</div>
             </div>
+            <div class="game-option" id="dragon-realms-option">
+              <div class="game-icon">🐉</div>
+              <div class="game-name">Dragon Realms</div>
+              <div class="game-description">Sky Island Adventure!</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1624,6 +1629,178 @@
       </div>
     </div>
 
+    <!-- Dragon Realms Modal -->
+    <div class="modal" id="dragon-realms-modal" style="display: none">
+      <div class="modal-content dr-modal-content">
+        <div class="modal-header dr-modal-header">
+          <h2>🐉 Dragon Realms</h2>
+          <button id="close-dragon-realms-modal" class="modal-close-btn">✕</button>
+        </div>
+
+        <div id="dr-canvas-wrap" class="dr-canvas-wrap">
+          <canvas id="dr-canvas"></canvas>
+
+          <!-- HUD (shown during gameplay) -->
+          <div id="dr-overlay" class="dr-overlay" style="display: none">
+            <div class="dr-hud">
+              <div class="dr-hud-item">
+                <span class="dr-hud-label">CRYSTALS</span>
+                <span id="dr-crystals" class="dr-hud-value">0</span>
+              </div>
+              <div class="dr-hud-item">
+                <span class="dr-hud-label">ISLAND</span>
+                <span id="dr-island" class="dr-hud-value">1</span>
+              </div>
+              <div class="dr-hud-item">
+                <span class="dr-hud-label">ABILITY</span>
+                <span id="dr-ability" class="dr-hud-value dr-ability-ready">READY</span>
+              </div>
+              <div class="dr-hud-item dr-hud-lives">
+                <span id="dr-lives">❤️❤️❤️</span>
+              </div>
+              <div class="dr-hud-item">
+                <span class="dr-hud-label">TIME</span>
+                <span id="dr-timer" class="dr-hud-value">3:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Start / Home Screen -->
+          <div id="dr-start-screen" class="dr-screen dr-start-screen">
+            <div class="dr-logo">🐉</div>
+            <h2 class="dr-title">DRAGON REALMS</h2>
+            <p class="dr-subtitle">Rebuild the Sky Kingdom!</p>
+            <div class="dr-story-box">
+              <p>The Sky Islands were scattered by a magical storm. As a Dragon Keeper, explore islands, restore dragon shrines, and help dragons regain their powers!</p>
+            </div>
+            <div class="dr-dragon-select">
+              <h3 class="dr-select-title">Choose Your Dragon</h3>
+              <div class="dr-dragon-options" id="dr-dragon-options">
+                <button class="dr-dragon-btn dr-dragon-btn--selected" data-dragon="fire">
+                  <span class="dr-dragon-emoji">🔥</span>
+                  <span class="dr-dragon-label">Fire</span>
+                </button>
+                <button class="dr-dragon-btn" data-dragon="ice">
+                  <span class="dr-dragon-emoji">❄️</span>
+                  <span class="dr-dragon-label">Ice</span>
+                </button>
+                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="storm">
+                  <span class="dr-dragon-emoji">⚡</span>
+                  <span class="dr-dragon-label">Storm</span>
+                  <span class="dr-lock-badge">🔒</span>
+                </button>
+                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="crystal">
+                  <span class="dr-dragon-emoji">💎</span>
+                  <span class="dr-dragon-label">Crystal</span>
+                  <span class="dr-lock-badge">🔒</span>
+                </button>
+                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="shadow">
+                  <span class="dr-dragon-emoji">🌑</span>
+                  <span class="dr-dragon-label">Shadow</span>
+                  <span class="dr-lock-badge">🔒</span>
+                </button>
+              </div>
+            </div>
+            <div class="dr-mission-select">
+              <h3 class="dr-select-title">Select Mission</h3>
+              <div class="dr-mission-options" id="dr-mission-options">
+                <button class="dr-mission-btn dr-mission-btn--selected" data-mission="crystal-run">
+                  <span class="dr-mission-icon">💎</span>
+                  <span class="dr-mission-name">Crystal Run</span>
+                </button>
+                <button class="dr-mission-btn" data-mission="dragon-rescue">
+                  <span class="dr-mission-icon">🐣</span>
+                  <span class="dr-mission-name">Dragon Rescue</span>
+                </button>
+                <button class="dr-mission-btn" data-mission="sky-battle">
+                  <span class="dr-mission-icon">⚔️</span>
+                  <span class="dr-mission-name">Sky Battle</span>
+                </button>
+                <button class="dr-mission-btn" data-mission="shrine-puzzle">
+                  <span class="dr-mission-icon">🏛️</span>
+                  <span class="dr-mission-name">Shrine Puzzle</span>
+                </button>
+                <button class="dr-mission-btn" data-mission="storm-escape">
+                  <span class="dr-mission-icon">🌩️</span>
+                  <span class="dr-mission-name">Storm Escape</span>
+                </button>
+              </div>
+            </div>
+            <div class="dr-stats-bar">
+              <div class="dr-stat-chip">🏆 Best: <span id="dr-best-score-display">0</span></div>
+              <div class="dr-stat-chip">🐉 Lv <span id="dr-dragon-level-display">1</span></div>
+              <div class="dr-stat-chip">🏝️ Islands: <span id="dr-islands-display">1/5</span></div>
+            </div>
+            <div class="dr-controls-hint">
+              <div class="dr-hint-row">🎮 <strong>Move:</strong> Arrow keys / WASD</div>
+              <div class="dr-hint-row">🔥 <strong>Ability:</strong> Space / Enter</div>
+              <div class="dr-hint-row">📱 <strong>Mobile:</strong> Drag to move · Tap to use ability</div>
+            </div>
+            <button id="dr-start-btn" class="dr-btn dr-btn-primary">▶ FLY NOW!</button>
+          </div>
+
+          <!-- Game Over screen -->
+          <div id="dr-gameover-screen" class="dr-screen dr-gameover-screen" style="display: none">
+            <div class="dr-gameover-icon">💥</div>
+            <h2 class="dr-title dr-gameover-title">MISSION FAILED</h2>
+            <div class="dr-final-stats">
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Crystals</span>
+                <span id="dr-final-crystals" class="dr-stat-val">0</span>
+              </div>
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Best</span>
+                <span id="dr-final-best" class="dr-stat-val dr-hi-val">0</span>
+              </div>
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Island</span>
+                <span id="dr-final-island" class="dr-stat-val">1</span>
+              </div>
+            </div>
+            <div class="dr-over-btns">
+              <button id="dr-restart-btn" class="dr-btn dr-btn-primary">🔄 Try Again</button>
+              <button id="dr-menu-btn" class="dr-btn dr-btn-secondary">🏠 Menu</button>
+            </div>
+          </div>
+
+          <!-- Victory screen -->
+          <div id="dr-victory-screen" class="dr-screen dr-victory-screen" style="display: none">
+            <div class="dr-victory-icon">🏆</div>
+            <h2 class="dr-title dr-victory-title">MISSION COMPLETE!</h2>
+            <div class="dr-final-stats">
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Crystals</span>
+                <span id="dr-victory-crystals" class="dr-stat-val">0</span>
+              </div>
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Time</span>
+                <span id="dr-victory-time" class="dr-stat-val">0:00</span>
+              </div>
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">Rescued</span>
+                <span id="dr-victory-rescued" class="dr-stat-val">0</span>
+              </div>
+              <div class="dr-stat-row">
+                <span class="dr-stat-label">XP Earned</span>
+                <span id="dr-victory-xp" class="dr-stat-val dr-hi-val">+0</span>
+              </div>
+            </div>
+            <div class="dr-rewards">
+              <span class="dr-reward-chip">💰 <span id="dr-reward-coins">0</span></span>
+              <span class="dr-reward-chip">💎 <span id="dr-reward-gems">0</span></span>
+            </div>
+            <div class="dr-over-btns">
+              <button id="dr-next-btn" class="dr-btn dr-btn-primary">▶ Next Mission</button>
+              <button id="dr-victory-menu-btn" class="dr-btn dr-btn-secondary">🏠 Menu</button>
+            </div>
+          </div>
+
+          <!-- Mobile ability button -->
+          <button id="dr-mobile-ability" class="dr-mobile-ability" aria-label="Use Ability">🔥</button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/languages.js"></script>
     <script src="js/voice-recognition.js"></script>
     <script src="js/utils/sound-manager.js"></script>
@@ -1631,6 +1808,7 @@
     <script src="js/memory-game.js"></script>
     <script src="js/space-war.js"></script>
     <script src="js/abc-game.js"></script>
+    <script src="js/dragon-realms.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

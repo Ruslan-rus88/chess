@@ -3985,6 +3985,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const memoryGame = new MemoryGame();
   const spaceWarGame = new SpaceWarGame();
   const abcGame = new ABCGame();
+  const dragonRealmsGame = new DragonRealmsGame();
   const radioPlayer = new RadioPlayer();
 
   // Update UI texts on initial load
