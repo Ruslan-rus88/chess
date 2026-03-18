@@ -1396,6 +1396,10 @@
                 <span class="sw-hud-label">LEVEL</span>
                 <span id="sw-level" class="sw-hud-value">1</span>
               </div>
+              <div class="sw-hud-item">
+                <span class="sw-hud-label">GOLDEN</span>
+                <span id="sw-golden" class="sw-hud-value sw-golden-val">0/5</span>
+              </div>
               <div class="sw-hud-item sw-hud-lives">
                 <span id="sw-lives">❤️❤️❤️</span>
               </div>
@@ -1450,6 +1454,39 @@
                 🔄 Play Again
               </button>
               <button id="sw-menu-btn" class="sw-btn sw-btn-secondary">
+                🏠 Menu
+              </button>
+            </div>
+          </div>
+
+          <!-- Victory screen -->
+          <div
+            id="sw-victory-screen"
+            class="sw-screen sw-victory-screen"
+            style="display: none"
+          >
+            <div class="sw-victory-icon">🏆</div>
+            <h2 class="sw-title sw-victory-title">VICTORY!</h2>
+            <p class="sw-subtitle">You destroyed all 5 golden rocks!</p>
+            <div class="sw-final-stats">
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Score</span>
+                <span id="sw-victory-score" class="sw-stat-val">0</span>
+              </div>
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Best</span>
+                <span id="sw-victory-hi" class="sw-stat-val sw-hi-val">0</span>
+              </div>
+              <div class="sw-stat-row">
+                <span class="sw-stat-label">Level</span>
+                <span id="sw-victory-level" class="sw-stat-val">1</span>
+              </div>
+            </div>
+            <div class="sw-over-btns">
+              <button id="sw-victory-restart-btn" class="sw-btn sw-btn-primary">
+                🔄 Play Again
+              </button>
+              <button id="sw-victory-menu-btn" class="sw-btn sw-btn-secondary">
                 🏠 Menu
               </button>
             </div>

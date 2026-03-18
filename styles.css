@@ -4331,6 +4331,41 @@ body {
   justify-content: center;
 }
 
+/* ── Victory screen ──────────────────────────────────────────── */
+.sw-victory-icon {
+  font-size: 4em;
+  animation: sw-pulse-gold 1.2s ease infinite;
+}
+
+@keyframes sw-pulse-gold {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.6));
+  }
+  50% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 28px rgba(255, 215, 0, 0.9));
+  }
+}
+
+.sw-victory-title {
+  color: #ffd700 !important;
+  filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.7));
+}
+
+.sw-victory-screen .sw-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95em;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Golden HUD value ────────────────────────────────────────── */
+.sw-golden-val {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
 /* ── Buttons ──────────────────────────────────────────────────── */
 .sw-btn {
   border: none;

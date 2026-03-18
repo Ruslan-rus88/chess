@@ -15,8 +15,15 @@ class SpaceWarGame {
     this.ship = null;
     this.bullets = [];
     this.enemies = [];
+    this.goldenRocks = [];
     this.particles = [];
     this.stars = [];
+
+    // Golden rocks (win condition)
+    this.goldenRocksDestroyed = 0;
+    this.goldenRocksToWin = 5;
+    this.goldenRockTimer = 0;
+    this.goldenRockInterval = 20000; // 20 seconds
 
     // Input
     this.keys = {};
@@ -86,6 +93,14 @@ class SpaceWarGame {
       this._showScreen("start");
     });
 
+    document.getElementById("sw-victory-restart-btn").addEventListener("click", () => {
+      this._startGame();
+    });
+
+    document.getElementById("sw-victory-menu-btn").addEventListener("click", () => {
+      this._showScreen("start");
+    });
+
     // Mobile shoot button
     const mobileShoot = document.getElementById("sw-mobile-shoot");
     mobileShoot.addEventListener(
@@ -150,7 +165,7 @@ class SpaceWarGame {
 
   // ─── Screen Management ────────────────────────────────────────────────────
 
-  /** @param {'start'|'playing'|'over'} name */
+  /** @param {'start'|'playing'|'over'|'victory'} name */
   _showScreen(name) {
     document.getElementById("sw-start-screen").style.display =
       name === "start" ? "flex" : "none";
@@ -158,6 +173,8 @@ class SpaceWarGame {
       name === "playing" ? "block" : "none";
     document.getElementById("sw-gameover-screen").style.display =
       name === "over" ? "flex" : "none";
+    document.getElementById("sw-victory-screen").style.display =
+      name === "victory" ? "flex" : "none";
 
     if (name !== "playing") {
       this._stopLoop();
@@ -181,6 +198,7 @@ class SpaceWarGame {
 
     this.bullets = [];
     this.enemies = [];
+    this.goldenRocks = [];
     this.particles = [];
     this.score = 0;
     this.lives = 3;
@@ -190,6 +208,9 @@ class SpaceWarGame {
     this.enemyTimer = 0;
     this.enemyInterval = 1400;
     this.levelTimer = 0;
+    this.goldenRocksDestroyed = 0;
+    this.goldenRockTimer = 0;
+    this.victory = false;
     this.gameOver = false;
     this.paused = false;
     this.running = true;
@@ -218,7 +239,7 @@ class SpaceWarGame {
       if (!this.running) return;
       const dt = Math.min(now - this.lastTime, 50);
       this.lastTime = now;
-      if (!this.paused && !this.gameOver) this._update(dt, now);
+      if (!this.paused && !this.gameOver && !this.victory) this._update(dt, now);
       this._draw();
       this.animFrame = requestAnimationFrame(tick);
     };
@@ -316,6 +337,21 @@ class SpaceWarGame {
       p.r *= 0.96;
     });
 
+    // ── Golden rock spawn (every 20 seconds)
+    this.goldenRockTimer += dt;
+    if (this.goldenRockTimer >= this.goldenRockInterval) {
+      this.goldenRockTimer = 0;
+      this._spawnGoldenRock(W);
+    }
+
+    // ── Move golden rocks
+    this.goldenRocks = this.goldenRocks.filter((gr) => gr.y < H + 60);
+    this.goldenRocks.forEach((gr) => {
+      gr.y += gr.spd;
+      gr.angle += 0.02;
+      gr.shimmer = (Math.sin(now * 0.005 + gr.shimmerOffset) + 1) / 2;
+    });
+
     // ── Stars scroll
     this.stars.forEach((s) => {
       s.y += s.spd;
@@ -324,6 +360,57 @@ class SpaceWarGame {
         s.x = Math.random() * W;
       }
     });
+
+    // ── Collisions: bullet ↔ golden rock
+    for (let bi = this.bullets.length - 1; bi >= 0; bi--) {
+      for (let gi = this.goldenRocks.length - 1; gi >= 0; gi--) {
+        const b = this.bullets[bi];
+        const gr = this.goldenRocks[gi];
+        if (!b || !gr) continue;
+        const dx = b.x - gr.x;
+        const dy = b.y - gr.y;
+        if (Math.sqrt(dx * dx + dy * dy) < gr.r + 6) {
+          gr.hp--;
+          this.bullets.splice(bi, 1);
+          if (gr.hp <= 0) {
+            this._explode(gr.x, gr.y, "#ffd700");
+            this._explode(gr.x, gr.y, "#ffaa00");
+            this.goldenRocks.splice(gi, 1);
+            this.goldenRocksDestroyed++;
+            this.score += 100;
+            this._playSound("explosion");
+            this._updateHUD();
+            // Check win condition
+            if (this.goldenRocksDestroyed >= this.goldenRocksToWin) {
+              this._triggerVictory();
+              return;
+            }
+          } else {
+            this._playSound("hit");
+          }
+          break;
+        }
+      }
+    }
+
+    // ── Collisions: golden rock ↔ ship
+    for (let gi = this.goldenRocks.length - 1; gi >= 0; gi--) {
+      const gr = this.goldenRocks[gi];
+      const dx = gr.x - this.ship.x;
+      const dy = gr.y - this.ship.y;
+      if (Math.sqrt(dx * dx + dy * dy) < gr.r + 18) {
+        this._explode(gr.x, gr.y, "#ffd700");
+        this._explode(this.ship.x, this.ship.y, "#00ffff");
+        this.goldenRocks.splice(gi, 1);
+        this.lives--;
+        this._playSound("hit");
+        this._updateHUD();
+        if (this.lives <= 0) {
+          this._triggerGameOver();
+          return;
+        }
+      }
+    }
 
     // ── Collisions: bullet ↔ enemy
     for (let bi = this.bullets.length - 1; bi >= 0; bi--) {
@@ -412,6 +499,43 @@ class SpaceWarGame {
       angle: 0,
       glow: 0,
     });
+  }
+
+  // ─── Golden Rock Spawn ───────────────────────────────────────────────────
+
+  _spawnGoldenRock(W) {
+    const r = 28;
+    this.goldenRocks.push({
+      x: Math.random() * (W - r * 2) + r,
+      y: -r - 10,
+      r,
+      spd: 0.8 + this.level * 0.08,
+      hp: 3,
+      angle: 0,
+      shimmer: 0,
+      shimmerOffset: Math.random() * Math.PI * 2,
+    });
+    this._playSound("boss");
+  }
+
+  // ─── Victory ─────────────────────────────────────────────────────────────
+
+  _triggerVictory() {
+    this.victory = true;
+    this.running = false;
+    this._playSound("levelup");
+    if (this.score > this.highScore) {
+      this.highScore = this.score;
+      localStorage.setItem("sw_hi", this.highScore);
+    }
+    cancelAnimationFrame(this.animFrame);
+    this._draw(); // final frame
+
+    document.getElementById("sw-victory-score").textContent = this.score;
+    document.getElementById("sw-victory-level").textContent = this.level;
+    document.getElementById("sw-victory-hi").textContent = this.highScore;
+    setTimeout(() => this._showScreen("victory"), 400);
+    this._detachInput();
   }
 
   // ─── Shoot ────────────────────────────────────────────────────────────────
@@ -548,6 +672,15 @@ class SpaceWarGame {
       } else {
         this._drawBasicEnemy(ctx, e.r, e.color, e.glow);
       }
+      ctx.restore();
+    });
+
+    // ── Golden Rocks
+    this.goldenRocks.forEach((gr) => {
+      ctx.save();
+      ctx.translate(gr.x, gr.y);
+      ctx.rotate(gr.angle);
+      this._drawGoldenRock(ctx, gr.r, gr.shimmer, gr.hp);
       ctx.restore();
     });
 
@@ -743,18 +876,66 @@ class SpaceWarGame {
     ctx.fill();
   }
 
+  _drawGoldenRock(ctx, r, shimmer, hp) {
+    // Outer golden glow
+    ctx.shadowBlur = 28 + shimmer * 18;
+    ctx.shadowColor = "#ffd700";
+
+    // Rocky irregular shape
+    const spikes = 7;
+    ctx.beginPath();
+    for (let i = 0; i < spikes * 2; i++) {
+      const a = (Math.PI / spikes) * i - Math.PI / 2;
+      const jitter = 0.85 + Math.sin(i * 2.3) * 0.15;
+      const rad = i % 2 === 0 ? r * jitter : r * 0.65 * jitter;
+      ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+    }
+    ctx.closePath();
+
+    // Golden gradient fill
+    const gg = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+    gg.addColorStop(0, "#fff8dc");
+    gg.addColorStop(0.25, "#ffd700");
+    gg.addColorStop(0.6, "#daa520");
+    gg.addColorStop(1, "#b8860b");
+    ctx.fillStyle = gg;
+    ctx.fill();
+
+    // Shiny edge stroke
+    ctx.strokeStyle = `rgba(255,255,200,${0.5 + shimmer * 0.5})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Inner sparkle
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = `rgba(255,255,255,${0.3 + shimmer * 0.4})`;
+    ctx.beginPath();
+    ctx.arc(-r * 0.2, -r * 0.2, r * 0.18, 0, Math.PI * 2);
+    ctx.fill();
+
+    // HP indicator (small dots)
+    for (let i = 0; i < hp; i++) {
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(-r * 0.4 + i * r * 0.4, r + 8, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   // ─── HUD ──────────────────────────────────────────────────────────────────
 
   _updateHUD() {
     const scoreEl = document.getElementById("sw-score");
     const livesEl = document.getElementById("sw-lives");
     const levelEl = document.getElementById("sw-level");
+    const goldenEl = document.getElementById("sw-golden");
     if (scoreEl) scoreEl.textContent = this.score;
     if (levelEl) levelEl.textContent = this.level;
     if (livesEl) {
       livesEl.textContent = "";
       for (let i = 0; i < this.lives; i++) livesEl.textContent += "❤️";
     }
+    if (goldenEl) goldenEl.textContent = `${this.goldenRocksDestroyed}/${this.goldenRocksToWin}`;
   }
 
   // ─── Game Over ────────────────────────────────────────────────────────────
