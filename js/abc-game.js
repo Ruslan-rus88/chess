@@ -9,9 +9,10 @@ class ABCGame {
     this.answering = false; // guard against double-click during animation
     this.ac = null;
     this.difficulty = "easy"; // easy | medium | hard
+    this.language = "en"; // en | de
 
     // Word lists for medium (4-letter) and hard (5+ letter) difficulties
-    this.MEDIUM_WORDS = [
+    this.MEDIUM_WORDS_EN = [
       "BALL", "BEAR", "BIRD", "BLUE", "BOAT", "BOOK", "CAKE", "CALM", "CARD",
       "CARE", "CITY", "COLD", "COME", "COOK", "COOL", "DARK", "DAWN", "DEAR",
       "DEEP", "DEER", "DOOR", "DOWN", "DRAW", "DROP", "DRUM", "DUST", "EACH",
@@ -62,7 +63,7 @@ class ABCGame {
       "WORK", "WORM", "WORN", "WRAP", "YARD", "YEAR", "YOUR", "ZERO", "ZONE",
     ];
 
-    this.HARD_WORDS = [
+    this.HARD_WORDS_EN = [
       "ABOUT", "ABOVE", "AFTER", "AGAIN", "ALIVE", "ALONE", "ALONG", "ANGEL",
       "ANGLE", "APPLE", "ARENA", "BEACH", "BEGIN", "BLACK", "BLANK", "BLAST",
       "BLAZE", "BLEND", "BLESS", "BLIND", "BLOCK", "BLOOM", "BOARD", "BONUS",
@@ -134,6 +135,54 @@ class ABCGame {
       "WOULD", "WOUND", "WRITE", "WRONG", "WROTE", "YIELD", "YOUNG", "YOUTH",
     ];
 
+    // German word lists
+    this.MEDIUM_WORDS_DE = [
+      "BALL", "BAUM", "BEIN", "BERG", "BETT", "BILD", "BLAU", "BROT", "BUCH",
+      "BURG", "DACH", "DAME", "DORF", "DUMM", "ECHT", "ERDE", "ESEL", "FALL",
+      "FANG", "FARN", "FASS", "FELD", "FELS", "FEST", "FILM", "FINK", "FORM",
+      "FREI", "GANZ", "GAST", "GELD", "GELB", "GLAS", "GOLD", "GRAS", "GRAU",
+      "GURT", "HAAR", "HAHN", "HALB", "HALT", "HAND", "HART", "HAUS", "HAUT",
+      "HEFT", "HELD", "HELL", "HEMD", "HERR", "HERZ", "HIER", "HILF", "HIRN",
+      "HOLZ", "HORN", "HOSE", "HUND", "IGEL", "JAGD", "JUNG", "KALT", "KAMM",
+      "KEIN", "KERN", "KIND", "KLAR", "KNIE", "KOCH", "KOPF", "KORN", "KRUG",
+      "KURS", "KURZ", "LACK", "LAMM", "LAND", "LANG", "LAUT", "LEER", "LEID",
+      "LEIM", "LIED", "LOCH", "LUFT", "MAHL", "MAIS", "MANN", "MAUS", "MEER",
+      "MOND", "MOOS", "MORD", "MULL", "MUND", "NASS", "NEIN", "NEST", "NETZ",
+      "NORD", "OBST", "OFEN", "PAAR", "PARK", "PELZ", "PFAD", "PILZ", "PLAN",
+      "RAND", "RAUM", "RAUS", "REBE", "RECK", "REHE", "REIS", "RING", "ROCK",
+      "ROHR", "ROSE", "ROST", "RUND", "RUHE", "SAAL", "SACK", "SAFT", "SALZ",
+      "SAND", "SATT", "SEIL", "SEIN", "SOHN", "STAR", "STIL", "TANZ", "TIER",
+      "TOPF", "TURM", "VOLL", "WALD", "WAND", "WARM", "WEIN", "WELT", "WERK",
+      "WILD", "WIND", "WOHL", "WOLF", "WORT", "WURM", "ZAHL", "ZAUN", "ZEIT",
+      "ZELT", "ZIEL",
+    ];
+
+    this.HARD_WORDS_DE = [
+      "ABEND", "ADLER", "AFFEN", "ALLES", "AMPEL", "ANGST", "APFEL", "ARBEIT",
+      "AUGEN", "BACKE", "BAUER", "BAUEN", "BIRNE", "BLATT", "BLICK", "BLUME",
+      "BLITZ", "BOHNE", "BRAUN", "BREIT", "BRIEF", "BRISE", "BRUDER", "BRUCH",
+      "DAMPF", "DECKE", "DENKE", "DRAHT", "DRECK", "DUNKEL", "EICHE", "EIMER",
+      "EISEN", "ELTERN", "ENGEL", "ENTEN", "ERNTE", "FAHNE", "FARBE", "FEDER",
+      "FEIER", "FEIND", "FEUER", "FISCH", "FLECK", "FLUSS", "FUCHS", "GABEL",
+      "GARTEN", "GEIST", "GIPFEL", "GLOCKE", "GRENZE", "GRIFF", "GROSS",
+      "GRUND", "GURKE", "HAFEN", "HAKEN", "HALTE", "HENNE", "HONIG", "HOSEN",
+      "HUTTE", "IMMER", "INSEL", "JAGEN", "JUBEL", "KABEL", "KARTE", "KATZE",
+      "KETTE", "KIRCHE", "KLEID", "KLEIN", "KNOPF", "KOHLE", "KRAFT", "KRANZ",
+      "KREBS", "KREUZ", "KRONE", "KUCHE", "KUGEL", "KUNST", "LADEN", "LAMPE",
+      "LAUFEN", "LEDER", "LEHRE", "LEISE", "LESEN", "LICHT", "LIEBE", "LINDE",
+      "LINKS", "LOWEN", "MAGEN", "MARKT", "MAUER", "MEISE", "MESSER", "MILCH",
+      "MONAT", "MORGEN", "MOTOR", "MUSIK", "NACHT", "NADEL", "NATUR", "NEBEL",
+      "NORDEN", "NUDEL", "OSTEN", "PALME", "PFERD", "PLATZ", "PREIS", "PRINZ",
+      "PUNKT", "REGEN", "REISE", "RENTE", "RINDE", "ROSEN", "RUHIG", "SAGEN",
+      "SAMEN", "SCHAL", "SCHAF", "SCHUH", "SEELE", "SEGEN", "SONNE", "SORGE",
+      "SPIEL", "STADT", "STAMM", "STAUB", "STEIN", "STERN", "STILL", "STIRN",
+      "STOFF", "STOLZ", "STROM", "STUCK", "STURM", "SUCHE", "SUMPF", "TASSE",
+      "TAUBE", "TEICH", "TIGER", "TINTE", "TISCH", "TRAUM", "TREUE", "TROPF",
+      "TRUHE", "TURME", "UNTER", "VATER", "VOGEL", "WAGEN", "WANGE", "WASSER",
+      "WELLE", "WIESE", "WOLKE", "WUNDE", "WURZE", "ZANGE", "ZAUBER", "ZEILE",
+      "ZIEGE", "ZUCKER",
+    ];
+
     this._setupModal();
   }
 
@@ -165,6 +214,18 @@ class ABCGame {
         this._playSound("click");
         this._showScreen("abc-start-screen");
       });
+
+    // Language buttons
+    document.querySelectorAll(".abc-lang-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this._playSound("click");
+        this.language = btn.dataset.lang;
+        document.querySelectorAll(".abc-lang-btn").forEach((b) =>
+          b.classList.remove("abc-lang-btn--active"),
+        );
+        btn.classList.add("abc-lang-btn--active");
+      });
+    });
 
     // Difficulty buttons
     document.querySelectorAll(".abc-diff-btn").forEach((btn) => {
@@ -227,7 +288,8 @@ class ABCGame {
     const badge = document.getElementById("abc-diff-badge");
     if (badge) {
       const labels = { easy: "Easy", medium: "Medium", hard: "Hard" };
-      badge.textContent = labels[this.difficulty];
+      const langFlag = this.language === "de" ? "🇩🇪" : "🇬🇧";
+      badge.textContent = langFlag + " " + labels[this.difficulty];
       badge.className = "abc-diff-badge abc-diff-badge--" + this.difficulty;
     }
 
@@ -251,6 +313,9 @@ class ABCGame {
   _nextQuestion() {
     this.answering = false;
 
+    const mediumList = this.language === "de" ? this.MEDIUM_WORDS_DE : this.MEDIUM_WORDS_EN;
+    const hardList = this.language === "de" ? this.HARD_WORDS_DE : this.HARD_WORDS_EN;
+
     let letters, correct;
 
     if (this.difficulty === "easy") {
@@ -261,12 +326,12 @@ class ABCGame {
       correct = l1 + l2;
     } else if (this.difficulty === "medium") {
       // 4-letter real word
-      const word = this._pickRandomWord(this.MEDIUM_WORDS);
+      const word = this._pickRandomWord(mediumList);
       letters = word.split("");
       correct = word;
     } else {
       // 5+ letter real word
-      const word = this._pickRandomWord(this.HARD_WORDS);
+      const word = this._pickRandomWord(hardList);
       letters = word.split("");
       correct = word;
     }
@@ -278,9 +343,9 @@ class ABCGame {
       if (this.difficulty === "easy") {
         w = this._randomLetter() + this._randomLetter();
       } else if (this.difficulty === "medium") {
-        w = this._pickRandomWord(this.MEDIUM_WORDS);
+        w = this._pickRandomWord(mediumList);
       } else {
-        w = this._pickRandomWord(this.HARD_WORDS);
+        w = this._pickRandomWord(hardList);
       }
       if (w !== correct) wrongs.add(w);
     }
@@ -299,6 +364,8 @@ class ABCGame {
     const questionEl = document.getElementById("abc-question-letters");
     if (questionEl) {
       questionEl.innerHTML = "";
+      // Add modifier class for long words so CSS can scale down
+      questionEl.classList.toggle("abc-question--long", letters.length > 3);
       letters.forEach((ch, i) => {
         const span = document.createElement("span");
         span.className = "abc-letter abc-letter-pop";
@@ -403,6 +470,10 @@ class ABCGame {
   }
 
   // ─── Speech ────────────────────────────────────────────────────
+  _getSpeechLang() {
+    return this.language === "de" ? "de-DE" : "en-US";
+  }
+
   _speak(text) {
     if (!("speechSynthesis" in window)) return;
 
@@ -410,6 +481,7 @@ class ABCGame {
     window.speechSynthesis.cancel();
 
     const word = text.toUpperCase();
+    const lang = this._getSpeechLang();
 
     // For easy mode (2 letters), spell out each letter
     // For medium/hard (real words), say the word naturally
@@ -418,30 +490,30 @@ class ABCGame {
       const letters = word.split("");
       letters.forEach((letter, i) => {
         const utter = new SpeechSynthesisUtterance(letter);
-        utter.rate = 0.85;
+        utter.rate = 0.65;
         utter.pitch = 1.1;
         utter.volume = 0.9;
-        utter.lang = "en-US";
+        utter.lang = lang;
         // Delay each letter slightly
-        setTimeout(() => window.speechSynthesis.speak(utter), i * 400);
+        setTimeout(() => window.speechSynthesis.speak(utter), i * 500);
       });
       // Then say the combination
       const combo = new SpeechSynthesisUtterance(word);
-      combo.rate = 0.8;
+      combo.rate = 0.6;
       combo.pitch = 1.0;
       combo.volume = 0.9;
-      combo.lang = "en-US";
+      combo.lang = lang;
       setTimeout(
         () => window.speechSynthesis.speak(combo),
-        letters.length * 400 + 200,
+        letters.length * 500 + 300,
       );
     } else {
-      // Say the word naturally
+      // Say the word naturally – slower for clarity
       const utter = new SpeechSynthesisUtterance(word);
-      utter.rate = 0.8;
+      utter.rate = 0.6;
       utter.pitch = 1.0;
       utter.volume = 0.9;
-      utter.lang = "en-US";
+      utter.lang = lang;
       window.speechSynthesis.speak(utter);
     }
   }
