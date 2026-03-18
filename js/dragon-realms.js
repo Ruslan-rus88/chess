@@ -73,8 +73,12 @@ class DragonRealmsGame {
 
     // Unlocked dragons
     this.unlockedDragons = JSON.parse(
-      localStorage.getItem("dr_unlocked") || '["fire","ice"]',
+      localStorage.getItem("dr_unlocked") || '["fire","ice","storm","crystal","shadow"]',
     );
+    // Ensure storm, crystal, shadow are always unlocked
+    ["storm", "crystal", "shadow"].forEach((d) => {
+      if (!this.unlockedDragons.includes(d)) this.unlockedDragons.push(d);
+    });
 
     // Bind handlers
     this._keyDown = this._keyDown.bind(this);
