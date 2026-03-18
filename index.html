@@ -1608,8 +1608,27 @@
             <div class="abc-start-icon">🔤</div>
             <h3 class="abc-start-title">ABC Game</h3>
             <p class="abc-start-subtitle">
-              Combine the two letters and pick the right answer!
+              Combine the letters and pick the right answer!
             </p>
+            <div class="abc-diff-selector">
+              <span class="abc-diff-label">Difficulty</span>
+              <div class="abc-diff-btns">
+                <button class="abc-diff-btn abc-diff-btn--easy abc-diff-btn--active" data-diff="easy">
+                  🟢 Easy
+                </button>
+                <button class="abc-diff-btn abc-diff-btn--medium" data-diff="medium">
+                  🟡 Medium
+                </button>
+                <button class="abc-diff-btn abc-diff-btn--hard" data-diff="hard">
+                  🔴 Hard
+                </button>
+              </div>
+              <div class="abc-diff-desc">
+                <span class="abc-diff-hint" data-for="easy">2 random letters</span>
+                <span class="abc-diff-hint" data-for="medium">4-letter real words</span>
+                <span class="abc-diff-hint" data-for="hard">5+ letter real words</span>
+              </div>
+            </div>
             <div class="abc-best-display">
               🏆 Best Streak: <span id="abc-best-score-display">0</span>
             </div>
@@ -1621,14 +1640,11 @@
             <div class="abc-score-bar">
               <span class="abc-score-label">⭐ Score</span>
               <span id="abc-score" class="abc-score-value">0</span>
+              <span id="abc-diff-badge" class="abc-diff-badge">Easy</span>
             </div>
 
-            <div class="abc-question">
-              <span id="abc-letter1" class="abc-letter abc-letter-pop">A</span>
-              <span class="abc-operator">+</span>
-              <span id="abc-letter2" class="abc-letter abc-letter-pop">B</span>
-              <span class="abc-operator">=</span>
-              <span class="abc-question-mark">?</span>
+            <div id="abc-question-letters" class="abc-question">
+              <!-- Letters are generated dynamically by JS -->
             </div>
 
             <div class="abc-options">

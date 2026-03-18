@@ -4910,6 +4910,119 @@ body {
   position: relative;
 }
 
+/* ── Difficulty Selector ─────────────────────────────────────── */
+.abc-diff-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.abc-diff-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.abc-diff-btns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.abc-diff-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.abc-diff-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.abc-diff-btn--active.abc-diff-btn--easy {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-color: #34d399;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+}
+
+.abc-diff-btn--active.abc-diff-btn--medium {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  border-color: #fbbf24;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+}
+
+.abc-diff-btn--active.abc-diff-btn--hard {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-color: #f87171;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}
+
+.abc-diff-desc {
+  min-height: 1.25rem;
+}
+
+.abc-diff-hint {
+  display: none;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+}
+
+/* Show hint that matches the active difficulty */
+.abc-diff-btn--active.abc-diff-btn--easy ~ .abc-diff-desc .abc-diff-hint[data-for="easy"],
+.abc-diff-btn--active.abc-diff-btn--medium ~ .abc-diff-desc .abc-diff-hint[data-for="medium"],
+.abc-diff-btn--active.abc-diff-btn--hard ~ .abc-diff-desc .abc-diff-hint[data-for="hard"] {
+  display: inline;
+}
+
+/* JS-driven hint visibility fallback */
+.abc-diff-selector:has(.abc-diff-btn--active.abc-diff-btn--easy) .abc-diff-hint[data-for="easy"],
+.abc-diff-selector:has(.abc-diff-btn--active.abc-diff-btn--medium) .abc-diff-hint[data-for="medium"],
+.abc-diff-selector:has(.abc-diff-btn--active.abc-diff-btn--hard) .abc-diff-hint[data-for="hard"] {
+  display: inline;
+}
+
+/* ── Difficulty Badge in Game Screen ────────────────────────── */
+.abc-diff-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  margin-left: auto;
+}
+
+.abc-diff-badge--easy {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.abc-diff-badge--medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.abc-diff-badge--hard {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .abc-modal-content {
@@ -4919,20 +5032,29 @@ body {
   }
 
   .abc-letter {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
 
   .abc-question-mark {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
 
   .abc-operator {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .abc-option-btn {
-    font-size: 1.4rem;
-    padding: 16px 8px;
+    font-size: 1.1rem;
+    padding: 14px 6px;
+  }
+
+  .abc-diff-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .abc-question {
+    flex-wrap: wrap;
   }
 }
 
