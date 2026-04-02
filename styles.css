@@ -6077,3 +6077,120 @@ body {
     font-size: 1.1rem;
   }
 }
+
+/* ============================
+   AI Difficulty Selector
+   ============================ */
+
+.ai-difficulty-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.ai-difficulty-section h4 {
+  margin-bottom: 12px;
+  color: #444;
+  font-size: 1.1em;
+}
+
+.ai-difficulty-options {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ai-diff-btn {
+  padding: 10px 22px;
+  border: 2px solid #667eea;
+  border-radius: 25px;
+  background: #fff;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ai-diff-btn:hover {
+  background: #eef1ff;
+  transform: translateY(-2px);
+}
+
+.ai-diff-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================
+   Pawn Promotion Dialog
+   ============================ */
+
+.promotion-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  animation: fadeIn 0.2s ease;
+}
+
+.promotion-dialog {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 24px 32px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.3s ease;
+}
+
+.promotion-dialog h3 {
+  color: #fff;
+  font-size: 1.4em;
+  margin-bottom: 16px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.promotion-choices {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.promotion-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #fff;
+}
+
+.promotion-choice:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.promotion-piece-symbol {
+  font-size: 2.4em;
+  line-height: 1;
+}
+
+.promotion-piece-name {
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: capitalize;
+}
