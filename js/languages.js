@@ -47,6 +47,7 @@ const translations = {
     lessonBoardCleared: "Board cleared! Ready to start fresh.",
     lessonRandomPiecesAdded: "Random pieces added! Click on any piece to explore its moves.",
     lessonClickPieceForMoves: "Perfect! Now click on the piece to see its possible moves.",
+    clickHighlightedSquares: "Click on the highlighted squares to see where this {piece} can move!",
     welcomeToMissionMode: "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.",
     
     // Mission
@@ -196,6 +197,7 @@ const translations = {
     lessonBoardCleared: "Доска очищена! Готово к новому началу.",
     lessonRandomPiecesAdded: "Случайные фигуры добавлены! Нажмите на любую фигуру, чтобы изучить её ходы.",
     lessonClickPieceForMoves: "Отлично! Теперь нажмите на фигуру, чтобы увидеть её возможные ходы.",
+    clickHighlightedSquares: "Нажмите на выделенные клетки, чтобы увидеть, куда ходит {piece}!",
     welcomeToMissionMode: "Добро пожаловать в режим миссий! Выберите игрока, сложность и фигуру, чтобы начать.",
     
     // Mission
@@ -343,6 +345,7 @@ const translations = {
     lessonBoardCleared: "¡Tablero limpiado! Listo para empezar de nuevo.",
     lessonRandomPiecesAdded: "¡Piezas aleatorias agregadas! Haz clic en cualquier pieza para explorar sus movimientos.",
     lessonClickPieceForMoves: "¡Perfecto! Ahora haz clic en la pieza para ver sus movimientos posibles.",
+    clickHighlightedSquares: "¡Haz clic en las casillas resaltadas para ver a dónde puede moverse esta {piece}!",
     welcomeToMissionMode: "¡Bienvenido al Modo Misión! Selecciona tu jugador, dificultad y pieza para comenzar.",
     
     // Mission
@@ -490,6 +493,7 @@ const translations = {
     lessonBoardCleared: "تم مسح اللوحة! جاهز للبدء من جديد.",
     lessonRandomPiecesAdded: "تمت إضافة قطع عشوائية! انقر على أي قطعة لاستكشاف حركاتها.",
     lessonClickPieceForMoves: "ممتاز! الآن انقر على القطعة لرؤية حركاتها المحتملة.",
+    clickHighlightedSquares: "انقر على المربعات المميزة لترى أين يمكن لـ{piece} أن تتحرك!",
     welcomeToMissionMode: "مرحباً بك في وضع المهمة! اختر لاعبك وصعوبتك وقطعتك للبدء.",
     
     // Mission

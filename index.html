@@ -21,6 +21,9 @@
           <button id="more-games-btn" class="more-games-btn" title="More Games">
             🎮
           </button>
+          <button id="waffels-toggle" class="waffels-icon-btn" title="Secret Waffels">
+            🧇
+          </button>
         </div>
         <div class="tabs">
           <button class="tab-button active" data-tab="game">Game</button>
@@ -1865,6 +1868,44 @@
       </div>
     </div>
 
+    <!-- Secret Waffels Modal -->
+    <div class="modal" id="waffels-modal" style="display: none">
+      <div class="modal-content waffels-modal-content">
+        <div class="waffels-modal-header">
+          <h2>🧇 Secret Waffels 🤫</h2>
+          <button id="waffels-close" class="modal-close-btn">✕</button>
+        </div>
+        <div class="waffels-tabs">
+          <button class="waffel-tab-btn active" data-waffel-tab="ingredients">🥣 Ingredients</button>
+          <button class="waffel-tab-btn" data-waffel-tab="steps">👨‍🍳 Step by Step</button>
+        </div>
+        <div class="waffels-body">
+          <!-- Ingredients Tab -->
+          <div id="waffel-ingredients-tab">
+            <div class="portion-selector">
+              <span class="portion-label">🍽️ Portions:</span>
+              <button class="portion-btn active" data-portion="1">1</button>
+              <button class="portion-btn" data-portion="2">2</button>
+              <button class="portion-btn" data-portion="3">3</button>
+            </div>
+            <div id="waffel-ingredients-list" class="waffel-ingredients-list"></div>
+          </div>
+          <!-- Steps Tab -->
+          <div id="waffel-steps-tab" style="display: none">
+            <div class="waffel-progress-bar">
+              <div id="waffel-step-progress" class="waffel-progress-fill"></div>
+            </div>
+            <div id="waffel-step-content"></div>
+            <div class="waffel-step-nav">
+              <button id="waffel-prev-step" class="waffel-nav-btn" style="display: none">⬅️ Back</button>
+              <button id="waffel-next-step" class="waffel-nav-btn">Next ➡️</button>
+              <button id="waffel-restart-steps" class="waffel-nav-btn waffel-restart-btn" style="display: none">🔄 Start Over</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="js/languages.js"></script>
     <script src="js/voice-recognition.js"></script>
     <script src="js/utils/sound-manager.js"></script>
@@ -1873,6 +1914,7 @@
     <script src="js/space-war.js"></script>
     <script src="js/abc-game.js"></script>
     <script src="js/dragon-realms.js"></script>
+    <script src="js/secret-waffels.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

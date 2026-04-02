@@ -2377,6 +2377,13 @@ class ChessGame {
       // If clicking on a different piece, deselect current and select new one
       if (piece) {
         this.selectLessonsSquare(row, col);
+        this.showRomanMessage(
+          typeof languageManager !== "undefined"
+            ? languageManager
+                .get("clickHighlightedSquares")
+                .replace("{piece}", languageManager.get(piece.type))
+            : `Click on the highlighted squares to see where this ${piece.type} can move!`,
+        );
         return;
       }
 
@@ -2399,9 +2406,11 @@ class ChessGame {
         pawn: "Pawn",
       };
       this.showRomanMessage(
-        `Click on the highlighted squares to see where this ${
-          pieceNames[piece.type]
-        } can move!`,
+        typeof languageManager !== "undefined"
+          ? languageManager
+              .get("clickHighlightedSquares")
+              .replace("{piece}", languageManager.get(piece.type))
+          : `Click on the highlighted squares to see where this ${pieceNames[piece.type]} can move!`,
       );
     } else if (this.selectedPieceForLesson) {
       // Place the selected piece from the selector on the board
@@ -3987,6 +3996,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const abcGame = new ABCGame();
   const dragonRealmsGame = new DragonRealmsGame();
   const radioPlayer = new RadioPlayer();
+  const secretWaffels = new SecretWaffels();
 
   // Update UI texts on initial load
   game.updateAllUITexts();
