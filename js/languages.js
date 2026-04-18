@@ -75,15 +75,13 @@ const translations = {
     completedAllMissions: "You have completed all 10 missions!",
     
     // Settings
-    pieceStyle: "Piece Style",
-    colorTheme: "Color Theme",
+    figureStyle: "Figure Style",
     boardStyle: "Board Style",
     language: "Language",
-    classic: "Classic",
-    traditional: "Traditional",
+    flat: "Flat",
+    threeD: "3D",
     wood: "Wood",
-    marble: "Marble",
-    neon: "Neon",
+    classicBW: "Classic B&W",
     close: "Close",
     
     // Pieces
@@ -225,15 +223,13 @@ const translations = {
     completedAllMissions: "Вы выполнили все 10 миссий!",
     
     // Settings
-    pieceStyle: "Стиль фигур",
-    colorTheme: "Цветовая тема",
+    figureStyle: "Стиль фигур",
     boardStyle: "Стиль доски",
     language: "Язык",
-    classic: "Классический",
-    traditional: "Традиционный",
+    flat: "Плоский",
+    threeD: "3D",
     wood: "Дерево",
-    marble: "Мрамор",
-    neon: "Неон",
+    classicBW: "Классический Ч/Б",
     close: "Закрыть",
     
     // Pieces
@@ -373,15 +369,13 @@ const translations = {
     completedAllMissions: "¡Has completado las 10 misiones!",
     
     // Settings
-    pieceStyle: "Estilo de piezas",
-    colorTheme: "Tema de color",
+    figureStyle: "Estilo de figuras",
     boardStyle: "Estilo de tablero",
     language: "Idioma",
-    classic: "Clásico",
-    traditional: "Tradicional",
+    flat: "Plano",
+    threeD: "3D",
     wood: "Madera",
-    marble: "Mármol",
-    neon: "Neón",
+    classicBW: "Clásico B/N",
     close: "Cerrar",
     
     // Pieces
@@ -521,15 +515,13 @@ const translations = {
     completedAllMissions: "لقد أكملت جميع المهام العشر!",
     
     // Settings
-    pieceStyle: "نمط القطع",
-    colorTheme: "المظهر اللوني",
+    figureStyle: "نمط الأشكال",
     boardStyle: "نمط اللوحة",
     language: "اللغة",
-    classic: "كلاسيكي",
-    traditional: "تقليدي",
+    flat: "مسطح",
+    threeD: "ثلاثي الأبعاد",
     wood: "خشب",
-    marble: "رخام",
-    neon: "نيون",
+    classicBW: "كلاسيكي أبيض وأسود",
     close: "إغلاق",
     
     // Pieces

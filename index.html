@@ -21,7 +21,11 @@
           <button id="more-games-btn" class="more-games-btn" title="More Games">
             🎮
           </button>
-          <button id="waffels-toggle" class="waffels-icon-btn" title="Secret Waffels">
+          <button
+            id="waffels-toggle"
+            class="waffels-icon-btn"
+            title="Secret Waffels"
+          >
             🧇
           </button>
         </div>
@@ -206,7 +210,9 @@
               <h4>Computer Difficulty</h4>
               <div class="ai-difficulty-options">
                 <button class="ai-diff-btn" data-ai-diff="easy">🌟 Easy</button>
-                <button class="ai-diff-btn active" data-ai-diff="medium">⚡ Medium</button>
+                <button class="ai-diff-btn active" data-ai-diff="medium">
+                  ⚡ Medium
+                </button>
                 <button class="ai-diff-btn" data-ai-diff="hard">👑 Hard</button>
               </div>
             </div>
@@ -921,28 +927,20 @@
             </select>
           </div>
           <div class="setting-group">
-            <label for="piece-style" id="piece-style-label">Piece Style</label>
-            <select id="piece-style" class="setting-select">
-              <option value="classic">Classic</option>
-            </select>
-          </div>
-          <div class="setting-group">
-            <label for="color-theme" id="color-theme-label">Color Theme</label>
-            <select id="color-theme" class="setting-select">
-              <option value="traditional">Traditional</option>
-              <option value="blue">Blue & Gold</option>
-              <option value="green">Green & Cream</option>
-              <option value="purple">Purple & Silver</option>
-              <option value="red">Red & White</option>
+            <label for="figure-style" id="figure-style-label"
+              >Figure Style</label
+            >
+            <select id="figure-style" class="setting-select">
+              <option value="flat">Flat</option>
+              <option value="3d" selected>3D</option>
             </select>
           </div>
           <div class="setting-group">
             <label for="board-style" id="board-style-label">Board Style</label>
             <select id="board-style" class="setting-select">
-              <option value="wood">Wood</option>
-              <option value="marble">Marble</option>
-              <option value="neon">Neon</option>
+              <option value="wood" selected>Wood</option>
               <option value="classic">Classic</option>
+              <option value="classic-bw">Classic B&W</option>
             </select>
           </div>
           <div class="setting-group">
@@ -1409,7 +1407,9 @@
               </div>
               <div class="sw-hud-item">
                 <span class="sw-hud-label">GOLDEN</span>
-                <span id="sw-golden" class="sw-hud-value sw-golden-val">0/5</span>
+                <span id="sw-golden" class="sw-hud-value sw-golden-val"
+                  >0/5</span
+                >
               </div>
               <div class="sw-hud-item sw-hud-lives">
                 <span id="sw-lives">❤️❤️❤️</span>
@@ -1624,31 +1624,47 @@
             <div class="abc-lang-selector">
               <span class="abc-lang-label">🌐 Language</span>
               <div class="abc-lang-btns">
-                <button class="abc-lang-btn abc-lang-btn--active" data-lang="en">
+                <button
+                  class="abc-lang-btn abc-lang-btn--active"
+                  data-lang="en"
+                >
                   🇬🇧 English
                 </button>
-                <button class="abc-lang-btn" data-lang="de">
-                  🇩🇪 Deutsch
-                </button>
+                <button class="abc-lang-btn" data-lang="de">🇩🇪 Deutsch</button>
               </div>
             </div>
             <div class="abc-diff-selector">
               <span class="abc-diff-label">Difficulty</span>
               <div class="abc-diff-btns">
-                <button class="abc-diff-btn abc-diff-btn--easy abc-diff-btn--active" data-diff="easy">
+                <button
+                  class="abc-diff-btn abc-diff-btn--easy abc-diff-btn--active"
+                  data-diff="easy"
+                >
                   🟢 Easy
                 </button>
-                <button class="abc-diff-btn abc-diff-btn--medium" data-diff="medium">
+                <button
+                  class="abc-diff-btn abc-diff-btn--medium"
+                  data-diff="medium"
+                >
                   🟡 Medium
                 </button>
-                <button class="abc-diff-btn abc-diff-btn--hard" data-diff="hard">
+                <button
+                  class="abc-diff-btn abc-diff-btn--hard"
+                  data-diff="hard"
+                >
                   🔴 Hard
                 </button>
               </div>
               <div class="abc-diff-desc">
-                <span class="abc-diff-hint" data-for="easy">2 random letters</span>
-                <span class="abc-diff-hint" data-for="medium">4-letter real words</span>
-                <span class="abc-diff-hint" data-for="hard">5+ letter real words</span>
+                <span class="abc-diff-hint" data-for="easy"
+                  >2 random letters</span
+                >
+                <span class="abc-diff-hint" data-for="medium"
+                  >4-letter real words</span
+                >
+                <span class="abc-diff-hint" data-for="hard"
+                  >5+ letter real words</span
+                >
               </div>
             </div>
             <div class="abc-best-display">
@@ -1709,7 +1725,9 @@
       <div class="modal-content dr-modal-content">
         <div class="modal-header dr-modal-header">
           <h2>🐉 Dragon Realms</h2>
-          <button id="close-dragon-realms-modal" class="modal-close-btn">✕</button>
+          <button id="close-dragon-realms-modal" class="modal-close-btn">
+            ✕
+          </button>
         </div>
 
         <div id="dr-canvas-wrap" class="dr-canvas-wrap">
@@ -1728,7 +1746,9 @@
               </div>
               <div class="dr-hud-item">
                 <span class="dr-hud-label">ABILITY</span>
-                <span id="dr-ability" class="dr-hud-value dr-ability-ready">READY</span>
+                <span id="dr-ability" class="dr-hud-value dr-ability-ready"
+                  >READY</span
+                >
               </div>
               <div class="dr-hud-item dr-hud-lives">
                 <span id="dr-lives">❤️❤️❤️</span>
@@ -1746,12 +1766,19 @@
             <h2 class="dr-title">DRAGON REALMS</h2>
             <p class="dr-subtitle">Rebuild the Sky Kingdom!</p>
             <div class="dr-story-box">
-              <p>The Sky Islands were scattered by a magical storm. As a Dragon Keeper, explore islands, restore dragon shrines, and help dragons regain their powers!</p>
+              <p>
+                The Sky Islands were scattered by a magical storm. As a Dragon
+                Keeper, explore islands, restore dragon shrines, and help
+                dragons regain their powers!
+              </p>
             </div>
             <div class="dr-dragon-select">
               <h3 class="dr-select-title">Choose Your Dragon</h3>
               <div class="dr-dragon-options" id="dr-dragon-options">
-                <button class="dr-dragon-btn dr-dragon-btn--selected" data-dragon="fire">
+                <button
+                  class="dr-dragon-btn dr-dragon-btn--selected"
+                  data-dragon="fire"
+                >
                   <span class="dr-dragon-emoji">🔥</span>
                   <span class="dr-dragon-label">Fire</span>
                 </button>
@@ -1759,17 +1786,26 @@
                   <span class="dr-dragon-emoji">❄️</span>
                   <span class="dr-dragon-label">Ice</span>
                 </button>
-                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="storm">
+                <button
+                  class="dr-dragon-btn dr-dragon-btn--locked"
+                  data-dragon="storm"
+                >
                   <span class="dr-dragon-emoji">⚡</span>
                   <span class="dr-dragon-label">Storm</span>
                   <span class="dr-lock-badge">🔒</span>
                 </button>
-                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="crystal">
+                <button
+                  class="dr-dragon-btn dr-dragon-btn--locked"
+                  data-dragon="crystal"
+                >
                   <span class="dr-dragon-emoji">💎</span>
                   <span class="dr-dragon-label">Crystal</span>
                   <span class="dr-lock-badge">🔒</span>
                 </button>
-                <button class="dr-dragon-btn dr-dragon-btn--locked" data-dragon="shadow">
+                <button
+                  class="dr-dragon-btn dr-dragon-btn--locked"
+                  data-dragon="shadow"
+                >
                   <span class="dr-dragon-emoji">🌑</span>
                   <span class="dr-dragon-label">Shadow</span>
                   <span class="dr-lock-badge">🔒</span>
@@ -1779,7 +1815,10 @@
             <div class="dr-mission-select">
               <h3 class="dr-select-title">Select Mission</h3>
               <div class="dr-mission-options" id="dr-mission-options">
-                <button class="dr-mission-btn dr-mission-btn--selected" data-mission="crystal-run">
+                <button
+                  class="dr-mission-btn dr-mission-btn--selected"
+                  data-mission="crystal-run"
+                >
                   <span class="dr-mission-icon">💎</span>
                   <span class="dr-mission-name">Crystal Run</span>
                 </button>
@@ -1802,20 +1841,38 @@
               </div>
             </div>
             <div class="dr-stats-bar">
-              <div class="dr-stat-chip">🏆 Best: <span id="dr-best-score-display">0</span></div>
-              <div class="dr-stat-chip">🐉 Lv <span id="dr-dragon-level-display">1</span></div>
-              <div class="dr-stat-chip">🏝️ Islands: <span id="dr-islands-display">1/5</span></div>
+              <div class="dr-stat-chip">
+                🏆 Best: <span id="dr-best-score-display">0</span>
+              </div>
+              <div class="dr-stat-chip">
+                🐉 Lv <span id="dr-dragon-level-display">1</span>
+              </div>
+              <div class="dr-stat-chip">
+                🏝️ Islands: <span id="dr-islands-display">1/5</span>
+              </div>
             </div>
             <div class="dr-controls-hint">
-              <div class="dr-hint-row">🎮 <strong>Move:</strong> Arrow keys / WASD</div>
-              <div class="dr-hint-row">🔥 <strong>Ability:</strong> Space / Enter</div>
-              <div class="dr-hint-row">📱 <strong>Mobile:</strong> Drag to move · Tap to use ability</div>
+              <div class="dr-hint-row">
+                🎮 <strong>Move:</strong> Arrow keys / WASD
+              </div>
+              <div class="dr-hint-row">
+                🔥 <strong>Ability:</strong> Space / Enter
+              </div>
+              <div class="dr-hint-row">
+                📱 <strong>Mobile:</strong> Drag to move · Tap to use ability
+              </div>
             </div>
-            <button id="dr-start-btn" class="dr-btn dr-btn-primary">▶ FLY NOW!</button>
+            <button id="dr-start-btn" class="dr-btn dr-btn-primary">
+              ▶ FLY NOW!
+            </button>
           </div>
 
           <!-- Game Over screen -->
-          <div id="dr-gameover-screen" class="dr-screen dr-gameover-screen" style="display: none">
+          <div
+            id="dr-gameover-screen"
+            class="dr-screen dr-gameover-screen"
+            style="display: none"
+          >
             <div class="dr-gameover-icon">💥</div>
             <h2 class="dr-title dr-gameover-title">MISSION FAILED</h2>
             <div class="dr-final-stats">
@@ -1833,13 +1890,21 @@
               </div>
             </div>
             <div class="dr-over-btns">
-              <button id="dr-restart-btn" class="dr-btn dr-btn-primary">🔄 Try Again</button>
-              <button id="dr-menu-btn" class="dr-btn dr-btn-secondary">🏠 Menu</button>
+              <button id="dr-restart-btn" class="dr-btn dr-btn-primary">
+                🔄 Try Again
+              </button>
+              <button id="dr-menu-btn" class="dr-btn dr-btn-secondary">
+                🏠 Menu
+              </button>
             </div>
           </div>
 
           <!-- Victory screen -->
-          <div id="dr-victory-screen" class="dr-screen dr-victory-screen" style="display: none">
+          <div
+            id="dr-victory-screen"
+            class="dr-screen dr-victory-screen"
+            style="display: none"
+          >
             <div class="dr-victory-icon">🏆</div>
             <h2 class="dr-title dr-victory-title">MISSION COMPLETE!</h2>
             <div class="dr-final-stats">
@@ -1861,17 +1926,31 @@
               </div>
             </div>
             <div class="dr-rewards">
-              <span class="dr-reward-chip">💰 <span id="dr-reward-coins">0</span></span>
-              <span class="dr-reward-chip">💎 <span id="dr-reward-gems">0</span></span>
+              <span class="dr-reward-chip"
+                >💰 <span id="dr-reward-coins">0</span></span
+              >
+              <span class="dr-reward-chip"
+                >💎 <span id="dr-reward-gems">0</span></span
+              >
             </div>
             <div class="dr-over-btns">
-              <button id="dr-next-btn" class="dr-btn dr-btn-primary">▶ Next Mission</button>
-              <button id="dr-victory-menu-btn" class="dr-btn dr-btn-secondary">🏠 Menu</button>
+              <button id="dr-next-btn" class="dr-btn dr-btn-primary">
+                ▶ Next Mission
+              </button>
+              <button id="dr-victory-menu-btn" class="dr-btn dr-btn-secondary">
+                🏠 Menu
+              </button>
             </div>
           </div>
 
           <!-- Mobile ability button -->
-          <button id="dr-mobile-ability" class="dr-mobile-ability" aria-label="Use Ability">🔥</button>
+          <button
+            id="dr-mobile-ability"
+            class="dr-mobile-ability"
+            aria-label="Use Ability"
+          >
+            🔥
+          </button>
         </div>
       </div>
     </div>
@@ -1884,8 +1963,12 @@
           <button id="waffels-close" class="modal-close-btn">✕</button>
         </div>
         <div class="waffels-tabs">
-          <button class="waffel-tab-btn active" data-waffel-tab="ingredients">🥣 Ingredients</button>
-          <button class="waffel-tab-btn" data-waffel-tab="steps">👨‍🍳 Step by Step</button>
+          <button class="waffel-tab-btn active" data-waffel-tab="ingredients">
+            🥣 Ingredients
+          </button>
+          <button class="waffel-tab-btn" data-waffel-tab="steps">
+            👨‍🍳 Step by Step
+          </button>
         </div>
         <div class="waffels-body">
           <!-- Ingredients Tab -->
@@ -1896,7 +1979,10 @@
               <button class="portion-btn" data-portion="2">2</button>
               <button class="portion-btn" data-portion="3">3</button>
             </div>
-            <div id="waffel-ingredients-list" class="waffel-ingredients-list"></div>
+            <div
+              id="waffel-ingredients-list"
+              class="waffel-ingredients-list"
+            ></div>
           </div>
           <!-- Steps Tab -->
           <div id="waffel-steps-tab" style="display: none">
@@ -1905,9 +1991,23 @@
             </div>
             <div id="waffel-step-content"></div>
             <div class="waffel-step-nav">
-              <button id="waffel-prev-step" class="waffel-nav-btn" style="display: none">⬅️ Back</button>
-              <button id="waffel-next-step" class="waffel-nav-btn">Next ➡️</button>
-              <button id="waffel-restart-steps" class="waffel-nav-btn waffel-restart-btn" style="display: none">🔄 Start Over</button>
+              <button
+                id="waffel-prev-step"
+                class="waffel-nav-btn"
+                style="display: none"
+              >
+                ⬅️ Back
+              </button>
+              <button id="waffel-next-step" class="waffel-nav-btn">
+                Next ➡️
+              </button>
+              <button
+                id="waffel-restart-steps"
+                class="waffel-nav-btn waffel-restart-btn"
+                style="display: none"
+              >
+                🔄 Start Over
+              </button>
             </div>
           </div>
         </div>

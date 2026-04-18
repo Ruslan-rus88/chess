@@ -56,8 +56,7 @@ class ChessGame {
       },
     };
 
-    this.currentPieceStyle = "classic";
-    this.currentColorTheme = "traditional";
+    this.currentFigureStyle = "3d";
     this.currentBoardStyle = "wood";
 
     this.players = {
@@ -164,9 +163,34 @@ class ChessGame {
     }
   }
 
+  getPieceImagePath(piece) {
+    return `assets/images/figures/${piece.type}-${piece.color}.png`;
+  }
+
+  renderPieceElement(piece) {
+    const el = document.createElement("div");
+    el.className = `piece ${piece.color}-piece`;
+    el.dataset.type = piece.type;
+    if (this.currentFigureStyle === "3d") {
+      const img = document.createElement("img");
+      img.src = this.getPieceImagePath(piece);
+      img.alt = `${piece.color} ${piece.type}`;
+      img.className = "piece-img";
+      img.draggable = false;
+      el.appendChild(img);
+    } else {
+      el.textContent = this.pieceSymbols.classic[piece.color][piece.type];
+    }
+    return el;
+  }
+
   createBoard() {
     const boardElement = document.getElementById("chess-board");
     boardElement.innerHTML = "";
+
+    // Apply figure and board style classes
+    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
+    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
 
     // Check if current player's king is in check
     const kingInCheck = this.isKingInCheck(this.currentPlayer);
@@ -186,11 +210,7 @@ class ChessGame {
 
         const piece = this.board[row][col];
         if (piece) {
-          const pieceElement = document.createElement("div");
-          pieceElement.className = `piece ${piece.color}-piece`;
-          pieceElement.textContent =
-            this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
-          square.appendChild(pieceElement);
+          square.appendChild(this.renderPieceElement(piece));
         }
 
         // Highlight king in check with red background
@@ -878,9 +898,9 @@ class ChessGame {
     const existing = document.getElementById("promotion-dialog");
     if (existing) existing.remove();
 
-    const style = this.currentPieceStyle;
-    const symbols = this.pieceSymbols[style] || this.pieceSymbols.classic;
+    const symbols = this.pieceSymbols.classic;
     const pieces = ["queen", "rook", "bishop", "knight"];
+    const is3d = this.currentFigureStyle === "3d";
 
     const dialog = document.createElement("div");
     dialog.id = "promotion-dialog";
@@ -891,7 +911,7 @@ class ChessGame {
         <div class="promotion-choices">
           ${pieces.map(p => `
             <button class="promotion-choice" data-piece="${p}">
-              <span class="promotion-piece-symbol">${symbols[color][p]}</span>
+              <span class="promotion-piece-symbol">${is3d ? `<img src="assets/images/figures/${p}-${color}.png" alt="${p}" class="promotion-piece-img">` : symbols[color][p]}</span>
               <span class="promotion-piece-name">${p.charAt(0).toUpperCase() + p.slice(1)}</span>
             </button>
           `).join("")}
@@ -1606,13 +1626,9 @@ class ChessGame {
     if (languageLabel)
       languageLabel.textContent = languageManager.get("language");
 
-    const pieceStyleLabel = document.getElementById("piece-style-label");
-    if (pieceStyleLabel)
-      pieceStyleLabel.textContent = languageManager.get("pieceStyle");
-
-    const colorThemeLabel = document.getElementById("color-theme-label");
-    if (colorThemeLabel)
-      colorThemeLabel.textContent = languageManager.get("colorTheme");
+    const figureStyleLabel = document.getElementById("figure-style-label");
+    if (figureStyleLabel)
+      figureStyleLabel.textContent = languageManager.get("figureStyle");
 
     const boardStyleLabel = document.getElementById("board-style-label");
     if (boardStyleLabel)
@@ -1650,8 +1666,17 @@ class ChessGame {
       this.capturedPieces[color].forEach((piece) => {
         const pieceElement = document.createElement("div");
         pieceElement.className = "captured-piece";
-        pieceElement.textContent =
-          this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
+        if (this.currentFigureStyle === "3d") {
+          const img = document.createElement("img");
+          img.src = this.getPieceImagePath(piece);
+          img.alt = `${piece.color} ${piece.type}`;
+          img.className = "captured-piece-img";
+          img.draggable = false;
+          pieceElement.appendChild(img);
+        } else {
+          pieceElement.textContent =
+            this.pieceSymbols.classic[piece.color][piece.type];
+        }
         container.appendChild(pieceElement);
       });
     });
@@ -2058,54 +2083,38 @@ class ChessGame {
       });
     }
 
-    // Piece style selector
-    const pieceStyleSelect = document.getElementById("piece-style");
-    pieceStyleSelect.addEventListener("change", (e) => {
-      this.changePieceStyle(e.target.value);
-    });
-
-    // Color theme selector
-    const colorThemeSelect = document.getElementById("color-theme");
-    colorThemeSelect.addEventListener("change", (e) => {
-      this.changeColorTheme(e.target.value);
-    });
+    // Figure style selector
+    const figureStyleSelect = document.getElementById("figure-style");
+    if (figureStyleSelect) {
+      figureStyleSelect.addEventListener("change", (e) => {
+        this.changeFigureStyle(e.target.value);
+      });
+    }
 
     // Board style selector
     const boardStyleSelect = document.getElementById("board-style");
-    boardStyleSelect.addEventListener("change", (e) => {
-      this.changeBoardStyle(e.target.value);
-    });
+    if (boardStyleSelect) {
+      boardStyleSelect.addEventListener("change", (e) => {
+        this.changeBoardStyle(e.target.value);
+      });
+    }
   }
 
-  changePieceStyle(style) {
-    this.currentPieceStyle = style;
+  changeFigureStyle(style) {
+    this.currentFigureStyle = style;
+    // Re-render boards since piece DOM changes between flat (text) and 3d (images)
     this.createBoard();
     this.createLessonsBoard();
     this.updateCapturedPieces();
   }
 
-  changeColorTheme(theme) {
-    // Remove existing theme classes
-    const gameContainer = document.querySelector(".game-container");
-    gameContainer.className = gameContainer.className.replace(/theme-\w+/g, "");
-
-    // Add new theme class
-    if (theme !== "traditional") {
-      gameContainer.classList.add(`theme-${theme}`);
-    }
-    this.currentColorTheme = theme;
-  }
-
   changeBoardStyle(style) {
-    // Remove existing board style classes
-    const chessBoard = document.querySelector(".chess-board");
-    chessBoard.className = chessBoard.className.replace(/board-\w+/g, "");
-
-    // Add new board style class
-    if (style !== "classic") {
-      chessBoard.classList.add(`board-${style}`);
-    }
     this.currentBoardStyle = style;
+    // Toggle CSS class on all boards
+    document.querySelectorAll(".chess-board, #lessons-board, #mission-board").forEach(board => {
+      board.classList.remove("board-wood", "board-classic", "board-classic-bw");
+      board.classList.add(`board-${style}`);
+    });
   }
 
   updateRadioLabelClass(radio) {
@@ -2615,6 +2624,10 @@ class ChessGame {
 
     boardElement.innerHTML = "";
 
+    // Apply figure and board style classes
+    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
+    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
+
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const square = document.createElement("div");
@@ -2624,11 +2637,7 @@ class ChessGame {
 
         const piece = this.lessonsBoard[row][col];
         if (piece) {
-          const pieceElement = document.createElement("div");
-          pieceElement.className = `piece ${piece.color}-piece`;
-          pieceElement.textContent =
-            this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
-          square.appendChild(pieceElement);
+          square.appendChild(this.renderPieceElement(piece));
         }
 
         square.addEventListener("click", (e) =>
@@ -3544,6 +3553,10 @@ class ChessGame {
     boardElement.innerHTML = "";
     this.clearMissionHints();
 
+    // Apply figure and board style classes
+    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
+    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
+
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const square = document.createElement("div");
@@ -3553,11 +3566,7 @@ class ChessGame {
 
         const piece = this.missionBoard[row][col];
         if (piece) {
-          const pieceElement = document.createElement("div");
-          pieceElement.className = `piece ${piece.color}-piece`;
-          pieceElement.textContent =
-            this.pieceSymbols[this.currentPieceStyle][piece.color][piece.type];
-          square.appendChild(pieceElement);
+          square.appendChild(this.renderPieceElement(piece));
         }
 
         square.addEventListener("click", (e) =>
