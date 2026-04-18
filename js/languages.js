@@ -87,6 +87,7 @@ const translations = {
     flat: "Flat",
     threeD: "3D",
     wood: "Wood",
+    classic: "Classic",
     classicBW: "Classic B&W",
     close: "Close",
 
@@ -301,6 +302,7 @@ const translations = {
     flat: "Плоский",
     threeD: "3D",
     wood: "Дерево",
+    classic: "Классика",
     classicBW: "Классический Ч/Б",
     close: "Закрыть",
 
@@ -514,6 +516,7 @@ const translations = {
     flat: "Plano",
     threeD: "3D",
     wood: "Madera",
+    classic: "Clásico",
     classicBW: "Clásico B/N",
     close: "Cerrar",
 
@@ -722,6 +725,7 @@ const translations = {
     flat: "مسطح",
     threeD: "ثلاثي الأبعاد",
     wood: "خشب",
+    classic: "كلاسيكي",
     classicBW: "كلاسيكي أبيض وأسود",
     close: "إغلاق",
 
