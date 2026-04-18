@@ -9,7 +9,10 @@ class ChessGame {
     this.capturedPieces = { white: [], black: [] };
 
     // Chess state tracking
-    this.castlingRights = { white: { kingSide: true, queenSide: true }, black: { kingSide: true, queenSide: true } };
+    this.castlingRights = {
+      white: { kingSide: true, queenSide: true },
+      black: { kingSide: true, queenSide: true },
+    };
     this.enPassantTarget = null; // {row, col} of the square that can be captured en passant
     this.halfMoveClock = 0; // For fifty-move rule
     this.fullMoveNumber = 1;
@@ -189,8 +192,16 @@ class ChessGame {
     boardElement.innerHTML = "";
 
     // Apply figure and board style classes
-    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
-    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
+    boardElement.classList.remove(
+      "pieces-flat",
+      "pieces-3d",
+      "board-wood",
+      "board-classic-bw",
+    );
+    boardElement.classList.add(
+      `pieces-${this.currentFigureStyle}`,
+      `board-${this.currentBoardStyle}`,
+    );
 
     // Check if current player's king is in check
     const kingInCheck = this.isKingInCheck(this.currentPlayer);
@@ -268,10 +279,17 @@ class ChessGame {
         )
       ) {
         // Check if this is a pawn promotion
-        const movingPiece = this.board[this.selectedSquare.row][this.selectedSquare.col];
+        const movingPiece =
+          this.board[this.selectedSquare.row][this.selectedSquare.col];
         const promotionRow = movingPiece.color === "white" ? 0 : 7;
         if (movingPiece.type === "pawn" && row === promotionRow) {
-          this.showPromotionDialog(this.selectedSquare.row, this.selectedSquare.col, row, col, movingPiece.color);
+          this.showPromotionDialog(
+            this.selectedSquare.row,
+            this.selectedSquare.col,
+            row,
+            col,
+            movingPiece.color,
+          );
           return;
         }
         // Make the move
@@ -348,9 +366,16 @@ class ChessGame {
           if (square) {
             const targetPiece = this.board[r][c];
             // Highlight as capture for: regular captures and en passant
-            const isEnPassant = piece.type === "pawn" && this.enPassantTarget &&
-                                r === this.enPassantTarget.row && c === this.enPassantTarget.col && !targetPiece;
-            if ((targetPiece && targetPiece.color !== piece.color) || isEnPassant) {
+            const isEnPassant =
+              piece.type === "pawn" &&
+              this.enPassantTarget &&
+              r === this.enPassantTarget.row &&
+              c === this.enPassantTarget.col &&
+              !targetPiece;
+            if (
+              (targetPiece && targetPiece.color !== piece.color) ||
+              isEnPassant
+            ) {
               square.classList.add("possible-capture");
             } else if (!targetPiece) {
               square.classList.add("possible-move");
@@ -451,7 +476,11 @@ class ChessGame {
     if (colDiff === 1 && rowDiff === direction) {
       if (this.board[toRow][toCol] !== null) return true; // Regular capture
       // En passant capture
-      if (this.enPassantTarget && toRow === this.enPassantTarget.row && toCol === this.enPassantTarget.col) {
+      if (
+        this.enPassantTarget &&
+        toRow === this.enPassantTarget.row &&
+        toCol === this.enPassantTarget.col
+      ) {
         return true;
       }
     }
@@ -688,9 +717,13 @@ class ChessGame {
     boardCopy[fromRow][fromCol] = null;
 
     // Handle en passant capture in simulation
-    if (piece.type === "pawn" && this.enPassantTarget &&
-        toRow === this.enPassantTarget.row && toCol === this.enPassantTarget.col &&
-        !this.board[toRow][toCol]) {
+    if (
+      piece.type === "pawn" &&
+      this.enPassantTarget &&
+      toRow === this.enPassantTarget.row &&
+      toCol === this.enPassantTarget.col &&
+      !this.board[toRow][toCol]
+    ) {
       const capturedRow = piece.color === "white" ? toRow + 1 : toRow - 1;
       boardCopy[capturedRow][toCol] = null;
     }
@@ -775,8 +808,13 @@ class ChessGame {
     let isCastling = false;
 
     // Detect en passant capture
-    if (piece.type === "pawn" && this.enPassantTarget &&
-        toRow === this.enPassantTarget.row && toCol === this.enPassantTarget.col && !capturedPiece) {
+    if (
+      piece.type === "pawn" &&
+      this.enPassantTarget &&
+      toRow === this.enPassantTarget.row &&
+      toCol === this.enPassantTarget.col &&
+      !capturedPiece
+    ) {
       isEnPassantCapture = true;
       const capturedRow = piece.color === "white" ? toRow + 1 : toRow - 1;
       const epCaptured = this.board[capturedRow][toCol];
@@ -816,14 +854,18 @@ class ChessGame {
     }
     if (piece.type === "rook") {
       const homeRow = piece.color === "white" ? 7 : 0;
-      if (fromRow === homeRow && fromCol === 0) this.castlingRights[piece.color].queenSide = false;
-      if (fromRow === homeRow && fromCol === 7) this.castlingRights[piece.color].kingSide = false;
+      if (fromRow === homeRow && fromCol === 0)
+        this.castlingRights[piece.color].queenSide = false;
+      if (fromRow === homeRow && fromCol === 7)
+        this.castlingRights[piece.color].kingSide = false;
     }
     // If a rook is captured, remove that side's castling right
     if (capturedPiece && capturedPiece.type === "rook") {
       const capturedHomeRow = capturedPiece.color === "white" ? 7 : 0;
-      if (toRow === capturedHomeRow && toCol === 0) this.castlingRights[capturedPiece.color].queenSide = false;
-      if (toRow === capturedHomeRow && toCol === 7) this.castlingRights[capturedPiece.color].kingSide = false;
+      if (toRow === capturedHomeRow && toCol === 0)
+        this.castlingRights[capturedPiece.color].queenSide = false;
+      if (toRow === capturedHomeRow && toCol === 7)
+        this.castlingRights[capturedPiece.color].kingSide = false;
     }
 
     // Update en passant target
@@ -862,7 +904,11 @@ class ChessGame {
       from: { row: fromRow, col: fromCol },
       to: { row: toRow, col: toCol },
       piece: piece,
-      capturedPiece: capturedPiece || (isEnPassantCapture ? { type: "pawn", color: piece.color === "white" ? "black" : "white" } : null),
+      capturedPiece:
+        capturedPiece ||
+        (isEnPassantCapture
+          ? { type: "pawn", color: piece.color === "white" ? "black" : "white" }
+          : null),
       isEnPassant: isEnPassantCapture,
       isCastling: isCastling,
     });
@@ -890,7 +936,8 @@ class ChessGame {
       }
     }
     hash += JSON.stringify(this.castlingRights);
-    if (this.enPassantTarget) hash += `ep${this.enPassantTarget.row}${this.enPassantTarget.col}`;
+    if (this.enPassantTarget)
+      hash += `ep${this.enPassantTarget.row}${this.enPassantTarget.col}`;
     return hash;
   }
 
@@ -909,19 +956,23 @@ class ChessGame {
       <div class="promotion-dialog">
         <h3>Promote Pawn</h3>
         <div class="promotion-choices">
-          ${pieces.map(p => `
+          ${pieces
+            .map(
+              (p) => `
             <button class="promotion-choice" data-piece="${p}">
               <span class="promotion-piece-symbol">${is3d ? `<img src="assets/images/figures/${p}-${color}.png" alt="${p}" class="promotion-piece-img">` : symbols[color][p]}</span>
               <span class="promotion-piece-name">${p.charAt(0).toUpperCase() + p.slice(1)}</span>
             </button>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
       </div>
     `;
 
     document.body.appendChild(dialog);
 
-    dialog.querySelectorAll(".promotion-choice").forEach(btn => {
+    dialog.querySelectorAll(".promotion-choice").forEach((btn) => {
       btn.addEventListener("click", () => {
         const chosenPiece = btn.dataset.piece;
         dialog.remove();
@@ -992,7 +1043,13 @@ class ChessGame {
     }
 
     if (bestMove) {
-      this.makeMove(bestMove.from.row, bestMove.from.col, bestMove.to.row, bestMove.to.col, bestMove.promotion);
+      this.makeMove(
+        bestMove.from.row,
+        bestMove.from.col,
+        bestMove.to.row,
+        bestMove.to.col,
+        bestMove.promotion,
+      );
       this.switchPlayer();
       this.checkGameState();
     }
@@ -1007,7 +1064,10 @@ class ChessGame {
           for (let toRow = 0; toRow < 8; toRow++) {
             for (let toCol = 0; toCol < 8; toCol++) {
               if (this.isValidMove(fromRow, fromCol, toRow, toCol)) {
-                const move = { from: { row: fromRow, col: fromCol }, to: { row: toRow, col: toCol } };
+                const move = {
+                  from: { row: fromRow, col: fromCol },
+                  to: { row: toRow, col: toCol },
+                };
                 // Auto-promote to queen for AI
                 if (piece.type === "pawn" && (toRow === 0 || toRow === 7)) {
                   move.promotion = "queen";
@@ -1023,79 +1083,68 @@ class ChessGame {
   }
 
   // === AI Material Values ===
-  static PIECE_VALUES = { pawn: 100, knight: 320, bishop: 330, rook: 500, queen: 900, king: 20000 };
+  static PIECE_VALUES = {
+    pawn: 100,
+    knight: 320,
+    bishop: 330,
+    rook: 500,
+    queen: 900,
+    king: 20000,
+  };
 
   // Piece-square tables for positional evaluation (from white's perspective; flip for black)
   static PST_PAWN = [
-     0,  0,  0,  0,  0,  0,  0,  0,
-    50, 50, 50, 50, 50, 50, 50, 50,
-    10, 10, 20, 30, 30, 20, 10, 10,
-     5,  5, 10, 25, 25, 10,  5,  5,
-     0,  0,  0, 20, 20,  0,  0,  0,
-     5, -5,-10,  0,  0,-10, -5,  5,
-     5, 10, 10,-20,-20, 10, 10,  5,
-     0,  0,  0,  0,  0,  0,  0,  0
+    0, 0, 0, 0, 0, 0, 0, 0, 50, 50, 50, 50, 50, 50, 50, 50, 10, 10, 20, 30, 30,
+    20, 10, 10, 5, 5, 10, 25, 25, 10, 5, 5, 0, 0, 0, 20, 20, 0, 0, 0, 5, -5,
+    -10, 0, 0, -10, -5, 5, 5, 10, 10, -20, -20, 10, 10, 5, 0, 0, 0, 0, 0, 0, 0,
+    0,
   ];
   static PST_KNIGHT = [
-    -50,-40,-30,-30,-30,-30,-40,-50,
-    -40,-20,  0,  0,  0,  0,-20,-40,
-    -30,  0, 10, 15, 15, 10,  0,-30,
-    -30,  5, 15, 20, 20, 15,  5,-30,
-    -30,  0, 15, 20, 20, 15,  0,-30,
-    -30,  5, 10, 15, 15, 10,  5,-30,
-    -40,-20,  0,  5,  5,  0,-20,-40,
-    -50,-40,-30,-30,-30,-30,-40,-50
+    -50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0, 0, 0, 0, -20, -40, -30,
+    0, 10, 15, 15, 10, 0, -30, -30, 5, 15, 20, 20, 15, 5, -30, -30, 0, 15, 20,
+    20, 15, 0, -30, -30, 5, 10, 15, 15, 10, 5, -30, -40, -20, 0, 5, 5, 0, -20,
+    -40, -50, -40, -30, -30, -30, -30, -40, -50,
   ];
   static PST_BISHOP = [
-    -20,-10,-10,-10,-10,-10,-10,-20,
-    -10,  0,  0,  0,  0,  0,  0,-10,
-    -10,  0, 10, 10, 10, 10,  0,-10,
-    -10,  5,  5, 10, 10,  5,  5,-10,
-    -10,  0, 10, 10, 10, 10,  0,-10,
-    -10, 10, 10, 10, 10, 10, 10,-10,
-    -10,  5,  0,  0,  0,  0,  5,-10,
-    -20,-10,-10,-10,-10,-10,-10,-20
+    -20, -10, -10, -10, -10, -10, -10, -20, -10, 0, 0, 0, 0, 0, 0, -10, -10, 0,
+    10, 10, 10, 10, 0, -10, -10, 5, 5, 10, 10, 5, 5, -10, -10, 0, 10, 10, 10,
+    10, 0, -10, -10, 10, 10, 10, 10, 10, 10, -10, -10, 5, 0, 0, 0, 0, 5, -10,
+    -20, -10, -10, -10, -10, -10, -10, -20,
   ];
   static PST_ROOK = [
-     0,  0,  0,  0,  0,  0,  0,  0,
-     5, 10, 10, 10, 10, 10, 10,  5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-     0,  0,  0,  5,  5,  0,  0,  0
+    0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 10, 10, 10, 10, 10, 5, -5, 0, 0, 0, 0, 0, 0,
+    -5, -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0,
+    0, -5, -5, 0, 0, 0, 0, 0, 0, -5, 0, 0, 0, 5, 5, 0, 0, 0,
   ];
   static PST_QUEEN = [
-    -20,-10,-10, -5, -5,-10,-10,-20,
-    -10,  0,  0,  0,  0,  0,  0,-10,
-    -10,  0,  5,  5,  5,  5,  0,-10,
-     -5,  0,  5,  5,  5,  5,  0, -5,
-      0,  0,  5,  5,  5,  5,  0, -5,
-    -10,  5,  5,  5,  5,  5,  0,-10,
-    -10,  0,  5,  0,  0,  0,  0,-10,
-    -20,-10,-10, -5, -5,-10,-10,-20
+    -20, -10, -10, -5, -5, -10, -10, -20, -10, 0, 0, 0, 0, 0, 0, -10, -10, 0, 5,
+    5, 5, 5, 0, -10, -5, 0, 5, 5, 5, 5, 0, -5, 0, 0, 5, 5, 5, 5, 0, -5, -10, 5,
+    5, 5, 5, 5, 0, -10, -10, 0, 5, 0, 0, 0, 0, -10, -20, -10, -10, -5, -5, -10,
+    -10, -20,
   ];
   static PST_KING_MID = [
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -20,-30,-30,-40,-40,-30,-30,-20,
-    -10,-20,-20,-20,-20,-20,-20,-10,
-     20, 20,  0,  0,  0,  0, 20, 20,
-     20, 30, 10,  0,  0, 10, 30, 20
+    -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40,
+    -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40,
+    -40, -30, -20, -30, -30, -40, -40, -30, -30, -20, -10, -20, -20, -20, -20,
+    -20, -20, -10, 20, 20, 0, 0, 0, 0, 20, 20, 20, 30, 10, 0, 0, 10, 30, 20,
   ];
 
   getPST(pieceType) {
     switch (pieceType) {
-      case "pawn": return ChessGame.PST_PAWN;
-      case "knight": return ChessGame.PST_KNIGHT;
-      case "bishop": return ChessGame.PST_BISHOP;
-      case "rook": return ChessGame.PST_ROOK;
-      case "queen": return ChessGame.PST_QUEEN;
-      case "king": return ChessGame.PST_KING_MID;
-      default: return null;
+      case "pawn":
+        return ChessGame.PST_PAWN;
+      case "knight":
+        return ChessGame.PST_KNIGHT;
+      case "bishop":
+        return ChessGame.PST_BISHOP;
+      case "rook":
+        return ChessGame.PST_ROOK;
+      case "queen":
+        return ChessGame.PST_QUEEN;
+      case "king":
+        return ChessGame.PST_KING_MID;
+      default:
+        return null;
     }
   }
 
@@ -1128,11 +1177,14 @@ class ChessGame {
     const piece = this.board[move.from.row][move.from.col];
     if (target) {
       // MVV-LVA: prioritize capturing valuable pieces with cheap pieces
-      score += 10 * (ChessGame.PIECE_VALUES[target.type] || 0) - (ChessGame.PIECE_VALUES[piece.type] || 0);
+      score +=
+        10 * (ChessGame.PIECE_VALUES[target.type] || 0) -
+        (ChessGame.PIECE_VALUES[piece.type] || 0);
     }
     if (move.promotion) score += ChessGame.PIECE_VALUES["queen"];
     // Pawn moving to center
-    if (piece.type === "pawn" && (move.to.col === 3 || move.to.col === 4)) score += 10;
+    if (piece.type === "pawn" && (move.to.col === 3 || move.to.col === 4))
+      score += 10;
     return score;
   }
 
@@ -1148,7 +1200,11 @@ class ChessGame {
     const savedEP = this.enPassantTarget;
     const savedCastling = JSON.parse(JSON.stringify(this.castlingRights));
     this.board = board;
-    this.currentPlayer = isMaximizing ? color : (color === "white" ? "black" : "white");
+    this.currentPlayer = isMaximizing
+      ? color
+      : color === "white"
+        ? "black"
+        : "white";
 
     const currentColor = this.currentPlayer;
     const moves = this.getAllLegalMoves(currentColor);
@@ -1159,7 +1215,11 @@ class ChessGame {
       this.currentPlayer = savedPlayer;
       this.enPassantTarget = savedEP;
       this.castlingRights = savedCastling;
-      return inCheck ? (isMaximizing ? -99999 + (originalState.maxDepth - depth) : 99999 - (originalState.maxDepth - depth)) : 0;
+      return inCheck
+        ? isMaximizing
+          ? -99999 + (originalState.maxDepth - depth)
+          : 99999 - (originalState.maxDepth - depth)
+        : 0;
     }
 
     // Order moves for better pruning
@@ -1169,23 +1229,39 @@ class ChessGame {
     if (isMaximizing) {
       bestEval = -Infinity;
       for (const move of moves) {
-        const boardCopy = board.map(row => row.map(cell => cell ? { ...cell } : null));
-        boardCopy[move.to.row][move.to.col] = boardCopy[move.from.row][move.from.col];
+        const boardCopy = board.map((row) =>
+          row.map((cell) => (cell ? { ...cell } : null)),
+        );
+        boardCopy[move.to.row][move.to.col] =
+          boardCopy[move.from.row][move.from.col];
         boardCopy[move.from.row][move.from.col] = null;
         // Handle promotion
         if (move.promotion) {
-          boardCopy[move.to.row][move.to.col] = { type: move.promotion, color: currentColor };
+          boardCopy[move.to.row][move.to.col] = {
+            type: move.promotion,
+            color: currentColor,
+          };
         }
         // Handle en passant in simulation
         const movedPiece = board[move.from.row][move.from.col];
-        if (movedPiece && movedPiece.type === "pawn" && this.enPassantTarget &&
-            move.to.row === this.enPassantTarget.row && move.to.col === this.enPassantTarget.col &&
-            !board[move.to.row][move.to.col]) {
-          const captRow = movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
+        if (
+          movedPiece &&
+          movedPiece.type === "pawn" &&
+          this.enPassantTarget &&
+          move.to.row === this.enPassantTarget.row &&
+          move.to.col === this.enPassantTarget.col &&
+          !board[move.to.row][move.to.col]
+        ) {
+          const captRow =
+            movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
           boardCopy[captRow][move.to.col] = null;
         }
         // Handle castling in simulation
-        if (movedPiece && movedPiece.type === "king" && Math.abs(move.to.col - move.from.col) === 2) {
+        if (
+          movedPiece &&
+          movedPiece.type === "king" &&
+          Math.abs(move.to.col - move.from.col) === 2
+        ) {
           const isKS = move.to.col > move.from.col;
           const rFrom = isKS ? 7 : 0;
           const rTo = isKS ? 5 : 3;
@@ -1194,13 +1270,28 @@ class ChessGame {
         }
         // Update EP for next ply
         const savedEP2 = this.enPassantTarget;
-        if (movedPiece && movedPiece.type === "pawn" && Math.abs(move.to.row - move.from.row) === 2) {
-          this.enPassantTarget = { row: (move.from.row + move.to.row) / 2, col: move.from.col };
+        if (
+          movedPiece &&
+          movedPiece.type === "pawn" &&
+          Math.abs(move.to.row - move.from.row) === 2
+        ) {
+          this.enPassantTarget = {
+            row: (move.from.row + move.to.row) / 2,
+            col: move.from.col,
+          };
         } else {
           this.enPassantTarget = null;
         }
 
-        const evalScore = this.minimax(boardCopy, depth - 1, alpha, beta, false, color, originalState);
+        const evalScore = this.minimax(
+          boardCopy,
+          depth - 1,
+          alpha,
+          beta,
+          false,
+          color,
+          originalState,
+        );
         this.enPassantTarget = savedEP2;
         bestEval = Math.max(bestEval, evalScore);
         alpha = Math.max(alpha, evalScore);
@@ -1209,20 +1300,36 @@ class ChessGame {
     } else {
       bestEval = Infinity;
       for (const move of moves) {
-        const boardCopy = board.map(row => row.map(cell => cell ? { ...cell } : null));
-        boardCopy[move.to.row][move.to.col] = boardCopy[move.from.row][move.from.col];
+        const boardCopy = board.map((row) =>
+          row.map((cell) => (cell ? { ...cell } : null)),
+        );
+        boardCopy[move.to.row][move.to.col] =
+          boardCopy[move.from.row][move.from.col];
         boardCopy[move.from.row][move.from.col] = null;
         if (move.promotion) {
-          boardCopy[move.to.row][move.to.col] = { type: move.promotion, color: currentColor };
+          boardCopy[move.to.row][move.to.col] = {
+            type: move.promotion,
+            color: currentColor,
+          };
         }
         const movedPiece = board[move.from.row][move.from.col];
-        if (movedPiece && movedPiece.type === "pawn" && this.enPassantTarget &&
-            move.to.row === this.enPassantTarget.row && move.to.col === this.enPassantTarget.col &&
-            !board[move.to.row][move.to.col]) {
-          const captRow = movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
+        if (
+          movedPiece &&
+          movedPiece.type === "pawn" &&
+          this.enPassantTarget &&
+          move.to.row === this.enPassantTarget.row &&
+          move.to.col === this.enPassantTarget.col &&
+          !board[move.to.row][move.to.col]
+        ) {
+          const captRow =
+            movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
           boardCopy[captRow][move.to.col] = null;
         }
-        if (movedPiece && movedPiece.type === "king" && Math.abs(move.to.col - move.from.col) === 2) {
+        if (
+          movedPiece &&
+          movedPiece.type === "king" &&
+          Math.abs(move.to.col - move.from.col) === 2
+        ) {
           const isKS = move.to.col > move.from.col;
           const rFrom = isKS ? 7 : 0;
           const rTo = isKS ? 5 : 3;
@@ -1230,13 +1337,28 @@ class ChessGame {
           boardCopy[move.to.row][rFrom] = null;
         }
         const savedEP2 = this.enPassantTarget;
-        if (movedPiece && movedPiece.type === "pawn" && Math.abs(move.to.row - move.from.row) === 2) {
-          this.enPassantTarget = { row: (move.from.row + move.to.row) / 2, col: move.from.col };
+        if (
+          movedPiece &&
+          movedPiece.type === "pawn" &&
+          Math.abs(move.to.row - move.from.row) === 2
+        ) {
+          this.enPassantTarget = {
+            row: (move.from.row + move.to.row) / 2,
+            col: move.from.col,
+          };
         } else {
           this.enPassantTarget = null;
         }
 
-        const evalScore = this.minimax(boardCopy, depth - 1, alpha, beta, true, color, originalState);
+        const evalScore = this.minimax(
+          boardCopy,
+          depth - 1,
+          alpha,
+          beta,
+          true,
+          color,
+          originalState,
+        );
         this.enPassantTarget = savedEP2;
         bestEval = Math.min(bestEval, evalScore);
         beta = Math.min(beta, evalScore);
@@ -1254,7 +1376,9 @@ class ChessGame {
   // Easy AI: random with slight preference for captures
   aiSelectMoveEasy(moves) {
     // 70% chance pick random, 30% chance pick a capture if available
-    const captures = moves.filter(m => this.board[m.to.row][m.to.col] !== null);
+    const captures = moves.filter(
+      (m) => this.board[m.to.row][m.to.col] !== null,
+    );
     if (captures.length > 0 && Math.random() < 0.3) {
       return captures[Math.floor(Math.random() * captures.length)];
     }
@@ -1285,20 +1409,36 @@ class ChessGame {
     const savedCastling = JSON.parse(JSON.stringify(this.castlingRights));
 
     for (const move of moves) {
-      const boardCopy = this.board.map(row => row.map(cell => cell ? { ...cell } : null));
-      boardCopy[move.to.row][move.to.col] = boardCopy[move.from.row][move.from.col];
+      const boardCopy = this.board.map((row) =>
+        row.map((cell) => (cell ? { ...cell } : null)),
+      );
+      boardCopy[move.to.row][move.to.col] =
+        boardCopy[move.from.row][move.from.col];
       boardCopy[move.from.row][move.from.col] = null;
       if (move.promotion) {
-        boardCopy[move.to.row][move.to.col] = { type: move.promotion, color: color };
+        boardCopy[move.to.row][move.to.col] = {
+          type: move.promotion,
+          color: color,
+        };
       }
       const movedPiece = this.board[move.from.row][move.from.col];
-      if (movedPiece && movedPiece.type === "pawn" && this.enPassantTarget &&
-          move.to.row === this.enPassantTarget.row && move.to.col === this.enPassantTarget.col &&
-          !this.board[move.to.row][move.to.col]) {
-        const captRow = movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
+      if (
+        movedPiece &&
+        movedPiece.type === "pawn" &&
+        this.enPassantTarget &&
+        move.to.row === this.enPassantTarget.row &&
+        move.to.col === this.enPassantTarget.col &&
+        !this.board[move.to.row][move.to.col]
+      ) {
+        const captRow =
+          movedPiece.color === "white" ? move.to.row + 1 : move.to.row - 1;
         boardCopy[captRow][move.to.col] = null;
       }
-      if (movedPiece && movedPiece.type === "king" && Math.abs(move.to.col - move.from.col) === 2) {
+      if (
+        movedPiece &&
+        movedPiece.type === "king" &&
+        Math.abs(move.to.col - move.from.col) === 2
+      ) {
         const isKS = move.to.col > move.from.col;
         const rFrom = isKS ? 7 : 0;
         const rTo = isKS ? 5 : 3;
@@ -1306,13 +1446,28 @@ class ChessGame {
         boardCopy[move.to.row][rFrom] = null;
       }
 
-      if (movedPiece && movedPiece.type === "pawn" && Math.abs(move.to.row - move.from.row) === 2) {
-        this.enPassantTarget = { row: (move.from.row + move.to.row) / 2, col: move.from.col };
+      if (
+        movedPiece &&
+        movedPiece.type === "pawn" &&
+        Math.abs(move.to.row - move.from.row) === 2
+      ) {
+        this.enPassantTarget = {
+          row: (move.from.row + move.to.row) / 2,
+          col: move.from.col,
+        };
       } else {
         this.enPassantTarget = null;
       }
 
-      const score = this.minimax(boardCopy, depth - 1, -Infinity, Infinity, false, color, { maxDepth: depth });
+      const score = this.minimax(
+        boardCopy,
+        depth - 1,
+        -Infinity,
+        Infinity,
+        false,
+        color,
+        { maxDepth: depth },
+      );
       this.enPassantTarget = savedEP;
 
       if (score > bestScore) {
@@ -1422,9 +1577,15 @@ class ChessGame {
     if (w.length === 0 && b.length === 1 && b[0] === "knight") return true;
     if (b.length === 0 && w.length === 1 && w[0] === "knight") return true;
     // King + Bishop vs King + Bishop (same color bishops)
-    if (w.length === 1 && b.length === 1 && w[0] === "bishop" && b[0] === "bishop") {
+    if (
+      w.length === 1 &&
+      b.length === 1 &&
+      w[0] === "bishop" &&
+      b[0] === "bishop"
+    ) {
       // Check if bishops are on same color squares
-      let wBishopSquare = null, bBishopSquare = null;
+      let wBishopSquare = null,
+        bBishopSquare = null;
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
           const p = this.board[r][c];
@@ -1727,7 +1888,10 @@ class ChessGame {
     this.gameStarted = false;
 
     // Reset chess state
-    this.castlingRights = { white: { kingSide: true, queenSide: true }, black: { kingSide: true, queenSide: true } };
+    this.castlingRights = {
+      white: { kingSide: true, queenSide: true },
+      black: { kingSide: true, queenSide: true },
+    };
     this.enPassantTarget = null;
     this.halfMoveClock = 0;
     this.fullMoveNumber = 1;
@@ -1820,7 +1984,9 @@ class ChessGame {
       captured: capturedCopy,
       player: this.currentPlayer,
       castlingRights: JSON.parse(JSON.stringify(this.castlingRights)),
-      enPassantTarget: this.enPassantTarget ? { ...this.enPassantTarget } : null,
+      enPassantTarget: this.enPassantTarget
+        ? { ...this.enPassantTarget }
+        : null,
       halfMoveClock: this.halfMoveClock,
       fullMoveNumber: this.fullMoveNumber,
       positionHistory: [...this.positionHistory],
@@ -1892,7 +2058,8 @@ class ChessGame {
     );
 
     // Restore captured pieces
-    const savedCaptured = state.captured || this.capturedPiecesHistory[this.historyIndex];
+    const savedCaptured =
+      state.captured || this.capturedPiecesHistory[this.historyIndex];
     if (savedCaptured) {
       this.capturedPieces = {
         white: savedCaptured.white.map((p) => ({ ...p })),
@@ -1901,16 +2068,22 @@ class ChessGame {
     }
 
     // Restore current player
-    this.currentPlayer = state.player || this.currentPlayerHistory[this.historyIndex];
+    this.currentPlayer =
+      state.player || this.currentPlayerHistory[this.historyIndex];
 
     // Restore chess state
     if (state.castlingRights) {
       this.castlingRights = JSON.parse(JSON.stringify(state.castlingRights));
     }
-    this.enPassantTarget = state.enPassantTarget ? { ...state.enPassantTarget } : null;
-    if (state.halfMoveClock !== undefined) this.halfMoveClock = state.halfMoveClock;
-    if (state.fullMoveNumber !== undefined) this.fullMoveNumber = state.fullMoveNumber;
-    if (state.positionHistory) this.positionHistory = [...state.positionHistory];
+    this.enPassantTarget = state.enPassantTarget
+      ? { ...state.enPassantTarget }
+      : null;
+    if (state.halfMoveClock !== undefined)
+      this.halfMoveClock = state.halfMoveClock;
+    if (state.fullMoveNumber !== undefined)
+      this.fullMoveNumber = state.fullMoveNumber;
+    if (state.positionHistory)
+      this.positionHistory = [...state.positionHistory];
 
     // Update display
     this.createBoard();
@@ -2111,10 +2284,16 @@ class ChessGame {
   changeBoardStyle(style) {
     this.currentBoardStyle = style;
     // Toggle CSS class on all boards
-    document.querySelectorAll(".chess-board, #lessons-board, #mission-board").forEach(board => {
-      board.classList.remove("board-wood", "board-classic", "board-classic-bw");
-      board.classList.add(`board-${style}`);
-    });
+    document
+      .querySelectorAll(".chess-board, #lessons-board, #mission-board")
+      .forEach((board) => {
+        board.classList.remove(
+          "board-wood",
+          "board-classic",
+          "board-classic-bw",
+        );
+        board.classList.add(`board-${style}`);
+      });
   }
 
   updateRadioLabelClass(radio) {
@@ -2194,7 +2373,9 @@ class ChessGame {
     // AI difficulty buttons
     document.querySelectorAll(".ai-diff-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".ai-diff-btn").forEach((b) => b.classList.remove("active"));
+        document
+          .querySelectorAll(".ai-diff-btn")
+          .forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
         this.aiDifficulty = btn.dataset.aiDiff;
       });
@@ -2625,8 +2806,16 @@ class ChessGame {
     boardElement.innerHTML = "";
 
     // Apply figure and board style classes
-    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
-    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
+    boardElement.classList.remove(
+      "pieces-flat",
+      "pieces-3d",
+      "board-wood",
+      "board-classic-bw",
+    );
+    boardElement.classList.add(
+      `pieces-${this.currentFigureStyle}`,
+      `board-${this.currentBoardStyle}`,
+    );
 
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
@@ -3554,8 +3743,16 @@ class ChessGame {
     this.clearMissionHints();
 
     // Apply figure and board style classes
-    boardElement.classList.remove("pieces-flat", "pieces-3d", "board-wood", "board-classic-bw");
-    boardElement.classList.add(`pieces-${this.currentFigureStyle}`, `board-${this.currentBoardStyle}`);
+    boardElement.classList.remove(
+      "pieces-flat",
+      "pieces-3d",
+      "board-wood",
+      "board-classic-bw",
+    );
+    boardElement.classList.add(
+      `pieces-${this.currentFigureStyle}`,
+      `board-${this.currentBoardStyle}`,
+    );
 
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {

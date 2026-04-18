@@ -1007,12 +1007,24 @@ body {
 }
 
 /* 3D piece sizes — relative hierarchy */
-.pieces-3d .piece[data-type="king"] .piece-img   { padding: 2px; }
-.pieces-3d .piece[data-type="queen"] .piece-img  { padding: 4px; }
-.pieces-3d .piece[data-type="bishop"] .piece-img { padding: 6px; }
-.pieces-3d .piece[data-type="knight"] .piece-img { padding: 6px; }
-.pieces-3d .piece[data-type="rook"] .piece-img   { padding: 8px; }
-.pieces-3d .piece[data-type="pawn"] .piece-img   { padding: 10px; }
+.pieces-3d .piece[data-type="king"] .piece-img {
+  padding: 2px;
+}
+.pieces-3d .piece[data-type="queen"] .piece-img {
+  padding: 4px;
+}
+.pieces-3d .piece[data-type="bishop"] .piece-img {
+  padding: 6px;
+}
+.pieces-3d .piece[data-type="knight"] .piece-img {
+  padding: 6px;
+}
+.pieces-3d .piece[data-type="rook"] .piece-img {
+  padding: 8px;
+}
+.pieces-3d .piece[data-type="pawn"] .piece-img {
+  padding: 10px;
+}
 
 /* Captured piece images */
 .captured-piece-img {

@@ -14,12 +14,12 @@ const translations = {
     checkmate: "Checkmate!",
     check: "Check!",
     stalemate: "Stalemate!",
-    
+
     // Game Modes
     game: "Game",
     lessons: "Lessons",
     mission: "Mission",
-    
+
     // Player Selection
     selectPlayers: "Select Players",
     onePlayerVsPC: "One Player vs PC",
@@ -32,7 +32,7 @@ const translations = {
     selectWhitePlayer: "Select White Player",
     selectBlackPlayer: "Select Black Player",
     vs: "VS",
-    
+
     // Lessons
     chessLessons: "Chess Lessons",
     learnPieceMovements: "Learn Piece Movements",
@@ -41,15 +41,20 @@ const translations = {
     removeSelectedPiece: "Remove Selected Piece",
     randomBoardFill: "Random Board Fill",
     lessonInstructions1: "1. Select a piece from the options above",
-    lessonInstructions2: "2. Click on any square on the board to place the piece",
+    lessonInstructions2:
+      "2. Click on any square on the board to place the piece",
     lessonInstructions3: "3. Click on the piece to see all available moves",
     lessonPieceSelected: "Great! Now click on the board to place the {piece}.",
     lessonBoardCleared: "Board cleared! Ready to start fresh.",
-    lessonRandomPiecesAdded: "Random pieces added! Click on any piece to explore its moves.",
-    lessonClickPieceForMoves: "Perfect! Now click on the piece to see its possible moves.",
-    clickHighlightedSquares: "Click on the highlighted squares to see where this {piece} can move!",
-    welcomeToMissionMode: "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.",
-    
+    lessonRandomPiecesAdded:
+      "Random pieces added! Click on any piece to explore its moves.",
+    lessonClickPieceForMoves:
+      "Perfect! Now click on the piece to see its possible moves.",
+    clickHighlightedSquares:
+      "Click on the highlighted squares to see where this {piece} can move!",
+    welcomeToMissionMode:
+      "Welcome to Mission Mode! Select your player, difficulty, and piece to begin.",
+
     // Mission
     selectPlayerAndPiece: "Select Player and Piece for Mission Mode",
     selectPlayer: "Select Player",
@@ -61,7 +66,8 @@ const translations = {
     level: "Level",
     startMission: "Start Mission",
     mission: "Mission",
-    captureAllOpponentPieces: "Capture all opponent pieces to complete the mission!",
+    captureAllOpponentPieces:
+      "Capture all opponent pieces to complete the mission!",
     opponentPiecesRemaining: "Opponent pieces remaining:",
     hint: "💡 Hint",
     resetMission: "🔄 Reset Mission",
@@ -73,7 +79,7 @@ const translations = {
     tryAgain: "Try Again",
     congratulations: "🎉 Congratulations! 🎉",
     completedAllMissions: "You have completed all 10 missions!",
-    
+
     // Settings
     figureStyle: "Figure Style",
     boardStyle: "Board Style",
@@ -83,7 +89,7 @@ const translations = {
     wood: "Wood",
     classicBW: "Classic B&W",
     close: "Close",
-    
+
     // Pieces
     king: "King",
     queen: "Queen",
@@ -93,7 +99,7 @@ const translations = {
     pawn: "Pawn",
     capturedWhitePieces: "Captured White Pieces",
     capturedBlackPieces: "Captured Black Pieces",
-    
+
     // Replay
     replayMode: "Replay Mode",
     previous: "⏮ Previous",
@@ -103,19 +109,19 @@ const translations = {
     move: "Move",
     exitReplay: "Exit Replay",
     replay: "Replay",
-    
+
     // Radio
     radioPlayer: "🎵 Radio Player",
     freeRadioStations: "Free Radio Stations",
     searchRadioStations: "Search radio stations...",
     loadingStations: "Loading stations...",
     nowPlaying: "Now Playing: ",
-    
+
     // More Games
     moreGames: "🎮 More Games",
     xoGame: "XO Game",
     ticTacToe: "Tic-Tac-Toe",
-    
+
     // XO Game
     selectGameMode: "Select Game Mode",
     vsComputer: "VS Computer",
@@ -126,28 +132,86 @@ const translations = {
     startXOGame: "Start XO Game",
     currentPlayerXO: "Current Player: ",
     newGameXO: "🔄 New Game",
-    
-    
+
     // Voice Commands
     voiceCommands: "Voice Commands",
-    voiceCommandInstructions: "Say chess moves like 'e2 to e4' or 'pawn e2 to e4'",
+    voiceCommandInstructions:
+      "Say chess moves like 'e2 to e4' or 'pawn e2 to e4'",
     enableVoiceCommands: "Enable Voice Commands",
-    
+
     // Voice command patterns (for recognition)
     voicePatterns: {
       move: ["move", "to", "from"],
       piece: ["pawn", "rook", "knight", "bishop", "queen", "king"],
-      squares: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8",
-                "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
-                "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8",
-                "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
-                "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8",
-                "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
-                "g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8",
-                "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8"]
-    }
+      squares: [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "e1",
+        "e2",
+        "e3",
+        "e4",
+        "e5",
+        "e6",
+        "e7",
+        "e8",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "h7",
+        "h8",
+      ],
+    },
   },
-  
+
   ru: {
     // UI Elements
     title: "♛ Супер Роман ♛",
@@ -162,12 +226,12 @@ const translations = {
     checkmate: "Мат!",
     check: "Шах!",
     stalemate: "Пат!",
-    
+
     // Game Modes
     game: "Игра",
     lessons: "Уроки",
     mission: "Миссия",
-    
+
     // Player Selection
     selectPlayers: "Выберите игроков",
     onePlayerVsPC: "Один игрок против ПК",
@@ -180,7 +244,7 @@ const translations = {
     selectWhitePlayer: "Выберите белого игрока",
     selectBlackPlayer: "Выберите черного игрока",
     vs: "ПРОТИВ",
-    
+
     // Lessons
     chessLessons: "Уроки шахмат",
     learnPieceMovements: "Изучите движения фигур",
@@ -189,15 +253,22 @@ const translations = {
     removeSelectedPiece: "Удалить выбранную фигуру",
     randomBoardFill: "Случайное заполнение доски",
     lessonInstructions1: "1. Выберите фигуру из вариантов выше",
-    lessonInstructions2: "2. Нажмите на любую клетку на доске, чтобы разместить фигуру",
-    lessonInstructions3: "3. Нажмите на фигуру, чтобы увидеть все доступные ходы",
-    lessonPieceSelected: "Отлично! Теперь нажмите на доску, чтобы разместить {piece}.",
+    lessonInstructions2:
+      "2. Нажмите на любую клетку на доске, чтобы разместить фигуру",
+    lessonInstructions3:
+      "3. Нажмите на фигуру, чтобы увидеть все доступные ходы",
+    lessonPieceSelected:
+      "Отлично! Теперь нажмите на доску, чтобы разместить {piece}.",
     lessonBoardCleared: "Доска очищена! Готово к новому началу.",
-    lessonRandomPiecesAdded: "Случайные фигуры добавлены! Нажмите на любую фигуру, чтобы изучить её ходы.",
-    lessonClickPieceForMoves: "Отлично! Теперь нажмите на фигуру, чтобы увидеть её возможные ходы.",
-    clickHighlightedSquares: "Нажмите на выделенные клетки, чтобы увидеть, куда ходит {piece}!",
-    welcomeToMissionMode: "Добро пожаловать в режим миссий! Выберите игрока, сложность и фигуру, чтобы начать.",
-    
+    lessonRandomPiecesAdded:
+      "Случайные фигуры добавлены! Нажмите на любую фигуру, чтобы изучить её ходы.",
+    lessonClickPieceForMoves:
+      "Отлично! Теперь нажмите на фигуру, чтобы увидеть её возможные ходы.",
+    clickHighlightedSquares:
+      "Нажмите на выделенные клетки, чтобы увидеть, куда ходит {piece}!",
+    welcomeToMissionMode:
+      "Добро пожаловать в режим миссий! Выберите игрока, сложность и фигуру, чтобы начать.",
+
     // Mission
     selectPlayerAndPiece: "Выберите игрока и фигуру для режима миссии",
     selectPlayer: "Выберите игрока",
@@ -209,7 +280,8 @@ const translations = {
     level: "Уровень",
     startMission: "Начать миссию",
     mission: "Миссия",
-    captureAllOpponentPieces: "Захватите все фигуры противника, чтобы выполнить миссию!",
+    captureAllOpponentPieces:
+      "Захватите все фигуры противника, чтобы выполнить миссию!",
     opponentPiecesRemaining: "Осталось фигур противника:",
     hint: "💡 Подсказка",
     resetMission: "🔄 Сбросить миссию",
@@ -221,7 +293,7 @@ const translations = {
     tryAgain: "Попробовать снова",
     congratulations: "🎉 Поздравляем! 🎉",
     completedAllMissions: "Вы выполнили все 10 миссий!",
-    
+
     // Settings
     figureStyle: "Стиль фигур",
     boardStyle: "Стиль доски",
@@ -231,7 +303,7 @@ const translations = {
     wood: "Дерево",
     classicBW: "Классический Ч/Б",
     close: "Закрыть",
-    
+
     // Pieces
     king: "Король",
     queen: "Ферзь",
@@ -241,7 +313,7 @@ const translations = {
     pawn: "Пешка",
     capturedWhitePieces: "Захваченные белые фигуры",
     capturedBlackPieces: "Захваченные черные фигуры",
-    
+
     // Replay
     replayMode: "Режим повтора",
     previous: "⏮ Назад",
@@ -251,14 +323,14 @@ const translations = {
     move: "Ход",
     exitReplay: "Выйти из повтора",
     replay: "Повтор",
-    
+
     // Radio
     radioPlayer: "🎵 Радио плеер",
     freeRadioStations: "Бесплатные радиостанции",
     searchRadioStations: "Поиск радиостанций...",
     loadingStations: "Загрузка станций...",
     nowPlaying: "Сейчас играет: ",
-    
+
     // More Games
     moreGames: "🎮 Больше игр",
     xoGame: "Крестики-нолики",
@@ -273,27 +345,86 @@ const translations = {
     startXOGame: "Начать игру в крестики-нолики",
     currentPlayerXO: "Текущий игрок: ",
     newGameXO: "🔄 Новая игра",
-    
+
     // Voice Commands
     voiceCommands: "Голосовые команды",
-    voiceCommandInstructions: "Говорите ходы как 'e2 на e4' или 'пешка e2 на e4'",
+    voiceCommandInstructions:
+      "Говорите ходы как 'e2 на e4' или 'пешка e2 на e4'",
     enableVoiceCommands: "Включить голосовые команды",
-    
+
     // Voice command patterns (for recognition)
     voicePatterns: {
       move: ["ход", "на", "из"],
       piece: ["пешка", "ладья", "конь", "слон", "ферзь", "король"],
-      squares: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8",
-                "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
-                "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8",
-                "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
-                "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8",
-                "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
-                "g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8",
-                "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8"]
-    }
+      squares: [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "e1",
+        "e2",
+        "e3",
+        "e4",
+        "e5",
+        "e6",
+        "e7",
+        "e8",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "h7",
+        "h8",
+      ],
+    },
   },
-  
+
   es: {
     // UI Elements
     title: "♛ Super Roman ♛",
@@ -308,12 +439,12 @@ const translations = {
     checkmate: "¡Jaque mate!",
     check: "¡Jaque!",
     stalemate: "¡Ahogado!",
-    
+
     // Game Modes
     game: "Juego",
     lessons: "Lecciones",
     mission: "Misión",
-    
+
     // Player Selection
     selectPlayers: "Seleccionar jugadores",
     onePlayerVsPC: "Un jugador vs PC",
@@ -326,7 +457,7 @@ const translations = {
     selectWhitePlayer: "Selecciona jugador blanco",
     selectBlackPlayer: "Selecciona jugador negro",
     vs: "VS",
-    
+
     // Lessons
     chessLessons: "Lecciones de ajedrez",
     learnPieceMovements: "Aprende movimientos de piezas",
@@ -335,15 +466,22 @@ const translations = {
     removeSelectedPiece: "Eliminar pieza seleccionada",
     randomBoardFill: "Llenar tablero aleatorio",
     lessonInstructions1: "1. Selecciona una pieza de las opciones arriba",
-    lessonInstructions2: "2. Haz clic en cualquier casilla del tablero para colocar la pieza",
-    lessonInstructions3: "3. Haz clic en la pieza para ver todos los movimientos disponibles",
-    lessonPieceSelected: "¡Genial! Ahora haz clic en el tablero para colocar el {piece}.",
+    lessonInstructions2:
+      "2. Haz clic en cualquier casilla del tablero para colocar la pieza",
+    lessonInstructions3:
+      "3. Haz clic en la pieza para ver todos los movimientos disponibles",
+    lessonPieceSelected:
+      "¡Genial! Ahora haz clic en el tablero para colocar el {piece}.",
     lessonBoardCleared: "¡Tablero limpiado! Listo para empezar de nuevo.",
-    lessonRandomPiecesAdded: "¡Piezas aleatorias agregadas! Haz clic en cualquier pieza para explorar sus movimientos.",
-    lessonClickPieceForMoves: "¡Perfecto! Ahora haz clic en la pieza para ver sus movimientos posibles.",
-    clickHighlightedSquares: "¡Haz clic en las casillas resaltadas para ver a dónde puede moverse esta {piece}!",
-    welcomeToMissionMode: "¡Bienvenido al Modo Misión! Selecciona tu jugador, dificultad y pieza para comenzar.",
-    
+    lessonRandomPiecesAdded:
+      "¡Piezas aleatorias agregadas! Haz clic en cualquier pieza para explorar sus movimientos.",
+    lessonClickPieceForMoves:
+      "¡Perfecto! Ahora haz clic en la pieza para ver sus movimientos posibles.",
+    clickHighlightedSquares:
+      "¡Haz clic en las casillas resaltadas para ver a dónde puede moverse esta {piece}!",
+    welcomeToMissionMode:
+      "¡Bienvenido al Modo Misión! Selecciona tu jugador, dificultad y pieza para comenzar.",
+
     // Mission
     selectPlayerAndPiece: "Selecciona jugador y pieza para modo misión",
     selectPlayer: "Selecciona jugador",
@@ -355,7 +493,8 @@ const translations = {
     level: "Nivel",
     startMission: "Iniciar misión",
     mission: "Misión",
-    captureAllOpponentPieces: "¡Captura todas las piezas del oponente para completar la misión!",
+    captureAllOpponentPieces:
+      "¡Captura todas las piezas del oponente para completar la misión!",
     opponentPiecesRemaining: "Piezas del oponente restantes:",
     hint: "💡 Pista",
     resetMission: "🔄 Reiniciar misión",
@@ -367,7 +506,7 @@ const translations = {
     tryAgain: "Intentar de nuevo",
     congratulations: "🎉 ¡Felicidades! 🎉",
     completedAllMissions: "¡Has completado las 10 misiones!",
-    
+
     // Settings
     figureStyle: "Estilo de figuras",
     boardStyle: "Estilo de tablero",
@@ -377,7 +516,7 @@ const translations = {
     wood: "Madera",
     classicBW: "Clásico B/N",
     close: "Cerrar",
-    
+
     // Pieces
     king: "Rey",
     queen: "Reina",
@@ -387,7 +526,7 @@ const translations = {
     pawn: "Peón",
     capturedWhitePieces: "Piezas blancas capturadas",
     capturedBlackPieces: "Piezas negras capturadas",
-    
+
     // Replay
     replayMode: "Modo repetición",
     previous: "⏮ Anterior",
@@ -397,14 +536,14 @@ const translations = {
     move: "Movimiento",
     exitReplay: "Salir de repetición",
     replay: "Repetición",
-    
+
     // Radio
     radioPlayer: "🎵 Reproductor de radio",
     freeRadioStations: "Estaciones de radio gratuitas",
     searchRadioStations: "Buscar estaciones de radio...",
     loadingStations: "Cargando estaciones...",
     nowPlaying: "Reproduciendo: ",
-    
+
     // More Games
     moreGames: "🎮 Más juegos",
     xoGame: "Juego XO",
@@ -419,27 +558,85 @@ const translations = {
     startXOGame: "Iniciar juego XO",
     currentPlayerXO: "Jugador actual: ",
     newGameXO: "🔄 Nuevo juego",
-    
+
     // Voice Commands
     voiceCommands: "Comandos de voz",
     voiceCommandInstructions: "Di movimientos como 'e2 a e4' o 'peón e2 a e4'",
     enableVoiceCommands: "Habilitar comandos de voz",
-    
+
     // Voice command patterns (for recognition)
     voicePatterns: {
       move: ["mover", "a", "desde"],
       piece: ["peón", "torre", "caballo", "alfil", "reina", "rey"],
-      squares: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8",
-                "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
-                "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8",
-                "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
-                "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8",
-                "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
-                "g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8",
-                "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8"]
-    }
+      squares: [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "e1",
+        "e2",
+        "e3",
+        "e4",
+        "e5",
+        "e6",
+        "e7",
+        "e8",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "h7",
+        "h8",
+      ],
+    },
   },
-  
+
   ar: {
     // UI Elements
     title: "♛ سوبر رومان ♛",
@@ -454,12 +651,12 @@ const translations = {
     checkmate: "كش ملك!",
     check: "كش!",
     stalemate: "تعادل!",
-    
+
     // Game Modes
     game: "لعبة",
     lessons: "دروس",
     mission: "مهمة",
-    
+
     // Player Selection
     selectPlayers: "اختر اللاعبين",
     onePlayerVsPC: "لاعب واحد ضد الكمبيوتر",
@@ -472,7 +669,7 @@ const translations = {
     selectWhitePlayer: "اختر اللاعب الأبيض",
     selectBlackPlayer: "اختر اللاعب الأسود",
     vs: "ضد",
-    
+
     // Lessons
     chessLessons: "دروس الشطرنج",
     learnPieceMovements: "تعلم حركات القطع",
@@ -485,11 +682,15 @@ const translations = {
     lessonInstructions3: "3. انقر على القطعة لرؤية جميع الحركات المتاحة",
     lessonPieceSelected: "رائع! الآن انقر على اللوحة لوضع {piece}.",
     lessonBoardCleared: "تم مسح اللوحة! جاهز للبدء من جديد.",
-    lessonRandomPiecesAdded: "تمت إضافة قطع عشوائية! انقر على أي قطعة لاستكشاف حركاتها.",
-    lessonClickPieceForMoves: "ممتاز! الآن انقر على القطعة لرؤية حركاتها المحتملة.",
-    clickHighlightedSquares: "انقر على المربعات المميزة لترى أين يمكن لـ{piece} أن تتحرك!",
-    welcomeToMissionMode: "مرحباً بك في وضع المهمة! اختر لاعبك وصعوبتك وقطعتك للبدء.",
-    
+    lessonRandomPiecesAdded:
+      "تمت إضافة قطع عشوائية! انقر على أي قطعة لاستكشاف حركاتها.",
+    lessonClickPieceForMoves:
+      "ممتاز! الآن انقر على القطعة لرؤية حركاتها المحتملة.",
+    clickHighlightedSquares:
+      "انقر على المربعات المميزة لترى أين يمكن لـ{piece} أن تتحرك!",
+    welcomeToMissionMode:
+      "مرحباً بك في وضع المهمة! اختر لاعبك وصعوبتك وقطعتك للبدء.",
+
     // Mission
     selectPlayerAndPiece: "اختر اللاعب والقطعة لوضع المهمة",
     selectPlayer: "اختر اللاعب",
@@ -513,7 +714,7 @@ const translations = {
     tryAgain: "حاول مرة أخرى",
     congratulations: "🎉 تهانينا! 🎉",
     completedAllMissions: "لقد أكملت جميع المهام العشر!",
-    
+
     // Settings
     figureStyle: "نمط الأشكال",
     boardStyle: "نمط اللوحة",
@@ -523,7 +724,7 @@ const translations = {
     wood: "خشب",
     classicBW: "كلاسيكي أبيض وأسود",
     close: "إغلاق",
-    
+
     // Pieces
     king: "ملك",
     queen: "ملكة",
@@ -533,7 +734,7 @@ const translations = {
     pawn: "بيدق",
     capturedWhitePieces: "القطع البيضاء المأسورة",
     capturedBlackPieces: "القطع السوداء المأسورة",
-    
+
     // Replay
     replayMode: "وضع إعادة التشغيل",
     previous: "⏮ السابق",
@@ -543,14 +744,14 @@ const translations = {
     move: "نقلة",
     exitReplay: "خروج من إعادة التشغيل",
     replay: "إعادة تشغيل",
-    
+
     // Radio
     radioPlayer: "🎵 مشغل الراديو",
     freeRadioStations: "محطات راديو مجانية",
     searchRadioStations: "البحث عن محطات الراديو...",
     loadingStations: "جاري تحميل المحطات...",
     nowPlaying: "يعمل الآن: ",
-    
+
     // More Games
     moreGames: "🎮 المزيد من الألعاب",
     xoGame: "لعبة XO",
@@ -565,32 +766,90 @@ const translations = {
     startXOGame: "بدء لعبة XO",
     currentPlayerXO: "اللاعب الحالي: ",
     newGameXO: "🔄 لعبة جديدة",
-    
+
     // Voice Commands
     voiceCommands: "الأوامر الصوتية",
     voiceCommandInstructions: "قل الحركات مثل 'e2 إلى e4' أو 'بيدق e2 إلى e4'",
     enableVoiceCommands: "تفعيل الأوامر الصوتية",
-    
+
     // Voice command patterns (for recognition)
     voicePatterns: {
       move: ["نقل", "إلى", "من"],
       piece: ["بيدق", "قلعة", "حصان", "فيل", "ملكة", "ملك"],
-      squares: ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8",
-                "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8",
-                "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8",
-                "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
-                "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8",
-                "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8",
-                "g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8",
-                "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8"]
-    }
-  }
+      squares: [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7",
+        "a8",
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "e1",
+        "e2",
+        "e3",
+        "e4",
+        "e5",
+        "e6",
+        "e7",
+        "e8",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "h7",
+        "h8",
+      ],
+    },
+  },
 };
 
 // Language Manager Class
 class LanguageManager {
   constructor() {
-    this.currentLanguage = localStorage.getItem('chessLanguage') || 'en';
+    this.currentLanguage = localStorage.getItem("chessLanguage") || "en";
     this.translations = translations;
     this.updateHTMLDir();
   }
@@ -598,10 +857,12 @@ class LanguageManager {
   get(key) {
     const translation = this.translations[this.currentLanguage];
     if (!translation) {
-      console.warn(`Translation not found for key: ${key} in language: ${this.currentLanguage}`);
-      return this.translations['en'][key] || key;
+      console.warn(
+        `Translation not found for key: ${key} in language: ${this.currentLanguage}`,
+      );
+      return this.translations["en"][key] || key;
     }
-    return translation[key] || this.translations['en'][key] || key;
+    return translation[key] || this.translations["en"][key] || key;
   }
 
   setLanguage(lang) {
@@ -610,19 +871,19 @@ class LanguageManager {
       return;
     }
     this.currentLanguage = lang;
-    localStorage.setItem('chessLanguage', lang);
+    localStorage.setItem("chessLanguage", lang);
     this.updateHTMLDir();
     this.updateAllTexts();
   }
 
   updateHTMLDir() {
     // Set RTL for Arabic
-    if (this.currentLanguage === 'ar') {
-      document.documentElement.setAttribute('dir', 'rtl');
-      document.documentElement.setAttribute('lang', 'ar');
+    if (this.currentLanguage === "ar") {
+      document.documentElement.setAttribute("dir", "rtl");
+      document.documentElement.setAttribute("lang", "ar");
     } else {
-      document.documentElement.setAttribute('dir', 'ltr');
-      document.documentElement.setAttribute('lang', this.currentLanguage);
+      document.documentElement.setAttribute("dir", "ltr");
+      document.documentElement.setAttribute("lang", this.currentLanguage);
     }
   }
 
@@ -634,7 +895,10 @@ class LanguageManager {
   }
 
   getVoicePatterns() {
-    return this.translations[this.currentLanguage].voicePatterns || this.translations['en'].voicePatterns;
+    return (
+      this.translations[this.currentLanguage].voicePatterns ||
+      this.translations["en"].voicePatterns
+    );
   }
 
   getLanguageCode() {
