@@ -10,6 +10,7 @@ class MillionaireGame {
     this.bestStars = parseInt(localStorage.getItem("mill_best_stars") || "0");
     this.lifelines = { fiftyFifty: true, askFriend: true, skip: true };
     this.answered = false;
+    this.currentShuffledAnswers = [];
     this.ac = null; // AudioContext for sounds
 
     this.questions = this._buildQuestions();
@@ -527,9 +528,10 @@ class MillionaireGame {
         of: "of",
         stars: "Stars",
         fiftyFifty: "50:50",
-        askFriend: "📞 Ask Friend",
+        askFriend: "📞 Friend",
+        askCrowd: "👥 Crowd",
         skip: "⏭ Skip",
-        readAloud: "🔊 Read Aloud",
+        readAloud: "🔊 Read",
         correct: "Correct! ⭐",
         wrong: "Good try! Let's learn together!",
         nextBtn: "Next Question ➡️",
@@ -543,8 +545,9 @@ class MillionaireGame {
         backToMenu: "📋 Back to Menu",
         levelLabel: "Level",
         hintUsed: "Friend says this might be correct! 🤔",
+        crowdVote: "👥 Audience Vote",
         skipped: "Question skipped!",
-        langEn: "🇬🇧",
+        langEn: "EN",
         langRu: "🇷🇺",
         langDe: "🇩🇪",
         langAr: "🇸🇦",
@@ -558,8 +561,10 @@ class MillionaireGame {
         stars: "Звёзды",
         fiftyFifty: "50:50",
         askFriend: "📞 Друг",
+        askCrowd: "👥 Зал",
         skip: "⏭ Дальше",
         readAloud: "🔊 Прочитать",
+        crowdVote: "👥 Голосование зала",
         correct: "Правильно! ⭐",
         wrong: "Хорошая попытка! Давай учиться вместе!",
         nextBtn: "Следующий вопрос ➡️",
@@ -588,8 +593,10 @@ class MillionaireGame {
         stars: "Sterne",
         fiftyFifty: "50:50",
         askFriend: "📞 Freund",
+        askCrowd: "👥 Publikum",
         skip: "⏭ Weiter",
         readAloud: "🔊 Vorlesen",
+        crowdVote: "👥 Publikumsabstimmung",
         correct: "Richtig! ⭐",
         wrong: "Guter Versuch! Lass uns zusammen lernen!",
         nextBtn: "Nächste Frage ➡️",
@@ -618,8 +625,10 @@ class MillionaireGame {
         stars: "نجوم",
         fiftyFifty: "50:50",
         askFriend: "📞 صديق",
+        askCrowd: "👥 الجمهور",
         skip: "⏭ تخطي",
         readAloud: "🔊 اقرأ بصوت عالٍ",
+        crowdVote: "👥 تصويت الجمهور",
         correct: "صحيح! ⭐",
         wrong: "محاولة جيدة! هيا نتعلم معاً!",
         nextBtn: "السؤال التالي ➡️",
@@ -644,24 +653,68 @@ class MillionaireGame {
   }
 
   // ─── Reward tiers ─────────────────────────────────────────────
+  _prizes() {
+    return [
+      "$500",
+      "$1,000",
+      "$2,000",
+      "$3,000",
+      "$5,000",
+      "$10,000",
+      "$15,000",
+      "$25,000",
+      "$50,000",
+      "$100,000",
+      "$200,000",
+      "$400,000",
+      "$800,000",
+      "$1,500,000",
+      "$3,000,000",
+    ];
+  }
+
+  _safeLevels() {
+    return [4, 9];
+  } // 0-indexed (level 5 and 10)
+
   _rewardTiers() {
     return [
-      { stars: 0, label: "⭐" },
-      { stars: 1, label: "⭐" },
-      { stars: 1, label: "⭐" },
-      { stars: 1, label: "⭐⭐" },
-      { stars: 1, label: "⭐⭐" },
-      { stars: 2, label: "⭐⭐" },
-      { stars: 2, label: "⭐⭐⭐" },
-      { stars: 2, label: "⭐⭐⭐" },
-      { stars: 3, label: "⭐⭐⭐" },
-      { stars: 3, label: "⭐⭐⭐⭐" },
-      { stars: 3, label: "⭐⭐⭐⭐" },
-      { stars: 4, label: "⭐⭐⭐⭐" },
-      { stars: 4, label: "⭐⭐⭐⭐⭐" },
-      { stars: 5, label: "⭐⭐⭐⭐⭐" },
-      { stars: 5, label: "🏆" },
+      { stars: 1, label: "$500" },
+      { stars: 1, label: "$1,000" },
+      { stars: 1, label: "$2,000" },
+      { stars: 1, label: "$3,000" },
+      { stars: 2, label: "$5,000" },
+      { stars: 2, label: "$10,000" },
+      { stars: 2, label: "$15,000" },
+      { stars: 2, label: "$25,000" },
+      { stars: 3, label: "$50,000" },
+      { stars: 3, label: "$100,000" },
+      { stars: 3, label: "$200,000" },
+      { stars: 4, label: "$400,000" },
+      { stars: 4, label: "$800,000" },
+      { stars: 5, label: "$1,500,000" },
+      { stars: 5, label: "$3,000,000" },
     ];
+  }
+
+  _renderPrizeLadder() {
+    const el = document.getElementById("mill-prize-ladder");
+    if (!el) return;
+    const prizes = this._prizes();
+    const safe = this._safeLevels();
+    el.innerHTML = "";
+    for (let i = prizes.length - 1; i >= 0; i--) {
+      const row = document.createElement("div");
+      row.className = "mill-prize-row";
+      if (i === this.currentLevel) row.classList.add("mill-prize-row--current");
+      else if (i < this.currentLevel)
+        row.classList.add("mill-prize-row--passed");
+      if (safe.includes(i)) row.classList.add("mill-prize-row--safe");
+      row.innerHTML = `<span class="mill-prize-level">${
+        i + 1
+      }</span><span class="mill-prize-amount">${prizes[i]}</span>`;
+      el.appendChild(row);
+    }
   }
 
   // ─── Modal Wiring ─────────────────────────────────────────────
@@ -730,6 +783,9 @@ class MillionaireGame {
     if (friendBtn)
       friendBtn.addEventListener("click", () => this._useAskFriend());
 
+    const crowdBtn = document.getElementById("mill-crowd-btn");
+    if (crowdBtn) crowdBtn.addEventListener("click", () => this._useAskCrowd());
+
     const skipBtn = document.getElementById("mill-skip-btn");
     if (skipBtn) skipBtn.addEventListener("click", () => this._useSkip());
 
@@ -780,7 +836,12 @@ class MillionaireGame {
   _startGame() {
     this.currentLevel = 0;
     this.stars = 0;
-    this.lifelines = { fiftyFifty: true, askFriend: true, skip: true };
+    this.lifelines = {
+      fiftyFifty: true,
+      askFriend: true,
+      askCrowd: true,
+      skip: true,
+    };
     this.answered = false;
 
     // Shuffle and pick 15 questions with increasing difficulty
@@ -798,6 +859,7 @@ class MillionaireGame {
 
     this._showScreen("mill-game-screen");
     this._updateLifelineButtons();
+    this._renderPrizeLadder();
     this._renderQuestion();
   }
 
@@ -808,6 +870,12 @@ class MillionaireGame {
     }
 
     this.answered = false;
+    this._renderPrizeLadder();
+
+    // Hide crowd poll from previous question
+    const pollEl = document.getElementById("mill-crowd-poll");
+    if (pollEl) pollEl.style.display = "none";
+
     const qData = this.shuffledQuestions[this.currentLevel];
     const langData = qData[this.language] || qData.en;
     const dir = this.language === "ar" ? "rtl" : "ltr";
@@ -857,6 +925,7 @@ class MillionaireGame {
       const correctText = langData.a[langData.c];
       const shuffled = [...langData.a].sort(() => Math.random() - 0.5);
       this.currentCorrectIndex = shuffled.indexOf(correctText);
+      this.currentShuffledAnswers = shuffled;
       shuffled.forEach((ans, i) => {
         const btn = document.createElement("button");
         btn.className = "mill-answer-btn";
@@ -973,6 +1042,57 @@ class MillionaireGame {
     this._updateLifelineButtons();
   }
 
+  _useAskCrowd() {
+    if (!this.lifelines.askCrowd || this.answered) return;
+    this.lifelines.askCrowd = false;
+    this._playSound("lifeline");
+
+    const correct = this.currentCorrectIndex;
+    const correctPct = 50 + Math.floor(Math.random() * 30);
+    const wrongPcts = [];
+    let rem = 100 - correctPct;
+    for (let i = 0; i < 2; i++) {
+      const p = Math.floor(Math.random() * (rem / (3 - i)));
+      wrongPcts.push(p);
+      rem -= p;
+    }
+    wrongPcts.push(rem);
+
+    const pcts = [];
+    let wi = 0;
+    for (let i = 0; i < 4; i++)
+      pcts.push(i === correct ? correctPct : wrongPcts[wi++]);
+
+    const labels = ["A", "B", "C", "D"];
+    const pollEl = document.getElementById("mill-crowd-poll");
+    if (pollEl) {
+      pollEl.style.display = "block";
+      pollEl.innerHTML =
+        `<div class="mill-crowd-title">${this._t("crowdVote")}</div>` +
+        pcts
+          .map(
+            (pct, i) => `
+          <div class="mill-crowd-bar-row">
+            <span class="mill-crowd-label">${labels[i]}</span>
+            <div class="mill-crowd-bar-track">
+              <div class="mill-crowd-bar-fill" style="width:0%" data-target="${pct}"></div>
+            </div>
+            <span class="mill-crowd-pct">${pct}%</span>
+          </div>`
+          )
+          .join("");
+      // Animate bars after paint
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          pollEl.querySelectorAll(".mill-crowd-bar-fill").forEach((bar) => {
+            bar.style.width = bar.dataset.target + "%";
+          });
+        })
+      );
+    }
+    this._updateLifelineButtons();
+  }
+
   _useSkip() {
     if (!this.lifelines.skip || this.answered) return;
     this.lifelines.skip = false;
@@ -994,7 +1114,9 @@ class MillionaireGame {
   _updateLifelineButtons() {
     const fiftyBtn = document.getElementById("mill-fifty-btn");
     const friendBtn = document.getElementById("mill-friend-btn");
+    const crowdBtn = document.getElementById("mill-crowd-btn");
     const skipBtn = document.getElementById("mill-skip-btn");
+    const readBtn = document.getElementById("mill-read-btn");
 
     if (fiftyBtn) {
       fiftyBtn.disabled = !this.lifelines.fiftyFifty;
@@ -1004,12 +1126,14 @@ class MillionaireGame {
       friendBtn.disabled = !this.lifelines.askFriend;
       friendBtn.textContent = this._t("askFriend");
     }
+    if (crowdBtn) {
+      crowdBtn.disabled = !this.lifelines.askCrowd;
+      crowdBtn.textContent = this._t("askCrowd");
+    }
     if (skipBtn) {
       skipBtn.disabled = !this.lifelines.skip;
       skipBtn.textContent = this._t("skip");
     }
-
-    const readBtn = document.getElementById("mill-read-btn");
     if (readBtn) readBtn.textContent = this._t("readAloud");
   }
 
@@ -1074,9 +1198,10 @@ class MillionaireGame {
     utt.rate = 0.85;
     utt.pitch = 1.2;
 
-    // Then read answers
+    // Then read answers in displayed (shuffled) order
+    const displayedAnswers = this.currentShuffledAnswers || langData.a;
     utt.onend = () => {
-      langData.a.forEach((ans, i) => {
+      displayedAnswers.forEach((ans, i) => {
         const labels = ["A", "B", "C", "D"];
         const aUtt = new SpeechSynthesisUtterance(`${labels[i]}: ${ans}`);
         aUtt.lang = lang;

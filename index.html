@@ -2022,11 +2022,10 @@
     <!-- Millionaire Quiz Game Modal -->
     <div class="modal" id="millionaire-game-modal" style="display: none">
       <div class="modal-content mill-modal-content">
-        <div class="modal-header mill-modal-header">
-          <h2>🌟 Little Genius Quiz</h2>
+        <div class="mill-modal-header">
           <div class="mill-lang-switcher">
             <button class="mill-lang-btn mill-lang-btn--active" data-lang="en">
-              🇬🇧
+              EN
             </button>
             <button class="mill-lang-btn" data-lang="ru">🇷🇺</button>
             <button class="mill-lang-btn" data-lang="de">🇩🇪</button>
@@ -2036,17 +2035,104 @@
             ✕
           </button>
         </div>
-        <div class="modal-body mill-modal-body">
+        <div class="mill-modal-body">
           <div id="mill-confetti" class="mill-confetti"></div>
 
           <!-- Start Screen -->
           <div id="mill-start-screen" class="mill-screen">
-            <div class="mill-start-mascot">🦉</div>
-            <h2 id="mill-title" class="mill-start-title">Little Genius Quiz</h2>
-            <p id="mill-subtitle" class="mill-start-subtitle">
-              Who Wants to Be a Star? ⭐
-            </p>
-            <div class="mill-start-stars">⭐⭐⭐⭐⭐</div>
+            <div class="mill-logo-circle">
+              <span class="mill-logo-vikto">ROMAN</span>
+              <svg
+                class="mill-logo-ornament"
+                viewBox="0 0 200 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g transform="translate(100,100)">
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(0)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(22.5)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(45)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(67.5)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(90)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(112.5)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(135)"
+                  />
+                  <ellipse
+                    rx="28"
+                    ry="75"
+                    fill="rgba(30,80,180,0.25)"
+                    stroke="rgba(100,160,255,0.55)"
+                    stroke-width="1.5"
+                    transform="rotate(157.5)"
+                  />
+                  <circle
+                    r="32"
+                    fill="rgba(8,20,60,0.7)"
+                    stroke="rgba(100,160,255,0.35)"
+                    stroke-width="1.5"
+                  />
+                  <circle
+                    r="14"
+                    fill="rgba(8,20,60,0.8)"
+                    stroke="rgba(150,200,255,0.45)"
+                    stroke-width="1.5"
+                  />
+                  <circle r="5" fill="rgba(200,225,255,0.55)" />
+                </g>
+              </svg>
+              <span class="mill-logo-name">МИЛЛИОНЕР</span>
+              <span class="mill-logo-year">2026</span>
+            </div>
+            <h2 id="mill-title" style="display: none"></h2>
+            <p id="mill-subtitle" style="display: none"></p>
             <p id="mill-best-score" class="mill-best-score">Best: 0 ⭐</p>
             <button id="mill-start-btn" class="mill-start-btn">
               🚀 Start Quiz!
@@ -2055,49 +2141,159 @@
 
           <!-- Game Screen -->
           <div id="mill-game-screen" class="mill-screen" style="display: none">
-            <div class="mill-hud">
-              <span id="mill-progress" class="mill-hud-item"
-                >Question 1 of 15</span
-              >
-              <span
-                id="mill-level-indicator"
-                class="mill-hud-item mill-level-badge"
-                >Level 1</span
-              >
-              <span id="mill-stars" class="mill-hud-item">⭐ 0</span>
-            </div>
-            <div class="mill-progress-track">
-              <div id="mill-progress-bar" class="mill-progress-fill"></div>
-            </div>
-            <div class="mill-question-card">
-              <div id="mill-question-emoji" class="mill-question-emoji">❓</div>
-              <p id="mill-question-text" class="mill-question-text"></p>
-            </div>
-            <div id="mill-answers" class="mill-answers"></div>
-            <p id="mill-feedback" class="mill-feedback"></p>
-            <button
-              id="mill-next-btn"
-              class="mill-next-btn"
-              style="display: none"
-            >
-              Next Question ➡️
-            </button>
-            <div class="mill-lifelines">
-              <button id="mill-fifty-btn" class="mill-lifeline-btn">
-                50:50
-              </button>
-              <button id="mill-friend-btn" class="mill-lifeline-btn">
-                📞 Ask Friend
-              </button>
-              <button id="mill-skip-btn" class="mill-lifeline-btn">
-                ⏭ Skip
-              </button>
-              <button
-                id="mill-read-btn"
-                class="mill-lifeline-btn mill-read-btn"
-              >
-                🔊 Read Aloud
-              </button>
+            <div class="mill-game-layout">
+              <!-- Left: Logo + Prize Ladder -->
+              <div class="mill-left-panel">
+                <div class="mill-logo-circle mill-logo-sm">
+                  <span class="mill-logo-vikto">Roman</span>
+                  <svg
+                    class="mill-logo-ornament"
+                    viewBox="0 0 200 200"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g transform="translate(100,100)">
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(0)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(22.5)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(45)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(67.5)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(90)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(112.5)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(135)"
+                      />
+                      <ellipse
+                        rx="28"
+                        ry="75"
+                        fill="rgba(30,80,180,0.25)"
+                        stroke="rgba(100,160,255,0.55)"
+                        stroke-width="1.5"
+                        transform="rotate(157.5)"
+                      />
+                      <circle
+                        r="32"
+                        fill="rgba(8,20,60,0.7)"
+                        stroke="rgba(100,160,255,0.35)"
+                        stroke-width="1.5"
+                      />
+                      <circle
+                        r="14"
+                        fill="rgba(8,20,60,0.8)"
+                        stroke="rgba(150,200,255,0.45)"
+                        stroke-width="1.5"
+                      />
+                      <circle r="5" fill="rgba(200,225,255,0.55)" />
+                    </g>
+                  </svg>
+                  <span class="mill-logo-name">МИЛЛИОНЕР</span>
+                  <span class="mill-logo-year">2026</span>
+                </div>
+                <div id="mill-prize-ladder" class="mill-prize-ladder"></div>
+              </div>
+              <!-- Right: HUD + Question + Answers + Lifelines -->
+              <div class="mill-right-panel">
+                <div class="mill-hud">
+                  <span id="mill-progress" class="mill-hud-item"
+                    >Question 1 of 15</span
+                  >
+                  <span
+                    id="mill-level-indicator"
+                    class="mill-hud-item mill-level-badge"
+                    >Level 1</span
+                  >
+                  <span id="mill-stars" class="mill-hud-item">⭐ 0</span>
+                </div>
+                <div class="mill-progress-track">
+                  <div id="mill-progress-bar" class="mill-progress-fill"></div>
+                </div>
+                <div class="mill-question-card">
+                  <div id="mill-question-emoji" class="mill-question-emoji">
+                    ❓
+                  </div>
+                  <p id="mill-question-text" class="mill-question-text"></p>
+                </div>
+                <div id="mill-answers" class="mill-answers"></div>
+                <div
+                  id="mill-crowd-poll"
+                  class="mill-crowd-poll"
+                  style="display: none"
+                ></div>
+                <p id="mill-feedback" class="mill-feedback"></p>
+                <button
+                  id="mill-next-btn"
+                  class="mill-next-btn"
+                  style="display: none"
+                >
+                  Next Question ➡️
+                </button>
+                <div class="mill-lifelines">
+                  <button id="mill-fifty-btn" class="mill-lifeline-btn">
+                    50:50
+                  </button>
+                  <button id="mill-friend-btn" class="mill-lifeline-btn">
+                    📞 Friend
+                  </button>
+                  <button id="mill-crowd-btn" class="mill-lifeline-btn">
+                    👥 Crowd
+                  </button>
+                  <button id="mill-skip-btn" class="mill-lifeline-btn">
+                    ⏭ Skip
+                  </button>
+                  <button
+                    id="mill-read-btn"
+                    class="mill-lifeline-btn mill-read-btn"
+                  >
+                    🔊 Read
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -6187,31 +6187,24 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 .mill-modal-content {
-  max-width: 560px;
-  width: 95vw;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  border-radius: 1.25rem;
-  border: 2px solid rgba(255, 215, 0, 0.3);
+  max-width: 860px;
+  width: 97vw;
+  background: linear-gradient(180deg, #060e20 0%, #0a1628 50%, #060e20 100%);
+  border-radius: 1rem;
+  border: 2px solid rgba(200, 164, 21, 0.5);
   overflow: hidden;
-  max-height: 95vh;
+  max-height: 96vh;
   display: flex;
   flex-direction: column;
 }
 
 .mill-modal-header {
-  background: linear-gradient(90deg, #ff9a00, #ffd700, #ff9a00);
-  padding: 0.75rem 1rem;
+  background: linear-gradient(90deg, #0a1a3e, #122654, #0a1a3e);
+  padding: 0.45rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.mill-modal-header h2 {
-  color: #1a1a2e;
-  font-size: 1.2rem;
-  margin: 0;
-  flex: 1;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(200, 164, 21, 0.3);
 }
 
 .mill-lang-switcher {
@@ -6220,28 +6213,31 @@ body {
 }
 
 .mill-lang-btn {
-  background: rgba(0, 0, 0, 0.15);
-  border: 2px solid transparent;
-  border-radius: 0.5rem;
-  padding: 0.2rem 0.4rem;
-  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8899bb;
   cursor: pointer;
   transition: all 0.2s;
+  letter-spacing: 0.5px;
 }
 
 .mill-lang-btn:hover {
-  background: rgba(0, 0, 0, 0.3);
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .mill-lang-btn--active {
-  border-color: #1a1a2e;
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
+  border-color: #ffd700;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
 }
 
 .mill-modal-body {
-  padding: 1rem;
+  padding: 0.75rem;
   overflow-y: auto;
   flex: 1;
   position: relative;
@@ -6279,7 +6275,7 @@ body {
   }
 }
 
-/* Screens */
+/* ── Screens ───────────────────────────────────────────────────── */
 .mill-screen {
   display: flex;
   flex-direction: column;
@@ -6288,93 +6284,202 @@ body {
   gap: 0.75rem;
 }
 
-/* Start Screen */
-.mill-start-mascot {
-  font-size: 4rem;
-  animation: mill-bounce 2s ease-in-out infinite;
+/* ── Logo Circle ──────────────────────────────────────────────── */
+.mill-logo-circle {
+  position: relative;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #1040a0 0%, #071540 60%, #040e28 100%);
+  border: 4px solid #c8a415;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px rgba(200, 164, 21, 0.15), 0 0 30px rgba(200, 164, 21, 0.25),
+    inset 0 0 40px rgba(0, 0, 50, 0.4);
+  flex-shrink: 0;
 }
 
-@keyframes mill-bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
+.mill-logo-sm {
+  width: 130px;
+  height: 130px;
+  border-width: 3px;
 }
 
-.mill-start-title {
+.mill-logo-vikto {
+  position: absolute;
+  top: 14%;
+  z-index: 2;
   color: #ffd700;
-  font-size: 1.6rem;
-  margin: 0;
-  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
 }
 
-.mill-start-subtitle {
-  color: #e0e0ff;
-  font-size: 1rem;
-  margin: 0;
+.mill-logo-sm .mill-logo-vikto { font-size: 0.42rem; letter-spacing: 1px; top: 12%; }
+
+.mill-logo-ornament {
+  position: absolute;
+  width: 88%;
+  height: 88%;
+  z-index: 1;
 }
 
-.mill-start-stars {
-  font-size: 1.5rem;
-  letter-spacing: 4px;
+.mill-logo-name {
+  position: relative;
+  z-index: 2;
+  color: #ffd700;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
+  font-style: italic;
 }
 
+.mill-logo-sm .mill-logo-name { font-size: 0.82rem; letter-spacing: 0.5px; }
+
+.mill-logo-year {
+  position: absolute;
+  bottom: 13%;
+  z-index: 2;
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.mill-logo-sm .mill-logo-year { font-size: 0.46rem; bottom: 11%; }
+
+/* ── Start Screen ─────────────────────────────────────────────── */
 .mill-best-score {
-  color: #aab;
-  font-size: 0.85rem;
+  color: #8899bb;
+  font-size: 0.88rem;
   margin: 0;
 }
 
 .mill-start-btn {
-  background: linear-gradient(135deg, #ff9a00, #ff6b00);
+  background: linear-gradient(135deg, #d08c10, #b87008);
   color: white;
   border: none;
   border-radius: 2rem;
-  padding: 0.85rem 2rem;
+  padding: 0.85rem 2.2rem;
   font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(180, 100, 0, 0.5);
+  letter-spacing: 0.5px;
 }
 
-.mill-start-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+.mill-start-btn:hover { transform: scale(1.05); box-shadow: 0 6px 22px rgba(180, 100, 0, 0.6); }
+
+/* ── Game Layout ──────────────────────────────────────────────── */
+.mill-game-layout {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  align-items: flex-start;
 }
 
-/* HUD */
+.mill-left-panel {
+  flex-shrink: 0;
+  width: 148px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mill-right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+/* ── Prize Ladder ─────────────────────────────────────────────── */
+.mill-prize-ladder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mill-prize-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, rgba(12, 35, 90, 0.9), rgba(18, 55, 130, 0.9));
+  border: 1px solid rgba(70, 130, 255, 0.22);
+}
+
+.mill-prize-row--current {
+  background: linear-gradient(90deg, #9a6e00, #ffd700, #9a6e00) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.mill-prize-row--safe {
+  background: linear-gradient(90deg, #064a06, #0e7a0e, #064a06) !important;
+  border-color: rgba(80, 200, 80, 0.45) !important;
+}
+
+.mill-prize-row--passed { opacity: 0.45; }
+
+.mill-prize-level {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: rgba(180, 210, 255, 0.7);
+  min-width: 13px;
+}
+
+.mill-prize-row--current .mill-prize-level,
+.mill-prize-row--safe .mill-prize-level { color: rgba(0, 0, 0, 0.65); }
+
+.mill-prize-amount {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #b8d4ff;
+  text-align: right;
+}
+
+.mill-prize-row--current .mill-prize-amount { color: #1a1000; font-size: 0.67rem; }
+.mill-prize-row--safe .mill-prize-amount { color: #002800; }
+
+/* ── HUD ──────────────────────────────────────────────────────── */
 .mill-hud {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   width: 100%;
   flex-wrap: wrap;
 }
 
 .mill-hud-item {
-  color: #e0e0ff;
-  font-size: 0.85rem;
+  color: #c8deff;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
 .mill-level-badge {
-  background: rgba(255, 215, 0, 0.2);
-  padding: 0.15rem 0.6rem;
+  background: rgba(255, 215, 0, 0.14);
+  padding: 0.1rem 0.5rem;
   border-radius: 1rem;
   color: #ffd700;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
-/* Progress bar */
+/* ── Progress bar ─────────────────────────────────────────────── */
 .mill-progress-track {
   width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 5px;
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -6387,315 +6492,276 @@ body {
   width: 0;
 }
 
-/* Question Card */
+/* ── Question Card ────────────────────────────────────────────── */
 .mill-question-card {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 1rem;
-  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(200, 180, 100, 0.22);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
   width: 100%;
   text-align: center;
 }
 
-.mill-question-emoji {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
+.mill-question-emoji { font-size: 1.9rem; margin-bottom: 0.35rem; }
 
 .mill-question-text {
   color: white;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
-/* Answer Buttons */
+/* ── Answer Buttons ───────────────────────────────────────────── */
 .mill-answers {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
   width: 100%;
 }
 
 .mill-answer-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.04)
-  );
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0.75rem;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: linear-gradient(135deg, #1a3d80 0%, #0d2255 100%);
+  border: 2px solid rgba(80, 160, 255, 0.42);
+  border-radius: 0.5rem;
   color: white;
-  font-size: 0.95rem;
+  font-size: 0.97rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
   text-align: left;
+  transition: all 0.18s;
+  box-shadow: 0 2px 6px rgba(0, 0, 50, 0.35);
 }
 
 .mill-answer-btn:hover:not(:disabled) {
   border-color: #ffd700;
-  background: rgba(255, 215, 0, 0.15);
-  transform: scale(1.02);
+  background: linear-gradient(135deg, #254f9e 0%, #152c70 100%);
+  transform: translateX(3px);
+  box-shadow: 0 3px 12px rgba(255, 215, 0, 0.14);
 }
 
 .mill-answer-label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, #ffd700, #ff9a00);
-  color: #1a1a2e;
-  border-radius: 50%;
+  color: white;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.97rem;
   flex-shrink: 0;
+  min-width: 1.6rem;
 }
 
-.mill-answer-text {
-  flex: 1;
-}
+.mill-answer-label::after { content: ":"; }
+
+.mill-answer-text { flex: 1; color: #ddeeff; }
 
 .mill-answer-correct {
   border-color: #4ade80 !important;
-  background: rgba(74, 222, 128, 0.25) !important;
+  background: linear-gradient(135deg, #0f5a2a, #0a3d1e) !important;
   animation: mill-pulse-green 0.5s ease;
 }
 
 .mill-answer-wrong {
   border-color: #f87171 !important;
-  background: rgba(248, 113, 113, 0.2) !important;
+  background: linear-gradient(135deg, #5a1010, #3d0a0a) !important;
   animation: mill-shake 0.4s ease;
 }
 
-.mill-answer-hidden {
-  opacity: 0.2;
-  pointer-events: none;
-  transform: scale(0.95);
-}
+.mill-answer-hidden { opacity: 0.15; pointer-events: none; }
 
 .mill-answer-friend-hint {
   border-color: #60a5fa !important;
-  background: rgba(96, 165, 250, 0.2) !important;
+  background: linear-gradient(135deg, #1a3d80, #0d3070) !important;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.4) !important;
   animation: mill-pulse-blue 1.5s ease infinite;
 }
 
+@keyframes mill-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
 @keyframes mill-pulse-green {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 20px 4px rgba(74, 222, 128, 0.3);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  50% { box-shadow: 0 0 20px 4px rgba(74, 222, 128, 0.3); }
 }
 
 @keyframes mill-pulse-blue {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 15px 3px rgba(96, 165, 250, 0.2);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.3); }
+  50% { box-shadow: 0 0 15px 3px rgba(96, 165, 250, 0.3); }
 }
 
 @keyframes mill-shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-6px);
-  }
-  40% {
-    transform: translateX(6px);
-  }
-  60% {
-    transform: translateX(-4px);
-  }
-  80% {
-    transform: translateX(4px);
-  }
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
 }
 
-/* Feedback */
-.mill-feedback {
-  font-size: 1rem;
+/* ── Crowd Poll ───────────────────────────────────────────────── */
+.mill-crowd-poll {
+  background: rgba(8, 20, 60, 0.85);
+  border: 1px solid rgba(100, 160, 255, 0.28);
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  width: 100%;
+}
+
+.mill-crowd-title {
+  color: #c8deff;
+  font-size: 0.8rem;
   font-weight: 700;
-  min-height: 1.5rem;
+  margin-bottom: 0.38rem;
+  text-align: center;
+}
+
+.mill-crowd-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.22rem;
+}
+
+.mill-crowd-label {
+  color: #ffd700;
+  font-size: 0.76rem;
+  font-weight: 800;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.mill-crowd-bar-track {
+  flex: 1;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mill-crowd-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1e6db8, #4aa8ff);
+  border-radius: 8px;
+  transition: width 0.8s ease;
+}
+
+.mill-crowd-pct {
+  color: #c8deff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Feedback ─────────────────────────────────────────────────── */
+.mill-feedback {
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-height: 1.4rem;
   margin: 0;
 }
 
-.mill-feedback-correct {
-  color: #4ade80;
-}
+.mill-feedback-correct { color: #4ade80; }
+.mill-feedback-wrong { color: #fbbf24; }
+.mill-feedback-hint { color: #60a5fa; }
 
-.mill-feedback-wrong {
-  color: #fbbf24;
-}
-
-.mill-feedback-hint {
-  color: #60a5fa;
-}
-
-/* Next button */
+/* ── Next Button ──────────────────────────────────────────────── */
 .mill-next-btn {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
+  background: linear-gradient(135deg, #276630, #1a4d22);
   color: white;
-  border: none;
+  border: 2px solid rgba(74, 222, 128, 0.35);
   border-radius: 1.5rem;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.mill-next-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
-}
+.mill-next-btn:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(74, 222, 128, 0.3); }
 
-/* Lifelines */
+/* ── Lifelines ────────────────────────────────────────────────── */
 .mill-lifelines {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.28rem;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  margin-top: 0.25rem;
 }
 
 .mill-lifeline-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 1.5rem;
-  padding: 0.4rem 0.8rem;
-  color: #e0e0ff;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  color: #c0d4ff;
+  font-size: 0.73rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.mill-lifeline-btn:hover:not(:disabled) {
-  border-color: #ffd700;
-  color: #ffd700;
-  transform: scale(1.05);
-}
+.mill-lifeline-btn:hover:not(:disabled) { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.07); }
+.mill-lifeline-btn:disabled { opacity: 0.22; cursor: not-allowed; }
 
-.mill-lifeline-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
+.mill-read-btn { border-color: rgba(96, 165, 250, 0.3); color: #93c5fd; }
+.mill-read-btn:hover:not(:disabled) { border-color: #60a5fa; color: #60a5fa; }
 
-.mill-read-btn {
-  border-color: rgba(96, 165, 250, 0.4);
-  color: #93c5fd;
-}
+/* ── End Screen ───────────────────────────────────────────────── */
+.mill-end-trophy { font-size: 3.5rem; animation: mill-bounce 2s ease-in-out infinite; }
+.mill-end-title { color: #ffd700; font-size: 1.4rem; margin: 0; }
+.mill-end-subtitle { color: #c8deff; font-size: 0.95rem; margin: 0; }
+.mill-star-display { font-size: 1.6rem; letter-spacing: 3px; min-height: 2rem; }
+.mill-earned-text { color: #fbbf24; font-size: 1rem; font-weight: 700; margin: 0; }
 
-.mill-read-btn:hover:not(:disabled) {
-  border-color: #60a5fa;
-  color: #60a5fa;
-}
-
-/* End Screen */
-.mill-end-trophy {
-  font-size: 4rem;
-  animation: mill-bounce 2s ease-in-out infinite;
-}
-
-.mill-end-title {
-  color: #ffd700;
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.mill-end-subtitle {
-  color: #e0e0ff;
-  font-size: 1rem;
-  margin: 0;
-}
-
-.mill-star-display {
-  font-size: 1.8rem;
-  letter-spacing: 3px;
-  min-height: 2rem;
-}
-
-.mill-earned-text {
-  color: #fbbf24;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.mill-end-buttons {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+.mill-end-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
 
 .mill-menu-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e0e0ff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #c8deff;
+  border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 2rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.mill-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
+.mill-menu-btn:hover { background: rgba(255, 255, 255, 0.14); transform: scale(1.04); }
 
-/* RTL support for Arabic */
-[dir="rtl"] .mill-answer-btn {
-  flex-direction: row-reverse;
-  text-align: right;
-}
+/* ── RTL ──────────────────────────────────────────────────────── */
+[dir="rtl"] .mill-answer-btn { flex-direction: row-reverse; text-align: right; }
+[dir="rtl"] .mill-hud { flex-direction: row-reverse; }
 
-[dir="rtl"] .mill-hud {
-  flex-direction: row-reverse;
-}
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 580px) {
+  .mill-modal-content { border-radius: 0.75rem; }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .mill-modal-content {
-    max-width: 100vw;
-    border-radius: 0.75rem;
+  .mill-game-layout {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .mill-answers {
-    grid-template-columns: 1fr;
+  .mill-left-panel {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
-  .mill-question-text {
-    font-size: 1rem;
+  .mill-logo-sm { width: 90px; height: 90px; }
+
+  .mill-prize-ladder {
+    flex: 1;
+    max-height: 180px;
+    overflow-y: auto;
   }
 
-  .mill-answer-btn {
-    font-size: 0.9rem;
-    padding: 0.65rem 0.75rem;
-  }
+  .mill-question-text { font-size: 0.95rem; }
 
-  .mill-lifelines {
-    gap: 0.3rem;
-  }
-
-  .mill-lifeline-btn {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.6rem;
-  }
+  .mill-answer-btn { font-size: 0.88rem; padding: 0.55rem 0.8rem; }
 }
